@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Raíz — Come lo que ya tienes. Entrena como te gusta.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-page: #eef2ea;
+      --bg-card: #f7f9f4;
+      --bg-pill-inactive: #f7f9f4;
+      --border-soft: #d5dfd0;
+      --border-card: #dce4d7;
+      --text-main: #162016;
+      --text-muted: #526052;
+      --green-brand: #1f5c35;
+      --green-active: #21633a;
+      --green-banner: #18512d;
+      --green-tag-bg: #d5e2d2;
+      --green-tag-text: #1d3b26;
+      --burgundy: #9e2442;
+      --burgundy-border: #c97a8b;
+      --burgundy-bg: #fbf4f5;
+      --notice-bg: #e5ddd9;
+      --track-bg: #dfe6db;
+    }
+
+    body.dark-mode {
+      --bg-page: #111913;
+      --bg-card: #18231b;
+      --bg-pill-inactive: #1d2a20;
+      --border-soft: #2c3e30;
+      --border-card: #263629;
+      --text-main: #eef3ed;
+      --text-muted: #9cb09e;
+      --green-brand: #52b778;
+      --green-active: #2b7a48;
+      --green-banner: #1e4d2f;
+      --green-tag-bg: #253d2c;
+      --green-tag-text: #bfe3ca;
+      --burgundy: #e06c88;
+      --burgundy-border: #9e475c;
+      --burgundy-bg: #2b1d22;
+      --notice-bg: #2a2423;
+      --track-bg: #263529;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      line-height: 1.45;
+      padding: 24px 42px 48px;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    .container {
+      max-width: 1060px;
+      margin: 0 auto;
+    }
+
+    /* Top Header */
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 42px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 21px;
+      font-weight: 800;
+      color: var(--green-brand);
+      letter-spacing: -0.02em;
+      text-decoration: none;
+    }
+
+    .brand-leaf {
+      width: 14px;
+      height: 14px;
+      background-color: var(--green-brand);
+      border-radius: 0 75% 0 75%;
+      transform: rotate(-10deg);
+      display: inline-block;
+    }
+
+    .btn-theme {
+      background: var(--bg-card);
+      color: var(--text-main);
+      border: 1px solid var(--border-soft);
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-theme:hover {
+      filter: brightness(0.96);
+    }
+
+    /* Hero */
+    .hero {
+      margin-bottom: 32px;
+    }
+
+    .hero h1 {
+      font-size: clamp(38px, 5.2vw, 56px);
+      font-weight: 800;
+      line-height: 1.06;
+      letter-spacing: -0.03em;
+      max-width: 560px;
+      margin-bottom: 18px;
+    }
+
+    .hero p {
+      font-size: 17.5px;
+      color: var(--text-muted);
+      max-width: 580px;
+      line-height: 1.5;
+    }
+
+    /* Main Mode Switcher */
+    .mode-switcher {
+      display: inline-flex;
+      align-items: center;
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-radius: 999px;
+      padding: 5px;
+      gap: 4px;
+      margin-bottom: 22px;
+    }
+
+    .mode-btn {
+      border: none;
+      background: transparent;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 10px 22px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+
+    .mode-btn.active {
+      background: var(--green-active);
+      color: #ffffff;
+    }
+
+    /* Main Layout Grid */
+    .workspace {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    @media (max-width: 840px) {
+      body {
+        padding: 18px 16px 36px;
+      }
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Sidebar Cards */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .card-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 16px;
+      padding: 18px;
+    }
+
+    .card-panel h3 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .card-panel .sub-hint {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      margin-top: -6px;
+      margin-bottom: 14px;
+      line-height: 1.4;
+    }
+
+    /* Goal 3-column pills */
+    .goal-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .goal-btn {
+      border: 1px solid var(--border-soft);
+      background: var(--bg-pill-inactive);
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 500;
+      padding: 8px 6px;
+      border-radius: 14px;
+      cursor: pointer;
+      text-align: center;
+      line-height: 1.25;
+      transition: all 0.15s ease;
+    }
+
+    .goal-btn.active {
+      background: var(--green-active);
+      border-color: var(--green-active);
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    /* Filter Pills (Workout sidebar) */
+    .pill-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .filter-pill {
+      border: 1px solid var(--border-soft);
+      background: var(--bg-pill-inactive);
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 7px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .filter-pill.active {
+      background: var(--green-active);
+      border-color: var(--green-active);
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    /* Pantry List */
+    .pantry-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: flex-start;
+    }
+
+    .pantry-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .pantry-toggle {
+      border: 1px solid var(--border-soft);
+      background: var(--bg-pill-inactive);
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 500;
+      padding: 6px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .pantry-toggle.active {
+      background: var(--green-active);
+      border-color: var(--green-active);
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .qty-controls {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .qty-btn {
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      border: 1px solid var(--border-soft);
+      background: var(--bg-pill-inactive);
+      color: var(--text-main);
+      font-size: 14px;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .qty-btn:hover {
+      border-color: var(--green-active);
+    }
+
+    .qty-val {
+      font-size: 12.5px;
+      font-weight: 700;
+      min-width: 44px;
+      text-align: center;
+    }
+
+    /* Right Panel: Dieta Impact Banner */
+    .impact-banner {
+      background: var(--green-banner);
+      color: #ffffff;
+      border-radius: 16px;
+      padding: 18px 24px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .impact-num {
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 3px;
+    }
+
+    .impact-label {
+      font-size: 12px;
+      opacity: 0.88;
+    }
+
+    /* Recipe Cards */
+    .recipes-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .recipe-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 16px;
+      padding: 20px 22px;
+    }
+
+    .recipe-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .recipe-title {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .recipe-sub {
+      font-size: 12.5px;
+      color: var(--text-muted);
+    }
+
+    .coverage-box {
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .coverage-pct {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--green-brand);
+      line-height: 1.1;
+    }
+
+    .coverage-lbl {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 5px;
+      background: var(--track-bg);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--green-active);
+      border-radius: 999px;
+      transition: width 0.25s ease;
+    }
+
+    .ing-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-bottom: 12px;
+    }
+
+    .ing-tag {
+      font-size: 11.5px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-weight: 500;
+    }
+
+    .ing-tag.ok {
+      background: var(--green-tag-bg);
+      color: var(--green-tag-text);
+    }
+
+    .ing-tag.missing {
+      background: var(--burgundy-bg);
+      color: var(--burgundy);
+      border: 1px dashed var(--burgundy-border);
+    }
+
+    .macros-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      font-size: 12.5px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .macros-row strong {
+      color: var(--text-main);
+      font-weight: 700;
+    }
+
+    .leftover-line {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    .tip-line {
+      border-left: 3px solid var(--burgundy);
+      padding-left: 10px;
+      font-size: 12.5px;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+
+    /* Reviews Section */
+    .reviews-block {
+      border-top: 1px solid var(--border-soft);
+      padding-top: 12px;
+    }
+
+    .rating-summary {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .stars-inline {
+      color: var(--burgundy);
+      letter-spacing: 1px;
+      font-size: 13px;
+    }
+
+    .review-item {
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .review-item:last-of-type {
+      border-bottom: none;
+      margin-bottom: 8px;
+    }
+
+    .review-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12.5px;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .review-body {
+      font-size: 12.5px;
+      color: var(--text-muted);
+    }
+
+    .btn-write-review {
+      border: 1px solid var(--border-soft);
+      background: var(--bg-pill-inactive);
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 6px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+
+    .btn-write-review:hover {
+      border-color: var(--green-active);
+    }
+
+    /* Review Form Inline */
+    .review-form {
+      margin-top: 10px;
+      padding: 12px;
+      background: var(--bg-page);
+      border-radius: 12px;
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .review-form.open {
+      display: flex;
+    }
+
+    .review-form input,
+    .review-form textarea,
+    .review-form select {
+      font-family: inherit;
+      font-size: 12.5px;
+      padding: 7px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border-soft);
+      background: var(--bg-card);
+      color: var(--text-main);
+    }
+
+    .review-form-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-submit-review {
+      background: var(--green-active);
+      color: #fff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* Workout View Right Side */
+    .workout-notice {
+      background: var(--notice-bg);
+      border-radius: 12px;
+      padding: 14px 18px;
+      font-size: 13.5px;
+      color: var(--text-main);
+      margin-bottom: 16px;
+      line-height: 1.45;
+    }
+
+    .days-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 640px) {
+      .days-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .day-tab {
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-radius: 12px;
+      padding: 10px 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .day-tab-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 2px;
+    }
+
+    .day-tab-focus {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .day-tab.active {
+      background: var(--green-active);
+      border-color: var(--green-active);
+    }
+
+    .day-tab.active .day-tab-name,
+    .day-tab.active .day-tab-focus {
+      color: #ffffff;
+    }
+
+    .workout-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 16px;
+      padding: 22px 24px;
+    }
+
+    .workout-card h2 {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .workout-meta {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+    }
+
+    .exercise-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .exercise-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .exercise-row:last-child {
+      border-bottom: none;
+      padding-bottom: 2px;
+    }
+
+    .exercise-name {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 3px;
+    }
+
+    .exercise-note {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .exercise-dose {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--green-brand);
+      white-space: nowrap;
+      margin-left: 16px;
+    }
+
+    /* Footer */
+    .footer-note {
+      margin-top: 36px;
+      font-size: 12.5px;
+      color: var(--text-muted);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Topbar -->
+    <header class="topbar">
+      <a href="#" class="brand">
+        <span class="brand-leaf"></span>
+        <span>Raíz</span>
+      </a>
+      <button class="btn-theme" id="themeBtn">Modo oscuro</button>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+      <h1>Come lo que ya tienes. Entrena como te gusta.</h1>
+      <p>Dime qué hay en tu nevera y cuál es tu objetivo. Raíz te propone recetas que aprovechan tus ingredientes y un plan de entrenamiento a tu medida.</p>
+    </section>
+
+    <!-- Mode Switcher -->
+    <div class="mode-switcher" role="tablist">
+      <button class="mode-btn active" id="tabDieta" onclick="switchMode('dieta')">Dieta</button>
+      <button class="mode-btn" id="tabEntreno" onclick="switchMode('entrenamiento')">Entrenamiento</button>
+    </div>
+
+    <!-- VIEW 1: DIETA -->
+    <main id="viewDieta" class="workspace">
+      <!-- Left Sidebar -->
+      <aside class="sidebar">
+        <div class="card-panel">
+          <h3>Tu objetivo</h3>
+          <div class="goal-grid" id="goalButtons">
+            <button class="goal-btn active" data-goal="bajar">Bajar de peso</button>
+            <button class="goal-btn" data-goal="mantener">Mantener</button>
+            <button class="goal-btn" data-goal="subir">Subir de peso</button>
+          </div>
+        </div>
+
+        <div class="card-panel">
+          <h3>Tu despensa</h3>
+          <p class="sub-hint">Marca lo que tienes y ajusta la cantidad con + y −.</p>
+          <div class="pantry-list" id="pantryContainer"></div>
+        </div>
+      </aside>
+
+      <!-- Right Content -->
+      <section>
+        <div class="impact-banner">
+          <div>
+            <div class="impact-num" id="statIngredients">6</div>
+            <div class="impact-label">ingredientes aprovechados</div>
+          </div>
+          <div>
+            <div class="impact-num" id="statCo2">2.4 kg</div>
+            <div class="impact-label">de CO₂ evitado (estimación)</div>
+          </div>
+          <div>
+            <div class="impact-num" id="statRecipes">4</div>
+            <div class="impact-label">recetas para tu objetivo</div>
+          </div>
+        </div>
+
+        <div class="recipes-stack" id="recipesContainer"></div>
+      </section>
+    </main>
+
+    <!-- VIEW 2: ENTRENAMIENTO -->
+    <main id="viewEntreno" class="workspace hidden">
+      <!-- Left Sidebar -->
+      <aside class="sidebar">
+        <div class="card-panel">
+          <h3>Dónde entrenas</h3>
+          <div class="pill-group" data-filter="place">
+            <button class="filter-pill active" data-val="Casa">Casa</button>
+            <button class="filter-pill" data-val="Parque">Parque</button>
+            <button class="filter-pill" data-val="Gimnasio">Gimnasio</button>
+          </div>
+        </div>
+
+        <div class="card-panel">
+          <h3>Tiempo por sesión</h3>
+          <div class="pill-group" data-filter="time">
+            <button class="filter-pill" data-val="20 min">20 min</button>
+            <button class="filter-pill active" data-val="40 min">40 min</button>
+            <button class="filter-pill" data-val="60 min">60 min</button>
+          </div>
+        </div>
+
+        <div class="card-panel">
+          <h3>Qué te gusta</h3>
+          <div class="pill-group" data-filter="style">
+            <button class="filter-pill active" data-val="fuerza">Fuerza</button>
+            <button class="filter-pill" data-val="cardio">Cardio</button>
+            <button class="filter-pill" data-val="yoga y movilidad">Yoga y movilidad</button>
+          </div>
+        </div>
+
+        <div class="card-panel">
+          <h3>Tu nivel</h3>
+          <div class="pill-group" data-filter="level">
+            <button class="filter-pill" data-val="principiante">Principiante</button>
+            <button class="filter-pill active" data-val="intermedio">Intermedio</button>
+            <button class="filter-pill" data-val="avanzado">Avanzado</button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Right Content -->
+      <section>
+        <div class="workout-notice" id="workoutNotice">
+          Plan alineado con tu dieta: objetivo <strong>bajar de peso</strong>. Más cardio y fuerza ligera para mantener músculo.
+        </div>
+
+        <div class="days-grid" id="daysContainer"></div>
+
+        <div class="workout-card">
+          <h2 id="workoutTitle">Lunes · Pierna y glúteo</h2>
+          <p class="workout-meta" id="workoutMeta">Casa, 40 min, fuerza, nivel intermedio. Sin equipo extra ni desplazamientos.</p>
+          <div class="exercise-list" id="exerciseList"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer-note">
+      Prototipo visual. Las cifras de impacto son estimaciones de ejemplo.
+    </footer>
+  </div>
+
+  <script>
+    // --- STATE ---
+    let currentGoal = 'bajar'; // 'bajar' | 'mantener' | 'subir'
+
+    const pantryItems = [
+      { id: 'arroz', name: 'Arroz', active: true, qty: 250, step: 50, unit: 'g', defaultQty: 250 },
+      { id: 'garbanzos', name: 'Garbanzos', active: false, qty: 0, step: 50, unit: 'g', defaultQty: 150 },
+      { id: 'espinacas', name: 'Espinacas', active: true, qty: 150, step: 50, unit: 'g', defaultQty: 150 },
+      { id: 'huevos', name: 'Huevos', active: true, qty: 4, step: 1, unit: 'ud', defaultQty: 4 },
+      { id: 'tomate', name: 'Tomate', active: true, qty: 3, step: 1, unit: 'ud', defaultQty: 3 },
+      { id: 'calabacin', name: 'Calabacín', active: true, qty: 1, step: 1, unit: 'ud', defaultQty: 1 },
+      { id: 'pollo', name: 'Pollo', active: false, qty: 0, step: 50, unit: 'g', defaultQty: 200 },
+      { id: 'avena', name: 'Avena', active: false, qty: 0, step: 50, unit: 'g', defaultQty: 100 },
+      { id: 'platano', name: 'Plátano', active: false, qty: 0, step: 1, unit: 'ud', defaultQty: 2 },
+      { id: 'panduro', name: 'Pan duro', active: true, qty: 3, step: 1, unit: 'ud', defaultQty: 3 },
+      { id: 'yogur', name: 'Yogur', active: false, qty: 0, step: 1, unit: 'ud', defaultQty: 2 },
+      { id: 'zanahoria', name: 'Zanahoria', active: false, qty: 0, step: 1, unit: 'ud', defaultQty: 2 },
+      { id: 'lentejas', name: 'Lentejas', active: false, qty: 0, step: 50, unit: 'g', defaultQty: 150 },
+      { id: 'atun', name: 'Atún', active: false, qty: 0, step: 1, unit: 'ud', defaultQty: 1 },
+      { id: 'patata', name: 'Patata', active: false, qty: 0, step: 1, unit: 'ud', defaultQty: 2 }
+    ];
+
+    const recipesData = [
+      {
+        id: 'tortilla',
+        title: 'Tortilla de calabacín y espinacas',
+        requirements: [
+          { id: 'huevos', name: 'Huevos', amount: 3, unit: 'ud', leftoverName: 'huevos' },
+          { id: 'calabacin', name: 'Calabacín', amount: 1, unit: 'ud', leftoverName: 'calabacín' },
+          { id: 'espinacas', name: 'Espinacas', amount: 100, unit: 'g', leftoverName: 'espinacas' },
+          { id: 'patata', name: 'Patata', amount: 1, unit: 'ud', leftoverName: 'patata' }
+        ],
+        baseMacros: { kcal: 357, prot: 28, carb: 24, fat: 16 },
+        tip: 'Usa también los tallos de las espinacas: aportan fibra y textura.',
+        rating: '4,7',
+        reviewsCount: 128,
+        starsVisual: '★★★★★',
+        reviews: [
+          { author: 'Marta R.', stars: '★★★★★', text: 'Me sacó de un apuro con lo que quedaba en la nevera. Saciante y rápida.' },
+          { author: 'Dani P.', stars: '★★★★☆', text: 'Le añadí cebolla y quedó mejor. Perfecta para llevar al trabajo.' }
+        ]
+      },
+      {
+        id: 'garbanzos',
+        title: 'Garbanzos con espinacas y tostas',
+        requirements: [
+          { id: 'garbanzos', name: 'Garbanzos', amount: 150, unit: 'g', leftoverName: 'garbanzos' },
+          { id: 'espinacas', name: 'Espinacas', amount: 100, unit: 'g', leftoverName: 'espinacas' },
+          { id: 'tomate', name: 'Tomate', amount: 2, unit: 'ud', leftoverName: 'tomate' },
+          { id: 'panduro', name: 'Pan duro', amount: 2, unit: 'ud', leftoverName: 'pan duro' }
+        ],
+        baseMacros: { kcal: 408, prot: 22, carb: 46, fat: 12 },
+        tip: 'Tuesta el pan duro con aceite y evita tirarlo.',
+        rating: '4,6',
+        reviewsCount: 94,
+        starsVisual: '★★★★★',
+        reviews: [
+          { author: 'Lucía F.', stars: '★★★★★', text: 'Las tostas de pan duro son un acierto, no tiro nada.' },
+          { author: 'Andrés M.', stars: '★★★★☆', text: 'Muy completa. Yo le puse comino y pimentón.' }
+        ]
+      },
+      {
+        id: 'tostas',
+        title: 'Tostas de atún y huevo',
+        requirements: [
+          { id: 'panduro', name: 'Pan duro', amount: 3, unit: 'ud', leftoverName: 'pan duro' },
+          { id: 'atun', name: 'Atún', amount: 1, unit: 'ud', leftoverName: 'atún' },
+          { id: 'tomate', name: 'Tomate', amount: 1, unit: 'ud', leftoverName: 'tomate' },
+          { id: 'huevos', name: 'Huevos', amount: 2, unit: 'ud', leftoverName: 'huevos' }
+        ],
+        baseMacros: { kcal: 349, prot: 32, carb: 30, fat: 11 },
+        tip: 'Aprovecha el tomate blando: es perfecto rallado sobre el pan.',
+        rating: '4,4',
+        reviewsCount: 65,
+        starsVisual: '★★★★☆',
+        reviews: [
+          { author: 'Elena C.', stars: '★★★★☆', text: 'Cena rápida y con buena proteína.' },
+          { author: 'Hugo B.', stars: '★★★★★', text: 'El tomate rallado lo cambia todo.' }
+        ]
+      },
+      {
+        id: 'bowl',
+        title: 'Bowl salteado de pollo y arroz',
+        requirements: [
+          { id: 'pollo', name: 'Pollo', amount: 200, unit: 'g', leftoverName: 'pollo' },
+          { id: 'arroz', name: 'Arroz', amount: 150, unit: 'g', leftoverName: 'arroz' },
+          { id: 'zanahoria', name: 'Zanahoria', amount: 1, unit: 'ud', leftoverName: 'zanahoria' },
+          { id: 'calabacin', name: 'Calabacín', amount: 1, unit: 'ud', leftoverName: 'calabacín' }
+        ],
+        baseMacros: { kcal: 476, prot: 42, carb: 50, fat: 10 },
+        tip: 'Reutiliza arroz de ayer: queda más suelto y rinde mejor.',
+        rating: '4,8',
+        reviewsCount: 211,
+        starsVisual: '★★★★★',
+        reviews: [
+          { author: 'Sofía G.', stars: '★★★★★', text: 'Ideal para subir masa sin complicarme. Repito cada semana.' },
+          { author: 'Iván T.', stars: '★★★★☆', text: 'Mucha proteína. Con arroz del día anterior sale genial.' }
+        ]
+      }
+    ];
+
+    const workoutFilterState = {
+      place: 'Casa',
+      time: '40 min',
+      style: 'fuerza',
+      level: 'intermedio',
+      dayIndex: 0
+    };
+
+    const workoutDays = [
+      {
+        day: 'Lunes',
+        focus: 'Pierna y glúteo',
+        exercises: [
+          { name: 'Calentamiento', note: 'Movilidad articular y pulso suave', dose: '5 min' },
+          { name: 'Sentadilla con mochila', note: 'Descanso 45 s', dose: '4 × 12' },
+          { name: 'Flexiones', note: 'Descanso 45 s', dose: '4 × 10' },
+          { name: 'Zancadas', note: 'Descanso 45 s', dose: '4 × 12' },
+          { name: 'Remo con botella de agua', note: 'Descanso 45 s', dose: '4 × 10' },
+          { name: 'Puente de glúteo', note: 'Descanso 45 s', dose: '4 × 12' },
+          { name: 'Vuelta a la calma', note: 'Estiramientos y respiración', dose: '3 min' }
+        ]
+      },
+      {
+        day: 'Martes',
+        focus: 'Tren superior',
+        exercises: [
+          { name: 'Calentamiento', note: 'Rotación de hombros y activación escapular', dose: '5 min' },
+          { name: 'Flexiones inclinadas', note: 'Descanso 45 s', dose: '4 × 12' },
+          { name: 'Remo unilateral con mochila', note: 'Descanso 45 s', dose: '4 × 12' },
+          { name: 'Fondos en silla', note: 'Descanso 45 s', dose: '3 × 12' },
+          { name: 'Press militar con botellas', note: 'Descanso 45 s', dose: '3 × 15' },
+          { name: 'Vuelta a la calma', note: 'Estiramientos de pecho y espalda', dose: '4 min' }
+        ]
+      },
+      {
+        day: 'Jueves',
+        focus: 'Core y equilibrio',
+        exercises: [
+          { name: 'Calentamiento', note: 'Respiración diafragmática y gato-camello', dose: '5 min' },
+          { name: 'Plancha frontal', note: 'Descanso 30 s', dose: '4 × 40 s' },
+          { name: 'Bird-Dog controlado', note: 'Descanso 30 s', dose: '3 × 12' },
+          { name: 'Dead Bug', note: 'Descanso 30 s', dose: '3 × 14' },
+          { name: 'Peso muerto a una pierna', note: 'Equilibrio y control · Descanso 45 s', dose: '3 × 10' },
+          { name: 'Vuelta a la calma', note: 'Movilidad lumbar y cadera', dose: '4 min' }
+        ]
+      },
+      {
+        day: 'Viernes',
+        focus: 'Cuerpo completo',
+        exercises: [
+          { name: 'Calentamiento', note: 'Movilidad global dinámica', dose: '5 min' },
+          { name: 'Sentadilla + press con mochila', note: 'Descanso 60 s', dose: '4 × 10' },
+          { name: 'Flexiones', note: 'Descanso 45 s', dose: '3 × 12' },
+          { name: 'Zancadas alternas', note: 'Descanso 45 s', dose: '3 × 12' },
+          { name: 'Plancha con toque de hombros', note: 'Descanso 40 s', dose: '3 × 16' },
+          { name: 'Vuelta a la calma', note: 'Estiramientos globales', dose: '4 min' }
+        ]
+      },
+      {
+        day: 'Sábado',
+        focus: 'Ritmo suave',
+        exercises: [
+          { name: 'Movilidad de despertar', note: 'Círculos articulares suaves', dose: '5 min' },
+          { name: 'Caminata ligera o trote suave', note: 'Ritmo conversacional constante', dose: '25 min' },
+          { name: 'Sentadilla profunda isométrica', note: 'Apertura de cadera', dose: '3 × 40 s' },
+          { name: 'Estiramiento de cadena posterior', note: 'Respiración profunda y lenta', dose: '6 min' }
+        ]
+      }
+    ];
+
+    // --- FUNCTIONS ---
+    function switchMode(mode) {
+      const viewDieta = document.getElementById('viewDieta');
+      const viewEntreno = document.getElementById('viewEntreno');
+      const tabDieta = document.getElementById('tabDieta');
+      const tabEntreno = document.getElementById('tabEntreno');
+
+      if (mode === 'dieta') {
+        viewDieta.classList.remove('hidden');
+        viewEntreno.classList.add('hidden');
+        tabDieta.classList.add('active');
+        tabEntreno.classList.remove('active');
+      } else {
+        viewDieta.classList.add('hidden');
+        viewEntreno.classList.remove('hidden');
+        tabDieta.classList.remove('active');
+        tabEntreno.classList.add('active');
+        renderWorkoutView();
+      }
+    }
+
+    function renderPantry() {
+      const container = document.getElementById('pantryContainer');
+      container.innerHTML = '';
+
+      pantryItems.forEach(item => {
+        const row = document.createElement('div');
+        row.className = 'pantry-row';
+
+        const btn = document.createElement('button');
+        btn.className = 'pantry-toggle' + (item.active ? ' active' : '');
+        btn.textContent = item.name;
+        btn.onclick = () => togglePantryItem(item.id);
+        row.appendChild(btn);
+
+        if (item.active) {
+          const controls = document.createElement('div');
+          controls.className = 'qty-controls';
+
+          const minusBtn = document.createElement('button');
+          minusBtn.className = 'qty-btn';
+          minusBtn.textContent = '−';
+          minusBtn.onclick = () => adjustQty(item.id, -item.step);
+
+          const valSpan = document.createElement('span');
+          valSpan.className = 'qty-val';
+          valSpan.textContent = `${item.qty} ${item.unit}`;
+
+          const plusBtn = document.createElement('button');
+          plusBtn.className = 'qty-btn';
+          plusBtn.textContent = '+';
+          plusBtn.onclick = () => adjustQty(item.id, item.step);
+
+          controls.appendChild(minusBtn);
+          controls.appendChild(valSpan);
+          controls.appendChild(plusBtn);
+          row.appendChild(controls);
+        }
+
+        container.appendChild(row);
+      });
+    }
+
+    function togglePantryItem(id) {
+      const item = pantryItems.find(i => i.id === id);
+      if (!item) return;
+      item.active = !item.active;
+      if (item.active && item.qty <= 0) {
+        item.qty = item.defaultQty;
+      }
+      updateDietaAll();
+    }
+
+    function adjustQty(id, delta) {
+      const item = pantryItems.find(i => i.id === id);
+      if (!item) return;
+      item.qty = Math.max(0, item.qty + delta);
+      if (item.qty === 0) {
+        item.active = false;
+      }
+      updateDietaAll();
+    }
+
+    function getGoalAdjustmentText() {
+      if (currentGoal === 'bajar') return 'Porción ajustada (−15 %) con más verdura';
+      if (currentGoal === 'mantener') return 'Porción equilibrada para mantenimiento';
+      return 'Porción aumentada (+15 %) rica en energía y proteína';
+    }
+
+    function getGoalMacroMultiplier() {
+      if (currentGoal === 'bajar') return 1;
+      if (currentGoal === 'mantener') return 1.15;
+      return 1.3;
+    }
+
+    function renderRecipes() {
+      const container = document.getElementById('recipesContainer');
+      container.innerHTML = '';
+      const mult = getGoalMacroMultiplier();
+
+      recipesData.forEach(recipe => {
+        let coveredCount = 0;
+        const leftovers = [];
+
+        const tagsHtml = recipe.requirements.map(req => {
+          const pantryItem = pantryItems.find(p => p.id === req.id);
+          const availableQty = (pantryItem && pantryItem.active) ? pantryItem.qty : 0;
+
+          if (availableQty >= req.amount) {
+            coveredCount++;
+            const rem = availableQty - req.amount;
+            if (rem > 0) {
+              leftovers.push(`${rem} ${req.unit} de ${req.leftoverName}`);
+            }
+            return `<span class="ing-tag ok">${req.name} · ${req.amount} ${req.unit}</span>`;
+          } else {
+            const missing = req.amount - availableQty;
+            return `<span class="ing-tag missing">${req.name} · falta ${missing} ${req.unit}</span>`;
+          }
+        }).join('');
+
+        const pct = Math.round((coveredCount / recipe.requirements.length) * 100);
+        const kcal = Math.round(recipe.baseMacros.kcal * mult);
+        const prot = Math.round(recipe.baseMacros.prot * mult);
+        const carb = Math.round(recipe.baseMacros.carb * mult);
+        const fat = Math.round(recipe.baseMacros.fat * mult);
+
+        const leftoverText = leftovers.length > 0
+          ? `Te sobrará: ${leftovers.join(', ')}.`
+          : `Aprovechas la cantidad exacta disponible de tu despensa.`;
+
+        const reviewsHtml = recipe.reviews.map(r => `
+          <div class="review-item">
+            <div class="review-head">
+              <span>${r.author}</span>
+              <span class="stars-inline">${r.stars}</span>
+            </div>
+            <p class="review-body">${r.text}</p>
+          </div>
+        `).join('');
+
+        const card = document.createElement('article');
+        card.className = 'recipe-card';
+        card.innerHTML = `
+          <div class="recipe-top">
+            <div>
+              <h4 class="recipe-title">${recipe.title}</h4>
+              <p class="recipe-sub">${getGoalAdjustmentText()}</p>
+            </div>
+            <div class="coverage-box">
+              <div class="coverage-pct">${pct} %</div>
+              <div class="coverage-lbl">cubierto con tu despensa</div>
+            </div>
+          </div>
+
+          <div class="progress-track">
+            <div class="progress-fill" style="width: ${pct}%"></div>
+          </div>
+
+          <div class="ing-tags">${tagsHtml}</div>
+
+          <div class="macros-row">
+            <span><strong>${kcal}</strong> kcal</span>
+            <span><strong>${prot} g</strong> proteína</span>
+            <span><strong>${carb} g</strong> carbohidrato</span>
+            <span><strong>${fat} g</strong> grasa</span>
+          </div>
+
+          <p class="leftover-line">${leftoverText}</p>
+          <div class="tip-line">${recipe.tip}</div>
+
+          <div class="reviews-block">
+            <div class="rating-summary">
+              <span class="stars-inline">${recipe.starsVisual}</span>
+              <span>${recipe.rating} · ${recipe.reviewsCount} reseñas</span>
+            </div>
+            <div id="reviewsList-${recipe.id}">
+              ${reviewsHtml}
+            </div>
+            <button class="btn-write-review" onclick="toggleReviewForm('${recipe.id}')">Escribir reseña</button>
+            <form class="review-form" id="reviewForm-${recipe.id}" onsubmit="submitReview(event, '${recipe.id}')">
+              <input type="text" placeholder="Tu nombre (ej. Carlos M.)" required id="author-${recipe.id}" />
+              <select id="stars-${recipe.id}">
+                <option value="★★★★★">★★★★★ (5/5)</option>
+                <option value="★★★★☆">★★★★☆ (4/5)</option>
+                <option value="★★★☆☆">★★★☆☆ (3/5)</option>
+              </select>
+              <textarea rows="2" placeholder="¿Qué tal te quedó la receta?" required id="comment-${recipe.id}"></textarea>
+              <div class="review-form-actions">
+                <button type="submit" class="btn-submit-review">Publicar</button>
+              </div>
+            </form>
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    function toggleReviewForm(recipeId) {
+      const form = document.getElementById(`reviewForm-${recipeId}`);
+      if (form) form.classList.toggle('open');
+    }
+
+    function submitReview(e, recipeId) {
+      e.preventDefault();
+      const recipe = recipesData.find(r => r.id === recipeId);
+      if (!recipe) return;
+
+      const author = document.getElementById(`author-${recipeId}`).value.trim();
+      const stars = document.getElementById(`stars-${recipeId}`).value;
+      const text = document.getElementById(`comment-${recipeId}`).value.trim();
+
+      if (!author || !text) return;
+
+      recipe.reviews.unshift({ author, stars, text });
+      recipe.reviewsCount += 1;
+      renderRecipes();
+    }
+
+    function updateImpactBanner() {
+      const activeCount = pantryItems.filter(i => i.active && i.qty > 0).length;
+      const co2 = (activeCount * 0.4).toFixed(1);
+      document.getElementById('statIngredients').textContent = activeCount;
+      document.getElementById('statCo2').textContent = `${co2} kg`;
+      document.getElementById('statRecipes').textContent = recipesData.length;
+    }
+
+    function updateDietaAll() {
+      renderPantry();
+      updateImpactBanner();
+      renderRecipes();
+    }
+
+    // --- WORKOUT RENDERING ---
+    function renderWorkoutView() {
+      const notice = document.getElementById('workoutNotice');
+      if (currentGoal === 'bajar') {
+        notice.innerHTML = 'Plan alineado con tu dieta: objetivo <strong>bajar de peso</strong>. Más cardio y fuerza ligera para mantener músculo.';
+      } else if (currentGoal === 'mantener') {
+        notice.innerHTML = 'Plan alineado con tu dieta: objetivo <strong>mantener peso</strong>. Equilibrio entre fuerza funcional y capacidad aeróbica.';
+      } else {
+        notice.innerHTML = 'Plan alineado con tu dieta: objetivo <strong>subir de peso</strong>. Énfasis en hipertrofia y sobrecarga progresiva.';
+      }
+
+      // Render day buttons
+      const daysContainer = document.getElementById('daysContainer');
+      daysContainer.innerHTML = '';
+      workoutDays.forEach((d, idx) => {
+        const btn = document.createElement('div');
+        btn.className = 'day-tab' + (idx === workoutFilterState.dayIndex ? ' active' : '');
+        btn.innerHTML = `
+          <div class="day-tab-name">${d.day}</div>
+          <div class="day-tab-focus">${d.focus}</div>
+        `;
+        btn.onclick = () => {
+          workoutFilterState.dayIndex = idx;
+          renderWorkoutView();
+        };
+        daysContainer.appendChild(btn);
+      });
+
+      const currentDayObj = workoutDays[workoutFilterState.dayIndex];
+      document.getElementById('workoutTitle').textContent = `${currentDayObj.day} · ${currentDayObj.focus}`;
+
+      const equipNote = workoutFilterState.place === 'Casa'
+        ? 'Sin equipo extra ni desplazamientos.'
+        : workoutFilterState.place === 'Parque'
+        ? 'Aprovechando barras, bancos y espacio al aire libre.'
+        : 'Con equipamiento completo de sala.';
+
+      document.getElementById('workoutMeta').textContent =
+        `${workoutFilterState.place}, ${workoutFilterState.time}, ${workoutFilterState.style}, nivel ${workoutFilterState.level}. ${equipNote}`;
+
+      const listEl = document.getElementById('exerciseList');
+      listEl.innerHTML = '';
+      currentDayObj.exercises.forEach(ex => {
+        const row = document.createElement('div');
+        row.className = 'exercise-row';
+        row.innerHTML = `
+          <div>
+            <div class="exercise-name">${ex.name}</div>
+            <div class="exercise-note">${ex.note}</div>
+          </div>
+          <div class="exercise-dose">${ex.dose}</div>
+        `;
+        listEl.appendChild(row);
+      });
+    }
+
+    // --- EVENT LISTENERS ---
+    document.querySelectorAll('#goalButtons .goal-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#goalButtons .goal-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentGoal = btn.dataset.goal;
+        renderRecipes();
+      });
+    });
+
+    document.querySelectorAll('.pill-group').forEach(group => {
+      const filterKey = group.dataset.filter;
+      group.querySelectorAll('.filter-pill').forEach(pill => {
+        pill.addEventListener('click', () => {
+          group.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+          pill.classList.add('active');
+          workoutFilterState[filterKey] = pill.dataset.val;
+          renderWorkoutView();
+        });
+      });
+    });
+
+    document.getElementById('themeBtn').addEventListener('click', function () {
+      document.body.classList.toggle('dark-mode');
+      const isDark = document.body.classList.contains('dark-mode');
+      this.textContent = isDark ? 'Modo claro' : 'Modo oscuro';
+    });
+
+    // Initial render
+    updateDietaAll();
+    renderWorkoutView();
+  </script>
+</body>
+</html>
