@@ -2626,40 +2626,51 @@
       }
     }
 
+    async function postReviewToCloud(recipeId, author, rating, text, isRetry = false) {
+      const url = `${CLOUD_CONFIG.SUPABASE_URL.replace(/\/$/, '')}/rest/v1/raiz_reviews`;
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          apikey: CLOUD_CONFIG.SUPABASE_ANON_KEY,
+          // Token del usuario: la base de datos solo acepta reseñas con sesión iniciada.
+          Authorization: `Bearer ${authSession.access_token}`,
+          Prefer: 'return=minimal'
+        },
+        body: JSON.stringify({
+          recipe_id: recipeId,
+          author: author,
+          rating: Number(rating),
+          comment: text
+        })
+      });
+      if (res.status === 401 && !isRetry && await refreshAuthTokenIfNeeded() && authSession) {
+        return postReviewToCloud(recipeId, author, rating, text, true);
+      }
+      return res.ok;
+    }
+
     async function pushReview(recipeId, author, rating, text) {
       const today = new Date().toISOString().slice(0, 10);
       const newRev = { author, rating: Number(rating), text, created_at: today };
 
-      if (!reviewsStore[recipeId]) reviewsStore[recipeId] = [];
-      reviewsStore[recipeId].unshift(newRev);
-
       if (isCloudEnabled()) {
+        if (!authSession?.access_token) {
+          return { ok: false, message: 'Inicia sesión para publicar reseñas.' };
+        }
         try {
-          const url = `${CLOUD_CONFIG.SUPABASE_URL.replace(/\/$/, '')}/rest/v1/raiz_reviews`;
-          const res = await fetch(url, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              apikey: CLOUD_CONFIG.SUPABASE_ANON_KEY,
-              Authorization: `Bearer ${CLOUD_CONFIG.SUPABASE_ANON_KEY}`,
-              Prefer: 'return=minimal'
-            },
-            body: JSON.stringify({
-              recipe_id: recipeId,
-              author: author,
-              rating: Number(rating),
-              comment: text
-            })
-          });
-          if (!res.ok) throw new Error('Error guardando en Supabase');
-          return 'Guardada en la nube para todos los usuarios.';
+          if (!await postReviewToCloud(recipeId, author, rating, text)) throw new Error('Error guardando en Supabase');
+          if (!reviewsStore[recipeId]) reviewsStore[recipeId] = [];
+          reviewsStore[recipeId].unshift(newRev);
+          return { ok: true, message: 'Guardada en la nube para todos los usuarios.' };
         } catch (e) {
-          saveLocalReview(recipeId, newRev);
-          return 'Sin conexión a la nube: guardada en este dispositivo.';
+          return { ok: false, message: 'No se pudo publicar la reseña. Inténtalo de nuevo en unos minutos.' };
         }
       } else {
+        if (!reviewsStore[recipeId]) reviewsStore[recipeId] = [];
+        reviewsStore[recipeId].unshift(newRev);
         saveLocalReview(recipeId, newRev);
-        return 'Guardada localmente (conecta Supabase en el código para compartirla en la nube).';
+        return { ok: true, message: 'Guardada localmente (conecta Supabase en el código para compartirla en la nube).' };
       }
     }
 
@@ -3356,6 +3367,11 @@
     }
 
     function toggleReviewForm(recipeId) {
+      if (isCloudEnabled() && !authSession) {
+        showToast('Inicia sesión para escribir una reseña.');
+        openAuthModal();
+        return;
+      }
       const form = document.getElementById(`reviewForm-${recipeId}`);
       if (form) form.classList.toggle('open');
     }
@@ -3373,14 +3389,21 @@
       if (!author || !comment) return;
 
       if (msgEl) msgEl.textContent = 'Publicando...';
-      const statusText = await pushReview(recipeId, author, rating, comment);
+      const result = await pushReview(recipeId, author, rating, comment);
+      if (!result.ok) {
+        // Se mantiene el formulario abierto con el texto escrito.
+        if (msgEl) msgEl.textContent = result.message;
+        showToast(result.message);
+        if (!authSession) openAuthModal();
+        return;
+      }
 
       if (recipeId === 'custom_chef') {
         renderCustomChefCard();
       } else {
         renderCommunityRecipes();
       }
-      showToast(statusText);
+      showToast(result.message);
     }
 
     function updateImpactBanner() {
@@ -3693,14 +3716,17 @@
       const listEl = document.getElementById('exerciseList');
       listEl.innerHTML = '';
 
-      exercises.forEach((ex, idx) => {
-        const key = `${workoutState.dayIndex}-${idx}`;
+      // La marca se guarda por día + nombre del ejercicio (no por posición),
+      // así sigue en el ejercicio correcto aunque cambien los filtros.
+      const exerciseKey = ex => `${currentDay.day}|${ex.name}`;
+      exercises.forEach(ex => {
+        const key = exerciseKey(ex);
         const isDone = workoutState.completed.has(key);
         const row = document.createElement('div');
         row.className = 'exercise-row' + (isDone ? ' done' : '');
         row.innerHTML = `
           <div class="exercise-left">
-            <input type="checkbox" class="ex-check" aria-label="Completar ${escapeHtml(ex.name)}" ${isDone ? 'checked' : ''} onchange="toggleExerciseDone('${key}')" />
+            <input type="checkbox" class="ex-check" aria-label="Completar ${escapeHtml(ex.name)}" ${isDone ? 'checked' : ''} />
             <div>
               <div class="exercise-name">
                 ${escapeHtml(ex.name)}
@@ -3711,9 +3737,10 @@
           </div>
           <div class="exercise-dose">${escapeHtml(ex.dose)}</div>
         `;
+        row.querySelector('.ex-check').addEventListener('change', () => toggleExerciseDone(key));
         listEl.appendChild(row);
       });
-      const doneCount = exercises.filter((_, idx) => workoutState.completed.has(`${workoutState.dayIndex}-${idx}`)).length;
+      const doneCount = exercises.filter(ex => workoutState.completed.has(exerciseKey(ex))).length;
       document.getElementById('sessionProgressText').textContent = `${doneCount} de ${exercises.length} ejercicios completados`;
       document.getElementById('sessionProgressFill').style.width = `${exercises.length ? doneCount / exercises.length * 100 : 0}%`;
     }
@@ -4106,7 +4133,8 @@
         if (ws.level) workoutState.level = ws.level;
         if (Array.isArray(ws.injuries)) workoutState.injuries = new Set(ws.injuries);
         if (typeof ws.dayIndex === 'number') workoutState.dayIndex = ws.dayIndex;
-        if (Array.isArray(ws.completed)) workoutState.completed = new Set(ws.completed);
+        // Las claves antiguas por posición ("0-3") ya no son válidas: se descartan.
+        if (Array.isArray(ws.completed)) workoutState.completed = new Set(ws.completed.filter(k => typeof k === 'string' && k.includes('|')));
       }
       syncAllFilterButtonsUI();
     }
@@ -4351,8 +4379,37 @@
           });
         } catch (e) {}
       }
-      updateDietaAll();
+      resetLocalUserState();
       showToast('Sesión cerrada.');
+    }
+
+    // Al cerrar sesión se borran de este navegador la despensa y las preferencias
+    // del usuario, para que no pasen a la siguiente persona que use el dispositivo.
+    function resetLocalUserState() {
+      try {
+        localStorage.removeItem('raiz_pantry_v2');
+        localStorage.removeItem(PREFS_STORAGE_KEY);
+      } catch (e) {}
+      currentGoal = 'bajar';
+      chefStyle = 'auto';
+      chefSeed = 0;
+      Object.assign(workoutState, {
+        place: 'Casa',
+        daysPerWeek: 4,
+        time: '40 min',
+        equipment: new Set(['bodyweight', 'dumbbells']),
+        style: 'fuerza',
+        focus: 'equilibrado',
+        level: 'intermedio',
+        injuries: new Set(),
+        dayIndex: 0,
+        completed: new Set()
+      });
+      lastCloudSaveLabel = 'Sin guardar aún';
+      loadPantry();
+      syncAllFilterButtonsUI();
+      updateDietaAll();
+      renderWorkoutView();
     }
 
     async function restoreSessionOnLoad() {
@@ -4369,7 +4426,10 @@
           if (ok) {
             await loadUserStateFromCloud();
           } else if (ok === false) {
+            // Sesión caducada: se trata igual que un cierre de sesión.
             persistSession(null);
+            resetLocalUserState();
+            updateAccountUI();
           } else {
             setSyncStatusText('Sin conexión con la cuenta');
           }
