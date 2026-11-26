@@ -1921,6 +1921,45 @@
       .exercise-left > div { flex:1; }
       .footer-note { font-size:11px; }
     }
+    /* ===== Animaciones del entrenamiento ===== */
+    .exercise-right { display:flex; flex-direction:column; align-items:flex-end; gap:8px; flex-shrink:0; }
+    .ex-timer-btn {
+      display:inline-flex; align-items:center; gap:8px; min-height:36px; padding:4px 12px 4px 6px;
+      font:inherit; font-size:12px; font-weight:600; color:var(--green-brand);
+      background:transparent; border:1px solid var(--border-soft); border-radius:999px; cursor:pointer;
+      transition:background .2s, border-color .2s, color .2s;
+    }
+    .ex-timer-btn:hover { border-color:var(--green-brand); }
+    .ex-timer-btn:focus-visible { outline:2px solid var(--green-brand); outline-offset:3px; }
+    .ex-timer-ring { width:26px; height:26px; transform:rotate(-90deg); flex-shrink:0; }
+    .ex-timer-track { fill:none; stroke:var(--track-bg); stroke-width:3.5; }
+    .ex-timer-progress { fill:none; stroke:var(--green-brand); stroke-width:3.5; stroke-linecap:round; transition:stroke-dashoffset .25s linear; }
+    .ex-timer-text { font-variant-numeric:tabular-nums; min-width:5.5ch; text-align:left; }
+    .ex-timer-btn.running { background:var(--bg-card-alt); border-color:var(--green-brand); }
+    .ex-timer-btn.running .ex-timer-ring { animation:timer-breathe 2s ease-in-out infinite; }
+    .ex-timer-btn.finished { background:var(--green-brand); border-color:var(--green-brand); color:var(--bg-card); }
+    .ex-timer-btn.finished .ex-timer-progress { stroke:var(--bg-card); }
+    .ex-timer-btn.finished .ex-timer-track { stroke:transparent; }
+    .ex-timer-btn.finished .ex-timer-ring { animation:timer-pop .5s ease-out; }
+    .exercise-row.timing { box-shadow:inset 3px 0 0 var(--green-brand); }
+    .exercise-row.just-done { animation:row-done .7s ease-out; }
+    .exercise-row.just-done .ex-check { animation:check-pop .45s cubic-bezier(.3,1.6,.5,1); }
+    .session-progress-track > span { transition:width .6s cubic-bezier(.2,.8,.2,1); }
+    .session-done-banner {
+      margin:18px 0 0; padding:14px 16px; border-left:3px solid var(--green-brand);
+      background:var(--bg-card-alt); color:var(--text-main); font-size:14px; line-height:1.6;
+    }
+    .session-done-banner.celebrate { animation:banner-in .6s cubic-bezier(.2,.8,.2,1); }
+    @keyframes row-done { 0% { background:var(--green-tag-bg); } 100% { background:var(--bg-card-alt); } }
+    @keyframes check-pop { 0% { transform:scale(1); } 45% { transform:scale(1.3); } 100% { transform:scale(1); } }
+    @keyframes timer-breathe { 0%,100% { transform:rotate(-90deg) scale(1); } 50% { transform:rotate(-90deg) scale(1.08); } }
+    @keyframes timer-pop { 0% { transform:rotate(-90deg) scale(.7); } 60% { transform:rotate(-90deg) scale(1.2); } 100% { transform:rotate(-90deg) scale(1); } }
+    @keyframes banner-in { 0% { opacity:0; transform:translateY(8px); } 100% { opacity:1; transform:none; } }
+    @media (max-width:650px) {
+      .exercise-right { flex-direction:row; align-items:center; justify-content:space-between; padding-left:40px; flex-wrap:wrap; }
+      .exercise-right .exercise-dose { padding-left:0; }
+    }
+
     @media (prefers-reduced-motion:reduce) {
       html { scroll-behavior:auto; }
       *,*::before,*::after { animation:none!important; transition:none!important; }
@@ -2229,6 +2268,7 @@
             <p class="workout-meta" id="workoutMeta"></p>
             <div class="session-progress" aria-live="polite"><span id="sessionProgressText"></span><div class="session-progress-track"><span id="sessionProgressFill"></span></div></div>
             <div class="exercise-list" id="exerciseList"></div>
+            <p class="session-done-banner hidden" id="sessionDoneBanner" role="status">Sesión completada. Buen trabajo: registra cómo te has sentido y descansa.</p>
           </div>
         </section>
       </main>
@@ -3719,11 +3759,13 @@
       // La marca se guarda por día + nombre del ejercicio (no por posición),
       // así sigue en el ejercicio correcto aunque cambien los filtros.
       const exerciseKey = ex => `${currentDay.day}|${ex.name}`;
+      let checkToFocus = null;
       exercises.forEach(ex => {
         const key = exerciseKey(ex);
         const isDone = workoutState.completed.has(key);
+        const timer = getExerciseTimer(ex);
         const row = document.createElement('div');
-        row.className = 'exercise-row' + (isDone ? ' done' : '');
+        row.className = 'exercise-row' + (isDone ? ' done' : '') + (key === lastToggledExercise && isDone ? ' just-done' : '');
         row.innerHTML = `
           <div class="exercise-left">
             <input type="checkbox" class="ex-check" aria-label="Completar ${escapeHtml(ex.name)}" ${isDone ? 'checked' : ''} />
@@ -3735,22 +3777,144 @@
               <div class="exercise-note">${escapeHtml(ex.note)}</div>
             </div>
           </div>
-          <div class="exercise-dose">${escapeHtml(ex.dose)}</div>
+          <div class="exercise-right">
+            <div class="exercise-dose">${escapeHtml(ex.dose)}</div>
+            ${timer ? `<button type="button" class="ex-timer-btn" aria-label="${escapeHtml(timer.label)} de ${escapeHtml(ex.name)}">${timerRingSvg()}<span class="ex-timer-text">${escapeHtml(timer.label)}</span></button>` : ''}
+          </div>
         `;
-        row.querySelector('.ex-check').addEventListener('change', () => toggleExerciseDone(key));
+        const check = row.querySelector('.ex-check');
+        check.addEventListener('change', () => toggleExerciseDone(key));
+        if (key === lastToggledExercise) checkToFocus = check;
+        if (timer) {
+          const btn = row.querySelector('.ex-timer-btn');
+          btn.dataset.timerKey = key;
+          btn.dataset.label = timer.label;
+          btn.addEventListener('click', () => toggleExerciseTimer(key, timer));
+        }
         listEl.appendChild(row);
       });
       const doneCount = exercises.filter(ex => workoutState.completed.has(exerciseKey(ex))).length;
       document.getElementById('sessionProgressText').textContent = `${doneCount} de ${exercises.length} ejercicios completados`;
       document.getElementById('sessionProgressFill').style.width = `${exercises.length ? doneCount / exercises.length * 100 : 0}%`;
+
+      const allDone = exercises.length > 0 && doneCount === exercises.length;
+      const doneBanner = document.getElementById('sessionDoneBanner');
+      doneBanner.classList.toggle('hidden', !allDone);
+      doneBanner.classList.toggle('celebrate', allDone && lastToggledExercise !== null);
+
+      // Mantener el foco en la casilla pulsada (la lista se vuelve a dibujar).
+      if (checkToFocus) checkToFocus.focus({ preventScroll: true });
+      lastToggledExercise = null;
+      updateExerciseTimerUI();
     }
+
+    let lastToggledExercise = null;
 
     function toggleExerciseDone(key) {
       if (workoutState.completed.has(key)) workoutState.completed.delete(key);
       else workoutState.completed.add(key);
+      lastToggledExercise = key;
       saveLocalPrefs();
       scheduleCloudSync();
       renderWorkoutView();
+    }
+
+    /* ==================== TEMPORIZADOR DE SERIES Y DESCANSOS ==================== */
+    // Un solo temporizador activo a la vez. Sobrevive a que la lista se vuelva a dibujar.
+    let activeTimer = null; // { key, total, endAt, label }
+    let timerInterval = null;
+    const TIMER_RING_LENGTH = 2 * Math.PI * 15;
+
+    function parseSeconds(text) {
+      const m = String(text || '').match(/(\d+)\s*(s|min)\b/);
+      if (!m) return null;
+      return m[2] === 'min' ? Number(m[1]) * 60 : Number(m[1]);
+    }
+
+    // Ejercicio por tiempo ("4 × 45 s", "8 min") → temporizador de trabajo;
+    // ejercicio por repeticiones con "Descanso 40 s" → temporizador de descanso.
+    function getExerciseTimer(ex) {
+      const work = parseSeconds(ex.dose);
+      if (work) return { seconds: work, label: `Iniciar ${formatTimer(work)}`, kind: 'work' };
+      const rest = /Descanso/.test(ex.note) ? parseSeconds(ex.note) : null;
+      if (rest) return { seconds: rest, label: `Descanso ${formatTimer(rest)}`, kind: 'rest' };
+      return null;
+    }
+
+    function formatTimer(totalSeconds) {
+      const s = Math.max(0, Math.ceil(totalSeconds));
+      if (s < 60) return `${s} s`;
+      return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+    }
+
+    function timerRingSvg() {
+      return `<svg class="ex-timer-ring" viewBox="0 0 36 36" aria-hidden="true" focusable="false">
+        <circle class="ex-timer-track" cx="18" cy="18" r="15" />
+        <circle class="ex-timer-progress" cx="18" cy="18" r="15" stroke-dasharray="${TIMER_RING_LENGTH.toFixed(2)}" stroke-dashoffset="0" />
+      </svg>`;
+    }
+
+    function toggleExerciseTimer(key, timer) {
+      if (activeTimer && activeTimer.key === key) {
+        stopExerciseTimer();
+        return;
+      }
+      activeTimer = { key, total: timer.seconds, endAt: Date.now() + timer.seconds * 1000, label: timer.label, kind: timer.kind };
+      clearInterval(timerInterval);
+      timerInterval = setInterval(updateExerciseTimerUI, 250);
+      updateExerciseTimerUI();
+    }
+
+    function stopExerciseTimer() {
+      activeTimer = null;
+      clearInterval(timerInterval);
+      timerInterval = null;
+      updateExerciseTimerUI();
+    }
+
+    function updateExerciseTimerUI() {
+      const remaining = activeTimer ? (activeTimer.endAt - Date.now()) / 1000 : 0;
+      document.querySelectorAll('.ex-timer-btn').forEach(btn => {
+        const isActive = Boolean(activeTimer) && btn.dataset.timerKey === activeTimer.key;
+        const row = btn.closest('.exercise-row');
+        const text = btn.querySelector('.ex-timer-text');
+        const progress = btn.querySelector('.ex-timer-progress');
+        btn.classList.toggle('running', isActive);
+        if (row) row.classList.toggle('timing', isActive);
+        btn.setAttribute('aria-pressed', String(isActive));
+        if (isActive) {
+          const fraction = Math.min(1, Math.max(0, remaining / activeTimer.total));
+          progress.setAttribute('stroke-dashoffset', (TIMER_RING_LENGTH * (1 - fraction)).toFixed(2));
+          text.textContent = remaining > 0 ? formatTimer(remaining) : '¡Listo!';
+        } else {
+          progress.setAttribute('stroke-dashoffset', '0');
+          if (!btn.classList.contains('finished')) text.textContent = btn.dataset.label;
+        }
+      });
+      if (activeTimer && remaining <= 0) finishExerciseTimer();
+    }
+
+    function finishExerciseTimer() {
+      const key = activeTimer.key;
+      const kind = activeTimer.kind;
+      activeTimer = null;
+      clearInterval(timerInterval);
+      timerInterval = null;
+      const btn = [...document.querySelectorAll('.ex-timer-btn')].find(b => b.dataset.timerKey === key);
+      if (btn) {
+        btn.classList.remove('running');
+        btn.classList.add('finished');
+        btn.querySelector('.ex-timer-text').textContent = '¡Listo!';
+        btn.closest('.exercise-row')?.classList.remove('timing');
+        setTimeout(() => {
+          btn.classList.remove('finished');
+          updateExerciseTimerUI();
+        }, 2400);
+      }
+      if (navigator.vibrate) {
+        try { navigator.vibrate(kind === 'rest' ? [120, 80, 120] : 200); } catch (e) {}
+      }
+      showToast(kind === 'rest' ? 'Descanso terminado: a por la siguiente serie.' : 'Tiempo cumplido. ¡Buen trabajo!');
     }
 
     /* ==================== NAVEGACIÓN Y EVENTOS ==================== */
