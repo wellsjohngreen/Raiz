@@ -1955,7 +1955,43 @@
     @keyframes timer-breathe { 0%,100% { transform:rotate(-90deg) scale(1); } 50% { transform:rotate(-90deg) scale(1.08); } }
     @keyframes timer-pop { 0% { transform:rotate(-90deg) scale(.7); } 60% { transform:rotate(-90deg) scale(1.2); } 100% { transform:rotate(-90deg) scale(1); } }
     @keyframes banner-in { 0% { opacity:0; transform:translateY(8px); } 100% { opacity:1; transform:none; } }
+    /* ===== Técnica animada ===== */
+    .ex-demo-toggle {
+      margin-top:8px; padding:4px 0; min-height:32px; font:inherit; font-size:12.5px; font-weight:600;
+      color:var(--green-brand); background:none; border:0; cursor:pointer;
+      text-decoration:underline; text-underline-offset:4px;
+    }
+    .ex-demo-toggle::before { content:'▸'; display:inline-block; margin-right:6px; text-decoration:none; }
+    .ex-demo-toggle[aria-expanded="true"]::before { content:'▾'; }
+    .ex-demo-toggle:focus-visible, .ex-demo-pause:focus-visible { outline:2px solid var(--green-brand); outline-offset:3px; }
+    .ex-demo {
+      display:grid; grid-template-columns:minmax(180px,260px) minmax(0,1fr); gap:24px; align-items:center;
+      padding:18px 0 22px 40px; border-bottom:1px solid var(--border-soft); animation:demo-in .35s ease-out;
+    }
+    .ex-demo.hidden { display:none; }
+    .ex-demo-figure { background:var(--bg-card-alt); border-radius:6px; padding:10px 12px 8px; }
+    .ex-demo-svg { display:block; width:100%; height:160px; }
+    .ex-demo-svg line { stroke-linecap:round; }
+    .fig-ground { stroke:var(--border-soft); stroke-width:2; }
+    .fig-far { stroke:var(--text-muted); stroke-width:6; opacity:.45; }
+    .fig-body { stroke:var(--green-brand); stroke-width:8; }
+    .fig-near { stroke:var(--green-brand); stroke-width:7; }
+    .fig-head { fill:var(--green-brand); }
+    .fig-load { fill:var(--burgundy); }
+    .fig-support { fill:var(--track-bg); }
+    .ex-demo-controls { display:flex; justify-content:space-between; align-items:center; gap:8px; margin-top:6px; font-size:12px; }
+    .ex-demo-phase { font-weight:600; color:var(--green-brand); min-height:1.2em; }
+    .ex-demo-pause {
+      font:inherit; font-size:12px; color:var(--text-muted); background:none; border:1px solid var(--border-soft);
+      border-radius:999px; padding:4px 10px; min-height:30px; cursor:pointer;
+    }
+    .ex-demo-cues { margin:0; padding-left:18px; font-size:13.5px; line-height:1.65; color:var(--text-main); }
+    .ex-demo-cues li + li { margin-top:4px; }
+    @keyframes demo-in { from { opacity:0; transform:translateY(-4px); } to { opacity:1; transform:none; } }
+
     @media (max-width:650px) {
+      .ex-demo { grid-template-columns:minmax(0,1fr); gap:14px; padding-left:0; }
+      .ex-demo-figure { max-width:320px; }
       .exercise-right { flex-direction:row; align-items:center; justify-content:space-between; padding-left:40px; flex-wrap:wrap; }
       .exercise-right .exercise-dose { padding-left:0; }
     }
@@ -3764,6 +3800,7 @@
         const key = exerciseKey(ex);
         const isDone = workoutState.completed.has(key);
         const timer = getExerciseTimer(ex);
+        const demo = findExerciseDemo(ex.name);
         const row = document.createElement('div');
         row.className = 'exercise-row' + (isDone ? ' done' : '') + (key === lastToggledExercise && isDone ? ' just-done' : '');
         row.innerHTML = `
@@ -3775,6 +3812,7 @@
                 ${ex.adapted ? '<span class="adapted-tag">Adaptado</span>' : ''}
               </div>
               <div class="exercise-note">${escapeHtml(ex.note)}</div>
+              ${demo ? `<button type="button" class="ex-demo-toggle" aria-expanded="${openDemos.has(key)}">${openDemos.has(key) ? 'Ocultar técnica' : 'Ver técnica'}</button>` : ''}
             </div>
           </div>
           <div class="exercise-right">
@@ -3792,7 +3830,16 @@
           btn.addEventListener('click', () => toggleExerciseTimer(key, timer));
         }
         listEl.appendChild(row);
+        if (demo) {
+          const panel = buildDemoPanel(ex, key, demo);
+          const toggle = row.querySelector('.ex-demo-toggle');
+          toggle.setAttribute('aria-controls', panel.id);
+          toggle.addEventListener('click', () => toggleExerciseDemo(key));
+          if (key === lastToggledDemo) checkToFocus = toggle;
+          listEl.appendChild(panel);
+        }
       });
+      lastToggledDemo = null;
       const doneCount = exercises.filter(ex => workoutState.completed.has(exerciseKey(ex))).length;
       document.getElementById('sessionProgressText').textContent = `${doneCount} de ${exercises.length} ejercicios completados`;
       document.getElementById('sessionProgressFill').style.width = `${exercises.length ? doneCount / exercises.length * 100 : 0}%`;
@@ -3806,7 +3853,10 @@
       if (checkToFocus) checkToFocus.focus({ preventScroll: true });
       lastToggledExercise = null;
       updateExerciseTimerUI();
+      refreshDemoLoop();
     }
+
+    let lastToggledDemo = null;
 
     let lastToggledExercise = null;
 
@@ -3916,6 +3966,321 @@
       }
       showToast(kind === 'rest' ? 'Descanso terminado: a por la siguiente serie.' : 'Tiempo cumplido. ¡Buen trabajo!');
     }
+
+    /* ==================== TÉCNICA ANIMADA (FIGURA SVG) ==================== */
+    // Figura de perfil dibujada con ángulos absolutos (grados): 0 = hacia abajo,
+    // 90 = hacia delante (derecha), 180 = hacia arriba, -90 = hacia atrás (izquierda).
+    // Cada ejercicio define dos posturas (A = inicio, B = fin del recorrido) y el
+    // punto que se queda fijo en el suelo; el resto se interpola en bucle.
+    const FIG = { torso: 46, neck: 5, head: 9, upperArm: 29, foreArm: 27, thigh: 42, shin: 41, foot: 11 };
+    const DEMO_GROUND = 132;
+
+    const EXERCISE_DEMOS = [
+      {
+        id: 'sentadilla', match: /^Sentadilla goblet/,
+        anchor: 'ankleN', anchorX: 112, load: 'chest',
+        a: { torso: 180, armN: 25, foreN: 165, thighN: 2, shinN: -2 },
+        b: { torso: 140, armN: 55, foreN: 170, thighN: 88, shinN: -30 },
+        phases: ['Baja', 'Sube'],
+        cues: ['Pies a la anchura de los hombros y peso en todo el pie.', 'Baja llevando la cadera atrás y abajo, pecho alto.', 'Rodillas en la dirección de las puntas de los pies.']
+      },
+      {
+        id: 'zancada', match: /^Zancadas/,
+        anchor: 'ankleN', anchorX: 138,
+        a: { torso: 180, armN: 8, foreN: 10, thighN: 20, shinN: 5, thighF: -20, shinF: -10, footF: 70 },
+        b: { torso: 178, armN: 5, foreN: 8, thighN: 88, shinN: 0, thighF: -12, shinF: -100, footF: 40 },
+        phases: ['Baja', 'Sube'],
+        cues: ['Paso largo y tronco recto.', 'Baja hasta que ambas rodillas formen 90°.', 'Empuja con el talón delantero para volver.']
+      },
+      {
+        id: 'peso-muerto', match: /^Peso muerto rumano/,
+        anchor: 'ankleN', anchorX: 100, load: 'hand',
+        a: { torso: 178, armN: 2, foreN: 2, thighN: 2, shinN: 0 },
+        b: { torso: 98, armN: 5, foreN: 3, thighN: 14, shinN: -6 },
+        phases: ['Bisagra', 'Sube'],
+        cues: ['Rodillas ligeramente flexionadas y fijas.', 'Lleva la cadera atrás con la espalda recta.', 'Peso pegado a las piernas; sube apretando glúteos.']
+      },
+      {
+        id: 'puente', match: /^Puente de glúteo/,
+        anchor: 'ankleN', anchorX: 160,
+        a: { torso: -80, armN: 95, foreN: 92, thighN: 128, shinN: 8 },
+        b: { torso: -58, armN: 98, foreN: 92, thighN: 100, shinN: 2 },
+        phases: ['Sube', 'Baja'],
+        cues: ['Pies apoyados cerca de los glúteos.', 'Eleva la cadera hasta alinear rodillas, cadera y hombros.', 'Aprieta glúteos arriba un segundo.']
+      },
+      {
+        id: 'flexion', match: /^Flexiones de brazos/,
+        anchor: 'toeN', anchorX: 34,
+        a: { torso: 112, armN: 0, foreN: 0, thighN: -68, shinN: -68, footN: 20 },
+        b: { torso: 100, armN: -65, foreN: 45, thighN: -80, shinN: -80, footN: 20 },
+        phases: ['Baja', 'Empuja'],
+        cues: ['Manos bajo los hombros y cuerpo en línea.', 'Codos a unos 45° del cuerpo al bajar.', 'Abdomen firme: la cadera no se hunde.']
+      },
+      {
+        id: 'remo', match: /^Remo unilateral/,
+        anchor: 'ankleN', anchorX: 96, load: 'hand', support: true,
+        a: { torso: 112, armN: 2, foreN: 2, armF: 40, foreF: 30, thighN: 14, shinN: -8 },
+        b: { torso: 112, armN: -62, foreN: 8, armF: 40, foreF: 30, thighN: 14, shinN: -8 },
+        phases: ['Tira', 'Baja'],
+        cues: ['Espalda recta e inclinada, apoyo firme.', 'Lleva el codo hacia la cadera, pegado al cuerpo.', 'Baja controlando sin girar el tronco.']
+      },
+      {
+        id: 'plancha', match: /^Plancha frontal/,
+        anchor: 'toeN', anchorX: 30,
+        a: { torso: 103, armN: 0, foreN: 90, thighN: -77, shinN: -77, footN: 20 },
+        b: { torso: 101, armN: 2, foreN: 90, thighN: -79, shinN: -79, footN: 20 },
+        phases: ['Mantén', 'Respira'],
+        cues: ['Codos bajo los hombros.', 'Cuerpo en línea recta de cabeza a talones.', 'Respira sin soltar el abdomen.']
+      },
+      {
+        id: 'press', match: /^Press militar/,
+        anchor: 'ankleN', anchorX: 110, load: 'hand',
+        a: { torso: 180, armN: 35, foreN: 172, thighN: 0, shinN: 0 },
+        b: { torso: 180, armN: 172, foreN: 178, thighN: 0, shinN: 0 },
+        phases: ['Empuja', 'Baja'],
+        cues: ['Glúteos y abdomen firmes, sin arquear la espalda.', 'Empuja por encima de la cabeza.', 'Baja controlando hasta la altura de los hombros.']
+      },
+      {
+        id: 'dead-bug', match: /^Dead Bug/,
+        anchor: 'hip', anchorX: 116, groundOffset: 8,
+        a: { torso: -90, armN: 180, foreN: 180, armF: 180, foreF: 180, thighN: 180, shinN: 90, thighF: 180, shinF: 90 },
+        b: { torso: -90, armN: -100, foreN: -100, armF: 180, foreF: 180, thighN: 180, shinN: 90, thighF: 96, shinF: 94 },
+        phases: ['Extiende', 'Vuelve'],
+        cues: ['Zona lumbar pegada al suelo todo el tiempo.', 'Extiende brazo y pierna contrarios despacio.', 'Expulsa el aire al extender.']
+      }
+    ];
+
+    function findExerciseDemo(name) {
+      return EXERCISE_DEMOS.find(d => d.match.test(name)) || null;
+    }
+
+    function demoDir(angleDeg, length) {
+      const r = angleDeg * Math.PI / 180;
+      return [Math.sin(r) * length, Math.cos(r) * length];
+    }
+
+    function demoPoseJoints(p) {
+      const add = (o, a, l) => { const d = demoDir(a, l); return [o[0] + d[0], o[1] + d[1]]; };
+      const hip = [0, 0];
+      const shoulder = add(hip, p.torso, FIG.torso);
+      const head = add(shoulder, p.torso, FIG.neck + FIG.head);
+      const armF = p.armF ?? p.armN, foreF = p.foreF ?? p.foreN;
+      const thighF = p.thighF ?? p.thighN, shinF = p.shinF ?? p.shinN;
+      const elbowN = add(shoulder, p.armN, FIG.upperArm);
+      const elbowF = add(shoulder, armF, FIG.upperArm);
+      const kneeN = add(hip, p.thighN, FIG.thigh);
+      const kneeF = add(hip, thighF, FIG.thigh);
+      const ankleN = add(kneeN, p.shinN, FIG.shin);
+      const ankleF = add(kneeF, shinF, FIG.shin);
+      return {
+        hip, shoulder, head, elbowN, elbowF, kneeN, kneeF, ankleN, ankleF,
+        wristN: add(elbowN, p.foreN, FIG.foreArm),
+        wristF: add(elbowF, foreF, FIG.foreArm),
+        toeN: add(ankleN, p.footN ?? 90, FIG.foot),
+        toeF: add(ankleF, p.footF ?? p.footN ?? 90, FIG.foot)
+      };
+    }
+
+    // Interpola el ángulo por el camino más corto.
+    function lerpAngle(a, b, t) {
+      let d = ((b - a + 540) % 360) - 180;
+      return a + d * t;
+    }
+
+    function lerpPose(a, b, t) {
+      const out = {};
+      const keys = new Set([...Object.keys(a), ...Object.keys(b)]);
+      keys.forEach(k => {
+        const fallback = k.endsWith('F') ? k.slice(0, -1) + 'N' : null;
+        const va = a[k] ?? (fallback ? a[fallback] : undefined) ?? (k.startsWith('foot') ? 90 : 0);
+        const vb = b[k] ?? (fallback ? b[fallback] : undefined) ?? (k.startsWith('foot') ? 90 : 0);
+        out[k] = lerpAngle(va, vb, t);
+      });
+      return out;
+    }
+
+    function placeDemoJoints(demo, pose) {
+      const j = demoPoseJoints(pose);
+      const anchor = j[demo.anchor];
+      const dx = demo.anchorX - anchor[0];
+      const dy = DEMO_GROUND - (demo.groundOffset || 0) - anchor[1];
+      Object.keys(j).forEach(k => { j[k] = [j[k][0] + dx, j[k][1] + dy]; });
+      return j;
+    }
+
+    const DEMO_SEGMENTS = {
+      far: [['shoulder', 'elbowF'], ['elbowF', 'wristF'], ['hip', 'kneeF'], ['kneeF', 'ankleF'], ['ankleF', 'toeF']],
+      body: [['hip', 'shoulder']],
+      near: [['hip', 'kneeN'], ['kneeN', 'ankleN'], ['ankleN', 'toeN'], ['shoulder', 'elbowN'], ['elbowN', 'wristN']]
+    };
+    const DEMO_CYCLE = [
+      { until: 0.5, from: 'a', to: 'a', phase: 0 },
+      { until: 1.9, from: 'a', to: 'b', phase: 0 },
+      { until: 2.4, from: 'b', to: 'b', phase: 1 },
+      { until: 3.5, from: 'b', to: 'a', phase: 1 }
+    ];
+    const DEMO_CYCLE_SECONDS = 3.5;
+    const reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const openDemos = new Set();      // claves de ejercicio con el panel abierto
+    const pausedDemos = new Set();    // claves en pausa (o mostrando postura fija)
+    let demoFrame = null;
+
+    function easeInOut(t) { return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; }
+
+    function demoViewBox(demo) {
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = DEMO_GROUND;
+      [0, 0.25, 0.5, 0.75, 1].forEach(t => {
+        Object.values(placeDemoJoints(demo, lerpPose(demo.a, demo.b, t))).forEach(([x, y]) => {
+          minX = Math.min(minX, x); maxX = Math.max(maxX, x); minY = Math.min(minY, y); maxY = Math.max(maxY, y);
+        });
+      });
+      const pad = 16;
+      minY -= FIG.head;
+      const w = Math.max(maxX - minX + pad * 2, 150);
+      const cx = (minX + maxX) / 2;
+      return `${(cx - w / 2).toFixed(1)} ${(minY - pad).toFixed(1)} ${w.toFixed(1)} ${(maxY - minY + pad * 1.6).toFixed(1)}`;
+    }
+
+    function demoSvgMarkup(demo, name) {
+      const lines = group => DEMO_SEGMENTS[group].map((_, i) => `<line class="fig-${group}" data-seg="${group}-${i}" />`).join('');
+      return `<svg class="ex-demo-svg" viewBox="${demoViewBox(demo)}" role="img" aria-label="Animación de la técnica: ${escapeHtml(name)}" preserveAspectRatio="xMidYMax meet">
+        <line class="fig-ground" x1="-400" y1="${DEMO_GROUND}" x2="800" y2="${DEMO_GROUND}" />
+        ${demo.support ? '<rect class="fig-support" data-seg="support" rx="3" />' : ''}
+        ${lines('far')}${lines('body')}${lines('near')}
+        <circle class="fig-head" data-seg="head" r="${FIG.head}" />
+        ${demo.load ? '<rect class="fig-load" data-seg="load" width="16" height="8" rx="3" />' : ''}
+      </svg>`;
+    }
+
+    function drawDemoPose(svg, demo, pose) {
+      const j = placeDemoJoints(demo, pose);
+      Object.keys(DEMO_SEGMENTS).forEach(group => {
+        DEMO_SEGMENTS[group].forEach(([p, q], i) => {
+          const el = svg.querySelector(`[data-seg="${group}-${i}"]`);
+          el.setAttribute('x1', j[p][0].toFixed(1)); el.setAttribute('y1', j[p][1].toFixed(1));
+          el.setAttribute('x2', j[q][0].toFixed(1)); el.setAttribute('y2', j[q][1].toFixed(1));
+        });
+      });
+      const head = svg.querySelector('[data-seg="head"]');
+      head.setAttribute('cx', j.head[0].toFixed(1)); head.setAttribute('cy', j.head[1].toFixed(1));
+      const load = svg.querySelector('[data-seg="load"]');
+      if (load) { load.setAttribute('x', (j.wristN[0] - 8).toFixed(1)); load.setAttribute('y', (j.wristN[1] - 4).toFixed(1)); }
+      const support = svg.querySelector('[data-seg="support"]');
+      if (support) {
+        const top = j.wristF[1] + 3;
+        support.setAttribute('x', (j.wristF[0] - 16).toFixed(1)); support.setAttribute('y', top.toFixed(1));
+        support.setAttribute('width', '32'); support.setAttribute('height', Math.max(0, DEMO_GROUND - top).toFixed(1));
+      }
+    }
+
+    function demoStateAt(seconds) {
+      const t = seconds % DEMO_CYCLE_SECONDS;
+      let start = 0;
+      for (const step of DEMO_CYCLE) {
+        if (t <= step.until) {
+          const local = step.until === start ? 1 : (t - start) / (step.until - start);
+          return { step, progress: step.from === step.to ? 1 : easeInOut(local) };
+        }
+        start = step.until;
+      }
+      return { step: DEMO_CYCLE[0], progress: 1 };
+    }
+
+    function renderDemoPanels(now) {
+      document.querySelectorAll('.ex-demo:not(.hidden)').forEach(panel => {
+        const demo = EXERCISE_DEMOS.find(d => d.id === panel.dataset.demo);
+        const svg = panel.querySelector('svg');
+        const phaseEl = panel.querySelector('.ex-demo-phase');
+        if (!demo || !svg) return;
+        const key = panel.dataset.key;
+        if (reduceMotionQuery.matches || pausedDemos.has(key)) {
+          const showStart = panel.dataset.still === 'a';
+          drawDemoPose(svg, demo, showStart ? demo.a : demo.b);
+          phaseEl.textContent = showStart ? 'Posición inicial' : 'Posición final';
+          return;
+        }
+        const { step, progress } = demoStateAt(now / 1000);
+        const pose = step.from === step.to ? demo[step.from] : lerpPose(demo[step.from], demo[step.to], progress);
+        drawDemoPose(svg, demo, pose);
+        phaseEl.textContent = demo.phases[step.phase];
+      });
+    }
+
+    function demoLoop(now) {
+      renderDemoPanels(now);
+      const animating = !reduceMotionQuery.matches && [...openDemos].some(k => !pausedDemos.has(k));
+      demoFrame = animating && !document.hidden ? requestAnimationFrame(demoLoop) : null;
+    }
+
+    function refreshDemoLoop() {
+      if (demoFrame) cancelAnimationFrame(demoFrame);
+      demoFrame = null;
+      demoLoop(performance.now());
+    }
+
+    function toggleExerciseDemo(key) {
+      if (openDemos.has(key)) openDemos.delete(key);
+      else openDemos.add(key);
+      lastToggledDemo = key;
+      renderWorkoutView();
+    }
+
+    function toggleDemoPause(key, panel) {
+      if (reduceMotionQuery.matches) {
+        panel.dataset.still = panel.dataset.still === 'a' ? 'b' : 'a';
+      } else if (pausedDemos.has(key)) {
+        pausedDemos.delete(key);
+      } else {
+        pausedDemos.add(key);
+        panel.dataset.still = 'b';
+      }
+      updateDemoPauseButton(key, panel);
+      refreshDemoLoop();
+    }
+
+    function updateDemoPauseButton(key, panel) {
+      const btn = panel.querySelector('.ex-demo-pause');
+      if (!btn) return;
+      if (reduceMotionQuery.matches) {
+        btn.textContent = panel.dataset.still === 'a' ? 'Ver posición final' : 'Ver posición inicial';
+      } else {
+        btn.textContent = pausedDemos.has(key) ? 'Reanudar' : 'Pausar';
+      }
+    }
+
+    function buildDemoPanel(ex, key, demo) {
+      const panel = document.createElement('div');
+      panel.className = 'ex-demo' + (openDemos.has(key) ? '' : ' hidden');
+      panel.id = `demo-${demo.id}-${Math.abs(hashString(key))}`;
+      panel.dataset.demo = demo.id;
+      panel.dataset.key = key;
+      panel.dataset.still = 'b';
+      panel.innerHTML = `
+        <div class="ex-demo-figure">
+          ${demoSvgMarkup(demo, ex.name)}
+          <div class="ex-demo-controls">
+            <span class="ex-demo-phase" aria-hidden="true"></span>
+            <button type="button" class="ex-demo-pause"></button>
+          </div>
+        </div>
+        <ul class="ex-demo-cues">${demo.cues.map(c => `<li>${escapeHtml(c)}</li>`).join('')}</ul>
+      `;
+      panel.querySelector('.ex-demo-pause').addEventListener('click', () => toggleDemoPause(key, panel));
+      updateDemoPauseButton(key, panel);
+      return panel;
+    }
+
+    function hashString(str) {
+      let h = 0;
+      for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) | 0;
+      return h;
+    }
+
+    reduceMotionQuery.addEventListener('change', () => {
+      document.querySelectorAll('.ex-demo').forEach(p => updateDemoPauseButton(p.dataset.key, p));
+      refreshDemoLoop();
+    });
+    document.addEventListener('visibilitychange', refreshDemoLoop);
 
     /* ==================== NAVEGACIÓN Y EVENTOS ==================== */
     function switchView(view) {
