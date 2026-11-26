@@ -1733,6 +1733,21 @@
     .section-reveal.is-pending { opacity:0; transform:translateY(24px); }
     .section-reveal { transition:opacity .8s ease, transform .8s cubic-bezier(.2,.7,.2,1); }
     #viewDieta:not(.hidden),#viewEntreno:not(.hidden) { animation:view-enter .45s ease both; }
+    .root-lines, .brand-stem {
+      stroke-dasharray: 1;
+      animation: grow-stroke .72s cubic-bezier(.25,.7,.35,1) both;
+    }
+    .brand-stem { animation-delay: .34s; }
+    .brand-leaf-left, .brand-leaf-right {
+      animation: unfold-leaf .72s cubic-bezier(.18,.75,.28,1) both;
+    }
+    .brand-leaf-left { transform-origin: 24px 24px; animation-delay: .63s; }
+    .brand-leaf-right { transform-origin: 24px 19px; animation-delay: .78s; }
+    @keyframes grow-stroke { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+    @keyframes unfold-leaf {
+      from { opacity: 0; transform: rotate(18deg) scale(.12); }
+      to { opacity: 1; transform: rotate(0) scale(1); }
+    }
     @keyframes hero-enter { from { opacity:0; transform:translateY(25px); } to { opacity:1; transform:none; } }
     @keyframes view-enter { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
     @keyframes photo-settle { from { transform:scale(1.08); } to { transform:scale(1.035); } }
@@ -1860,7 +1875,14 @@
     <!-- TOPBAR -->
     <header class="topbar">
       <a href="#inicio" class="brand" onclick="switchView('intro'); return false;">
-        <svg class="brand-symbol" viewBox="0 0 48 56" fill="none" aria-hidden="true"><path d="M24 31V15M24 24C11 25 6 18 7 8c11 0 18 5 17 16ZM24 19C24 9 31 4 42 5c0 11-6 17-18 14Z" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path class="root-lines" d="M24 30v19m0-17-10 8-6 1m16-4 11 6 5 8M14 40l-2 11m12-7-6 8m17-9 8-3" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg class="brand-symbol" viewBox="0 0 48 56" fill="none" aria-hidden="true">
+          <g stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path class="root-lines" pathLength="1" d="M24 30v19m0-17-10 8-6 1m16-4 11 6 5 8M14 40l-2 11m12-7-6 8m17-9 8-3"/>
+            <path class="brand-stem" pathLength="1" d="M24 31V15"/>
+            <path class="brand-leaf-left" d="M24 24C11 25 6 18 7 8c11 0 18 5 17 16Z"/>
+            <path class="brand-leaf-right" d="M24 19C24 9 31 4 42 5c0 11-6 17-18 14Z"/>
+          </g>
+        </svg>
         <span class="brand-wordmark">raíz<span class="brand-period">.</span></span>
       </a>
 
@@ -1900,7 +1922,7 @@
       <div class="intro-story section-reveal" id="filosofia">
         <span class="eyebrow">Bienestar desde la raíz</span>
         <p class="lead">
-          Raíz convierte lo que ya hay en tu nevera en recetas equilibradas con macros reales y diseña un plan de entrenamiento adaptado a tus días, material, nivel y zonas a proteger. Sin dietas imposibles ni rutinas genéricas.
+          Raíz convierte lo que ya hay en tu nevera en recetas equilibradas con macros orientativos y diseña un plan de entrenamiento adaptado a tus días, material, nivel y zonas a proteger. Sin dietas imposibles ni rutinas genéricas.
         </p>
       </div>
       <div class="intro-stats-strip">
@@ -1923,7 +1945,7 @@
         <article class="feature-card section-reveal">
           <div class="feature-step" aria-hidden="true">1</div>
           <h3>Añade lo que tienes en casa</h3>
-          <p>Selecciona ingredientes básicos o busca productos exactos de supermercado. Ajusta las cantidades y Raíz calcula el impacto de CO₂ evitado.</p>
+          <p>Selecciona ingredientes básicos o busca productos exactos de supermercado. Ajusta las cantidades y consulta una estimación ilustrativa del impacto ambiental.</p>
         </article>
         <article class="feature-card section-reveal">
           <div class="feature-step" aria-hidden="true">2</div>
@@ -2005,11 +2027,11 @@
           <div class="impact-banner">
             <div>
               <div class="impact-num" id="statIngredients">0</div>
-              <div class="impact-label">ingredientes aprovechados</div>
+              <div class="impact-label">ingredientes en tu despensa</div>
             </div>
             <div>
               <div class="impact-num" id="statCo2">0.0 kg</div>
-              <div class="impact-label">de CO₂ evitado (estimación)</div>
+              <div class="impact-label">de CO₂ equivalente (escenario ilustrativo)</div>
             </div>
             <div>
               <div class="impact-num" id="statRecipes">0</div>
@@ -2150,7 +2172,7 @@
 
     <footer class="footer-note">
       <span>Raíz · Nutrición práctica y entrenamiento personalizado. Datos nutricionales ampliables vía Open Food Facts.</span>
-      <span>Las cifras de impacto ambiental son estimaciones orientativas.</span>
+      <span>El indicador ambiental asigna 0,4 kg de CO₂ equivalente por ingrediente. Es un escenario ilustrativo, no una medición de emisiones evitadas.</span>
     </footer>
   </div>
 
@@ -2169,7 +2191,7 @@
           <button type="button" class="auth-tab" id="authTabSignup" onclick="setAuthTab('signup')">Crear cuenta</button>
         </div>
 
-        <div class="auth-error" id="authErrorBox"></div>
+        <div class="auth-error" id="authErrorBox" role="status" aria-live="polite"></div>
 
         <form class="auth-form" id="authForm" onsubmit="handleAuthSubmit(event)">
           <div class="auth-field">
@@ -2580,6 +2602,7 @@
     let searchDebounceTimer = null;
     let lastApiResults = [];
     let isFetchingApi = false;
+    let supermarketRequest = null;
 
     function inferCategoryFromProduct(name, nutriments) {
       const lower = (name || '').toLowerCase();
@@ -2660,6 +2683,7 @@
     }
 
     function closeSearchDropdown() {
+      clearTimeout(searchDebounceTimer);
       document.getElementById('searchDropdown').classList.remove('open');
     }
 
@@ -2702,7 +2726,7 @@
             <button type="button" class="dropdown-item" onclick="selectApiItem(${idx})">
               <div>
                 <div class="dropdown-item-name">${escapeHtml(prod.name)}</div>
-                <div class="dropdown-item-meta">${escapeHtml(prod.brand || 'Supermercado')} · ${prod.kcal} kcal · ${prod.prot}g P /100g</div>
+                <div class="dropdown-item-meta">${escapeHtml(prod.brand || 'Supermercado')} · ${formatNutrient(prod.kcal)} kcal · ${formatNutrient(prod.prot)} g P /100g</div>
               </div>
               <span class="dropdown-badge">+ Añadir</span>
             </button>
@@ -2748,17 +2772,18 @@
       const q = input.value.trim();
       if (q.length < 2) return;
 
+      supermarketRequest?.abort();
+      const controller = new AbortController();
+      supermarketRequest = controller;
       isFetchingApi = true;
       lastApiResults = [];
       renderSearchDropdown(q);
 
-      const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 6500);
 
       try {
         const apiUrl = `https://es.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(q)}&search_simple=1&action=process&json=1&page_size=6&fields=code,product_name,brands,nutriments`;
         const res = await fetch(apiUrl, { signal: controller.signal });
-        clearTimeout(timeoutId);
         if (!res.ok) throw new Error('OFF error');
         const data = await res.json();
         const products = (data.products || [])
@@ -2766,10 +2791,11 @@
           .slice(0, 5)
           .map(p => {
             const n = p.nutriments || {};
-            const kcal = Math.round(Number(n['energy-kcal_100g']) || (Number(n['energy-kj_100g']) / 4.184) || 120);
-            const prot = Number((Number(n.proteins_100g) || 5).toFixed(1));
-            const carb = Number((Number(n.carbohydrates_100g) || 12).toFixed(1));
-            const fat = Number((Number(n.fat_100g) || 4).toFixed(1));
+            const kcalFromKj = readNutritionValue(n['energy-kj_100g']);
+            const kcal = readNutritionValue(n['energy-kcal_100g']) ?? (kcalFromKj === null ? null : kcalFromKj / 4.184);
+            const prot = readNutritionValue(n.proteins_100g);
+            const carb = readNutritionValue(n.carbohydrates_100g);
+            const fat = readNutritionValue(n.fat_100g);
             const brandClean = (p.brands || '').split(',')[0].trim();
             const cat = inferCategoryFromProduct(p.product_name, n);
             return {
@@ -2786,24 +2812,39 @@
               fat
             };
           });
-        lastApiResults = products;
-      } catch (err) {
-        lastApiResults = [];
+        if (supermarketRequest === controller && input.value.trim() === q) lastApiResults = products;
+      } catch {
+        // El catálogo local y el alta manual siguen disponibles.
       } finally {
-        isFetchingApi = false;
-        renderSearchDropdown(input.value);
+        clearTimeout(timeoutId);
+        if (supermarketRequest === controller) {
+          supermarketRequest = null;
+          isFetchingApi = false;
+          const dropdown = document.getElementById('searchDropdown');
+          if (input.value.trim() === q && dropdown.classList.contains('open')) renderSearchDropdown(q);
+        }
       }
     }
 
     /* ==================== ALGORITMO GENERADOR DE RECETAS A LA CARTA ==================== */
+    function readNutritionValue(value) {
+      if (typeof value !== 'number' && (typeof value !== 'string' || !value.trim())) return null;
+      const number = Number(value);
+      return Number.isFinite(number) && number >= 0 ? number : null;
+    }
+
     function computeItemMacros(item, usedQty) {
-      const factor = item.unit === 'ud' ? usedQty : (usedQty / 100);
-      return {
-        kcal: (item.kcal || 100) * factor,
-        prot: (item.prot || 5) * factor,
-        carb: (item.carb || 10) * factor,
-        fat: (item.fat || 3) * factor
-      };
+      const factor = item.unit === 'ud' ? usedQty : usedQty / 100;
+      const nutrients = {};
+      for (const key of ['kcal', 'prot', 'carb', 'fat']) {
+        const value = readNutritionValue(item[key]);
+        nutrients[key] = value === null ? null : value * factor;
+      }
+      return nutrients;
+    }
+
+    function formatNutrient(value) {
+      return value === null ? '—' : String(Math.round(value));
     }
 
     function getGoalPortionFactor() {
@@ -2839,17 +2880,21 @@
       let chosen = [];
       let method = chefStyle;
 
-      if (isSweet) {
+      const dessertIds = ['avena', 'yogur', 'queso_batido', 'leche', 'crema_cacahuete',
+        'nueces', 'platano', 'manzana', 'frutos_rojos', 'fresas', 'kiwi'];
+      const dessertPantry = userPantry.filter(item => dessertIds.includes(item.id));
+      if (isSweet && dessertPantry.length) {
         method = 'dulce';
-        const baseCarb = byCat.carbo.find(c => c.id === 'avena') || pick(byCat.carbo);
-        const dairy = pick(byCat.lacteo);
-        const fruit = pick(byCat.fruta);
-        const fat = pick(byCat.grasa);
+        const baseCarb = dessertPantry.find(item => item.id === 'avena');
+        const dairy = pick(dessertPantry.filter(item => item.cat === 'lacteo'));
+        const fruit = pick(dessertPantry.filter(item => item.cat === 'fruta'));
+        const fat = pick(dessertPantry.filter(item => item.cat === 'grasa'));
         [dairy, baseCarb, fruit, fat].filter(Boolean).forEach(x => chosen.push(x));
         if (chosen.length < 2) {
-          userPantry.slice(0, 3).forEach(x => { if (!chosen.includes(x)) chosen.push(x); });
+          dessertPantry.slice(0, 3).forEach(x => { if (!chosen.includes(x)) chosen.push(x); });
         }
       } else {
+        if (method === 'dulce') return { unavailable: true };
         if (method === 'auto') {
           const methods = ['salteado', 'bowl', 'horno'];
           method = methods[chefSeed % methods.length];
@@ -2871,7 +2916,7 @@
 
       // Calcular porciones usadas según objetivo (sin superar stock disponible)
       const factor = getGoalPortionFactor();
-      let totalKcal = 0, totalProt = 0, totalCarb = 0, totalFat = 0;
+      const totals = { kcal: 0, prot: 0, carb: 0, fat: 0 };
       const usedList = [];
       const leftovers = [];
 
@@ -2882,21 +2927,20 @@
           targetQty = Math.max(1, Math.round(baseUd * factor));
         } else {
           const baseGrams = item.cat === 'proteina' ? 160
-            : item.cat === 'carbo' ? (currentGoal === 'bajar' ? 90 : currentGoal === 'subir' ? 160 : 120)
+            : item.cat === 'carbo' ? 120
             : item.cat === 'verdura' ? 120
             : item.cat === 'grasa' ? 25
             : 150;
-          targetQty = Math.max(item.step, Math.round((baseGrams * factor) / 10) * 10);
+          targetQty = Math.max(5, Math.round(baseGrams * factor / 5) * 5);
         }
         const usedQty = Math.min(item.qty, targetQty);
         const rem = item.qty - usedQty;
         if (rem > 0) leftovers.push(`${rem} ${item.unit} de ${item.name.toLowerCase()}`);
 
         const m = computeItemMacros(item, usedQty);
-        totalKcal += m.kcal;
-        totalProt += m.prot;
-        totalCarb += m.carb;
-        totalFat += m.fat;
+        for (const key of Object.keys(totals)) {
+          totals[key] = totals[key] === null || m[key] === null ? null : totals[key] + m[key];
+        }
 
         usedList.push({ ...item, usedQty });
       });
@@ -2957,12 +3001,7 @@
         usedList,
         leftovers,
         steps,
-        macros: {
-          kcal: Math.round(totalKcal),
-          prot: Math.round(totalProt),
-          carb: Math.round(totalCarb),
-          fat: Math.round(totalFat)
-        },
+        macros: totals,
         tip: leftovers.length > 0
           ? 'Guarda las sobras en un táper hermético: te servirán como base para la cena o el menú de mañana.'
           : 'Aprovechas el 100 % de los ingredientes seleccionados sin desperdicio.'
@@ -3003,7 +3042,7 @@
         row.innerHTML = `
           <div class="pantry-name-col">
             <div class="pantry-item-name" title="${escapeHtml(item.name)}">${escapeHtml(item.name)}</div>
-            <div class="pantry-item-sub">${item.brand ? escapeHtml(item.brand) + ' · ' : ''}${item.kcal} kcal/${item.unit === 'ud' ? 'ud' : '100' + item.unit}</div>
+            <div class="pantry-item-sub">${item.brand ? escapeHtml(item.brand) + ' · ' : ''}${formatNutrient(readNutritionValue(item.kcal))} kcal/${item.unit === 'ud' ? 'ud' : '100' + item.unit}</div>
           </div>
           <div class="qty-controls">
             <button class="qty-btn" onclick="adjustPantryQty(${index}, -${item.step})" aria-label="Restar">−</button>
@@ -3088,13 +3127,22 @@
     function renderCustomChefCard() {
       const container = document.getElementById('customChefContainer');
       const recipe = generateDynamicRecipe();
+      if (recipe?.unavailable) {
+        container.innerHTML = `
+          <div class="chef-card">
+            <h3 class="recipe-title">Faltan ingredientes para un desayuno dulce</h3>
+            <p class="recipe-sub">Prueba a añadir fruta, yogur o avena del catálogo.</p>
+            <button class="btn-write-review" onclick="setChefStyle('auto')">Volver a automático</button>
+          </div>`;
+        return;
+      }
 
       if (!recipe) {
         container.innerHTML = `
           <div class="chef-card">
             <div class="chef-kicker">Algoritmo a la carta</div>
             <h3 class="recipe-title" style="margin-bottom:6px;">Añade algún ingrediente a tu despensa</h3>
-            <p class="recipe-sub">Busca productos de tu supermercado en el panel izquierdo y crearemos una receta personalizada paso a paso con sus macros reales.</p>
+            <p class="recipe-sub">Busca productos de tu supermercado en el panel izquierdo y crearemos una receta personalizada paso a paso con sus macros orientativos.</p>
           </div>
         `;
         return;
@@ -3128,7 +3176,7 @@
             <div>
               <div class="chef-kicker">Receta generada a la carta · 100 % con tu despensa</div>
               <h3 class="recipe-title">${escapeHtml(recipe.title)}</h3>
-              <p class="recipe-sub">${getGoalAdjustmentText()}</p>
+              <p class="recipe-sub">${getGoalAdjustmentText()} · Cantidades redondeadas y limitadas por tu despensa.</p>
             </div>
             <button class="btn-write-review" onclick="shuffleChefRecipe()">Otra combinación ↻</button>
           </div>
@@ -3138,12 +3186,13 @@
           <div class="ing-tags">${tagsHtml}</div>
 
           <div class="macros-row">
-            <span><strong>${recipe.macros.kcal}</strong> kcal</span>
-            <span><strong>${recipe.macros.prot} g</strong> proteína</span>
-            <span><strong>${recipe.macros.carb} g</strong> carbohidrato</span>
-            <span><strong>${recipe.macros.fat} g</strong> grasa</span>
+            <span><strong>${formatNutrient(recipe.macros.kcal)}</strong> kcal</span>
+            <span><strong>${formatNutrient(recipe.macros.prot)} g</strong> proteína</span>
+            <span><strong>${formatNutrient(recipe.macros.carb)} g</strong> carbohidrato</span>
+            <span><strong>${formatNutrient(recipe.macros.fat)} g</strong> grasa</span>
           </div>
 
+          <p class="recipe-sub">Valores orientativos para las cantidades indicadas. «—» significa que falta información.</p>
           <p class="leftover-line">${escapeHtml(leftoverText)}</p>
 
           <div class="steps-box">
@@ -3173,15 +3222,14 @@
     function renderCommunityRecipes() {
       const container = document.getElementById('recipesContainer');
       container.innerHTML = '';
-      const mult = getGoalPortionFactor();
-
       // Evaluar cobertura y ordenar de mayor a menor cobertura
       const evaluated = COMMUNITY_RECIPES.map(recipe => {
         let covered = 0;
         const leftovers = [];
         const tagsHtml = recipe.requirements.map(req => {
-          const found = userPantry.find(p => p.id === req.id || p.name.toLowerCase().includes(req.name.toLowerCase().split(' ')[0]));
-          const avail = found ? found.qty : 0;
+          const avail = userPantry
+            .filter(item => item.id === req.id && item.unit === req.unit)
+            .reduce((total, item) => total + (readNutritionValue(item.qty) ?? 0), 0);
           if (avail >= req.amount) {
             covered++;
             const rem = avail - req.amount;
@@ -3198,10 +3246,10 @@
       }).sort((a, b) => b.pct - a.pct);
 
       evaluated.forEach(({ recipe, pct, tagsHtml, leftovers }) => {
-        const kcal = Math.round(recipe.baseMacros.kcal * mult);
-        const prot = Math.round(recipe.baseMacros.prot * mult);
-        const carb = Math.round(recipe.baseMacros.carb * mult);
-        const fat = Math.round(recipe.baseMacros.fat * mult);
+        const kcal = Math.round(recipe.baseMacros.kcal);
+        const prot = Math.round(recipe.baseMacros.prot);
+        const carb = Math.round(recipe.baseMacros.carb);
+        const fat = Math.round(recipe.baseMacros.fat);
         const leftoverText = leftovers.length > 0
           ? `Te sobrará: ${leftovers.join(', ')}.`
           : `Aprovechas lo justo con tu despensa actual.`;
@@ -3212,7 +3260,7 @@
           <div class="recipe-top">
             <div>
               <h4 class="recipe-title">${escapeHtml(recipe.title)}</h4>
-              <p class="recipe-sub">${getGoalAdjustmentText()}</p>
+              <p class="recipe-sub">Porción original · valores orientativos</p>
             </div>
             <div class="coverage-box">
               <div class="coverage-pct">${pct} %</div>
@@ -3646,6 +3694,9 @@
     // Buscador de despensa
     const searchInput = document.getElementById('pantrySearchInput');
     searchInput.addEventListener('input', (e) => {
+      supermarketRequest?.abort();
+      supermarketRequest = null;
+      isFetchingApi = false;
       lastApiResults = [];
       renderSearchDropdown(e.target.value);
       clearTimeout(searchDebounceTimer);
@@ -3769,6 +3820,7 @@
     let authSession = null; // { access_token, refresh_token, user: { id, email, user_metadata } }
     let authModalMode = 'login'; // 'login' | 'signup'
     let cloudSyncTimer = null;
+    let refreshInFlight = null;
     let lastCloudSaveLabel = 'Sin guardar aún';
 
     function getLoggedDisplayName() {
@@ -3803,10 +3855,10 @@
       const m = (msg || '').toLowerCase();
       if (m.includes('invalid login credentials')) return 'Usuario o contraseña incorrectos.';
       if (m.includes('user already registered')) return 'Ese usuario o correo ya existe. Prueba a iniciar sesión.';
-      if (m.includes('email not confirmed')) return 'Falta desactivar "Confirm email" en Supabase (Authentication → Providers → Email) para entrar sin confirmar correo.';
+      if (m.includes('email not confirmed')) return 'Confirma tu correo antes de entrar. Revisa también la carpeta de correo no deseado.';
       if (m.includes('at least 6 characters') || m.includes('weak_password')) return 'La contraseña debe tener al menos 6 caracteres.';
       if (m.includes('invalid email') || m.includes('unable to validate email')) return 'Escribe un nombre de usuario válido (mínimo 3 letras/números) o un correo válido.';
-      if (m.includes('rate limit')) return 'Límite de registros alcanzado temporalmente. Desactiva "Confirm email" en Supabase.';
+      if (m.includes('rate limit')) return 'Has hecho demasiados intentos. Espera unos minutos y vuelve a intentarlo.';
       return msg || 'No se pudo completar la operación. Revisa tu conexión.';
     }
 
@@ -3995,7 +4047,19 @@
     }
 
     async function refreshAuthTokenIfNeeded() {
-      if (!isCloudEnabled() || !authSession || !authSession.refresh_token) return false;
+      if (!isCloudEnabled() || !authSession?.refresh_token) return false;
+      if (refreshInFlight) return refreshInFlight;
+      const session = authSession;
+      const request = refreshAuthSession(session);
+      refreshInFlight = request;
+      try {
+        return await request;
+      } finally {
+        if (refreshInFlight === request) refreshInFlight = null;
+      }
+    }
+
+    async function refreshAuthSession(session) {
       try {
         const url = `${CLOUD_CONFIG.SUPABASE_URL.replace(/\/$/, '')}/auth/v1/token?grant_type=refresh_token`;
         const res = await fetch(url, {
@@ -4004,26 +4068,27 @@
             'Content-Type': 'application/json',
             apikey: CLOUD_CONFIG.SUPABASE_ANON_KEY
           },
-          body: JSON.stringify({ refresh_token: authSession.refresh_token })
+          body: JSON.stringify({ refresh_token: session.refresh_token })
         });
-        if (!res.ok) return false;
+        if (!res.ok) return res.status === 400 || res.status === 401 ? false : null;
         const data = await res.json();
-        if (data.access_token && data.user) {
+        if (authSession === session && data.access_token && data.user) {
           persistSession({
             access_token: data.access_token,
-            refresh_token: data.refresh_token || authSession.refresh_token,
+            refresh_token: data.refresh_token || session.refresh_token,
             user: data.user
           });
           return true;
         }
         return false;
       } catch (e) {
-        return false;
+        return null;
       }
     }
 
     async function saveUserStateToCloud(isRetry = false) {
       if (!isCloudEnabled() || !authSession || !authSession.access_token || !authSession.user) return false;
+      const userId = authSession.user.id;
       setSyncStatusText('Guardando...');
       try {
         const url = `${CLOUD_CONFIG.SUPABASE_URL.replace(/\/$/, '')}/rest/v1/raiz_user_data?on_conflict=user_id`;
@@ -4044,9 +4109,10 @@
         });
         if (res.status === 401 && !isRetry) {
           const refreshed = await refreshAuthTokenIfNeeded();
-          if (refreshed) return saveUserStateToCloud(true);
+          if (refreshed && authSession?.user.id === userId) return saveUserStateToCloud(true);
         }
         if (!res.ok) throw new Error('Error guardando datos de usuario');
+        if (authSession?.user.id !== userId) return false;
         const now = new Date();
         lastCloudSaveLabel = `Hoy a las ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
         setSyncStatusText('Sincronizado en la nube');
@@ -4055,13 +4121,14 @@
         return true;
       } catch (e) {
         console.warn('No se pudo guardar en raiz_user_data:', e);
-        setSyncStatusText('Error al sincronizar (revisa tabla SQL)');
+        if (authSession?.user.id === userId) setSyncStatusText('Error al sincronizar');
         return false;
       }
     }
 
     async function loadUserStateFromCloud(isRetry = false) {
       if (!isCloudEnabled() || !authSession || !authSession.access_token || !authSession.user) return false;
+      const userId = authSession.user.id;
       try {
         const url = `${CLOUD_CONFIG.SUPABASE_URL.replace(/\/$/, '')}/rest/v1/raiz_user_data?user_id=eq.${encodeURIComponent(authSession.user.id)}&select=data,updated_at`;
         const res = await fetch(url, {
@@ -4072,10 +4139,11 @@
         });
         if (res.status === 401 && !isRetry) {
           const refreshed = await refreshAuthTokenIfNeeded();
-          if (refreshed) return loadUserStateFromCloud(true);
+          if (refreshed && authSession?.user.id === userId) return loadUserStateFromCloud(true);
         }
         if (!res.ok) throw new Error('Error leyendo datos de usuario');
         const rows = await res.json();
+        if (authSession?.user.id !== userId) return false;
         if (rows && rows.length > 0 && rows[0].data && Object.keys(rows[0].data).length > 0) {
           applyUserState(rows[0].data, true);
           saveLocalPrefs();
@@ -4092,8 +4160,7 @@
           return true;
         } else {
           // Primera vez de este usuario: subimos su configuración actual
-          await saveUserStateToCloud();
-          return true;
+          return await saveUserStateToCloud();
         }
       } catch (e) {
         console.warn('Error cargando estado del usuario:', e);
@@ -4128,23 +4195,27 @@
       const password = document.getElementById('authPassword').value;
       const submitBtn = document.getElementById('authSubmitBtn');
       const { email, username } = normalizeAuthIdentifier(rawId);
+      const mode = authModalMode;
 
-      if (!email || email.split('@')[0].length < 3) {
-        showAuthError('El usuario debe tener al menos 3 letras o números.');
+      const isEmail = rawId.includes('@');
+      if (isEmail ? !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) : email.split('@')[0].length < 3) {
+        showAuthError(isEmail ? 'Escribe un correo válido.' : 'El usuario debe tener al menos 3 caracteres.');
         return;
       }
 
       submitBtn.disabled = true;
+      const tabs = [document.getElementById('authTabLogin'), document.getElementById('authTabSignup')];
+      tabs.forEach(tab => { tab.disabled = true; });
       const prevText = submitBtn.textContent;
-      submitBtn.textContent = authModalMode === 'login' ? 'Entrando...' : 'Creando cuenta...';
+      submitBtn.textContent = mode === 'login' ? 'Entrando...' : 'Creando cuenta...';
 
       try {
         const base = CLOUD_CONFIG.SUPABASE_URL.replace(/\/$/, '');
-        const endpoint = authModalMode === 'login'
+        const endpoint = mode === 'login'
           ? `${base}/auth/v1/token?grant_type=password`
           : `${base}/auth/v1/signup`;
 
-        const payload = authModalMode === 'login'
+        const payload = mode === 'login'
           ? { email, password }
           : { email, password, data: { username } };
 
@@ -4169,7 +4240,7 @@
         const user = data.user || (data.session && data.session.user);
 
         if (!accessToken || !user) {
-          showAuthError('Cuenta creada, pero Supabase pide confirmar correo. Desactiva "Confirm email" en Supabase (Authentication → Providers → Email) para entrar al instante.');
+          showAuthError('Confirma tu dirección desde el enlace que te hemos enviado por correo y vuelve a iniciar sesión.');
           return;
         }
 
@@ -4179,12 +4250,12 @@
           user
         });
 
-        if (authModalMode === 'signup') {
-          await saveUserStateToCloud();
-          showToast(`¡Bienvenido, ${getLoggedDisplayName()}! Tu cuenta ya guarda en la nube.`);
+        if (mode === 'signup') {
+          const saved = await saveUserStateToCloud();
+          showToast(saved ? 'Cuenta creada y datos guardados en la nube.' : 'Cuenta creada. No se pudieron guardar los datos en la nube.');
         } else {
-          await loadUserStateFromCloud();
-          showToast(`Sesión iniciada como ${getLoggedDisplayName()}. Datos cargados.`);
+          const loaded = await loadUserStateFromCloud();
+          showToast(loaded ? 'Sesión iniciada y datos sincronizados.' : 'Sesión iniciada. No se pudieron sincronizar los datos.');
         }
 
         document.getElementById('authForm').reset();
@@ -4193,25 +4264,28 @@
       } catch (err) {
         showAuthError('Error de red al conectar con Supabase.');
       } finally {
+        tabs.forEach(tab => { tab.disabled = false; });
         submitBtn.disabled = false;
         submitBtn.textContent = prevText;
       }
     }
 
     async function handleSignOut() {
-      if (isCloudEnabled() && authSession && authSession.access_token) {
+      const session = authSession;
+      clearTimeout(cloudSyncTimer);
+      persistSession(null);
+      closeAuthModal();
+      if (isCloudEnabled() && session?.access_token) {
         try {
           await fetch(`${CLOUD_CONFIG.SUPABASE_URL.replace(/\/$/, '')}/auth/v1/logout`, {
             method: 'POST',
             headers: {
               apikey: CLOUD_CONFIG.SUPABASE_ANON_KEY,
-              Authorization: `Bearer ${authSession.access_token}`
+              Authorization: `Bearer ${session.access_token}`
             }
           });
         } catch (e) {}
       }
-      persistSession(null);
-      closeAuthModal();
       updateDietaAll();
       showToast('Sesión cerrada.');
     }
@@ -4226,10 +4300,13 @@
         updateAccountUI();
         if (isCloudEnabled()) {
           const ok = await refreshAuthTokenIfNeeded();
+          if (!authSession || authSession.user.id !== saved.user.id) return;
           if (ok) {
             await loadUserStateFromCloud();
-          } else {
+          } else if (ok === false) {
             persistSession(null);
+          } else {
+            setSyncStatusText('Sin conexión con la cuenta');
           }
         }
       } catch (e) {}
