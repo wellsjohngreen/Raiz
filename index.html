@@ -3,10 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Aprovecha tu despensa con recetas personalizadas y macros. Entrena a tu ritmo con un plan adaptado a ti. Raíz, bienestar desde lo cotidiano." />
+  <meta name="theme-color" content="#173f35" />
   <title>Raíz — Come lo que ya tienes. Entrena como te gusta.</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="raiz-symbol.svg" />
+  <link rel="preload" as="image" href="mesa.jpg" />
   <style>
     :root {
       --bg-page: #eef2ea;
@@ -1546,15 +1550,318 @@
         display: none;
       }
     }
+
+    /* Raíz / editorial identity. The application and its content stay in place. */
+    :root {
+      --bg-page:#faf9f5; --bg-card:#fffefa; --bg-card-alt:#f0f1e9;
+      --bg-pill-inactive:transparent; --border-soft:#d8ddd3; --border-card:#d8ddd3;
+      --text-main:#182f28; --text-muted:#56635c; --green-brand:#173f35;
+      --green-active:#245743; --green-banner:#173f35;
+      --green-tag-bg:#e6ebe1; --green-tag-text:#274334; --notice-bg:#ecefe6;
+      --track-bg:#e0e5dc; --shadow-soft:0 12px 40px #173f350a;
+      --gutter:clamp(20px,5.5vw,88px); --serif:Georgia,'Times New Roman',serif;
+    }
+    body.dark-mode {
+      --bg-page:#121e19; --bg-card:#19271f; --bg-card-alt:#223228;
+      --text-main:#f1f1e6; --text-muted:#b1bdb0; --border-soft:#35483a;
+      --border-card:#35483a; --green-brand:#b5d2af; --green-active:#386748;
+      --green-tag-bg:#293e2d; --green-tag-text:#d1e3c6; --notice-bg:#25352b;
+      --track-bg:#35483a;
+    }
+    html { scroll-behavior:smooth; scroll-padding-top:100px; }
+    body { padding:0; font-size:16px; -webkit-font-smoothing:antialiased; }
+    .container { max-width:none; margin:0; }
+    img { max-width:100%; display:block; }
+    button,input,textarea,select { font:inherit; }
+    button,a,input,summary { -webkit-tap-highlight-color:transparent; }
+    button { touch-action:manipulation; }
+    :focus-visible { outline:2px solid var(--green-brand); outline-offset:5px; }
+    ::selection { background:#d6e3c8; color:#173f35; }
+    .skip-link { position:fixed; top:-100px; left:20px; padding:12px 20px; z-index:400; background:var(--bg-card); color:var(--text-main); }
+    .skip-link:focus { top:12px; }
+    .topbar { margin:0; padding:18px var(--gutter); min-height:94px; flex-wrap:nowrap; gap:24px; border-bottom:1px solid var(--border-soft); }
+    .brand { gap:10px; color:var(--green-brand); flex-shrink:0; }
+    .brand-symbol { width:37px; height:44px; transition:transform .5s cubic-bezier(.2,.8,.2,1); }
+    .brand:hover .brand-symbol { transform:rotate(-7deg); }
+    .brand-wordmark { font:normal 42px/.9 var(--serif); letter-spacing:-.065em; }
+    .brand-period { color:var(--green-brand); }
+    .top-nav { border:0; background:none; padding:0; gap:32px; border-radius:0; }
+    .top-nav-btn { font-size:14px; padding:12px 0; border-radius:0; position:relative; }
+    .top-nav-btn.active { color:var(--green-brand); background:none; }
+    .top-nav-btn::after { content:''; position:absolute; bottom:4px; left:0; right:0; height:2px; background:var(--green-brand); transform:scaleX(0); transform-origin:left; transition:transform .25s ease; }
+    .top-nav-btn:hover::after,.top-nav-btn.active::after { transform:scaleX(1); }
+    .topbar-right { gap:16px; }
+    .cloud-pill { border:0; background:none; padding:0; font-size:12px; }
+    .cloud-dot { width:6px; height:6px; }
+    .btn-account { font-size:13px; padding:11px 17px; border-radius:4px; }
+    .btn-theme { font-size:12px; padding:10px 0; border:0; border-bottom:1px solid var(--border-soft); border-radius:0; background:none; }
+    .intro-hero { width:100%; min-height:min(720px,calc(100svh - 94px)); border:0; border-radius:0; margin:0; padding:50px var(--gutter) 70px; display:flex; align-items:center; background:#f0f0e5; isolation:isolate; }
+    .hero-image { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:75% 55%; z-index:-3; transform:scale(1.035); animation:photo-settle 1.8s cubic-bezier(.2,.7,.2,1) both; }
+    .hero-shade { position:absolute; inset:0; z-index:-2; background:linear-gradient(90deg,#f4f2e9 0%,#f4f2e9f7 28%,#f4f2e9d6 46%,#f4f2e938 65%,transparent 82%); }
+    .hero-content { position:relative; max-width:700px; color:#173f35; }
+    .intro-badge { border-radius:0; background:none; padding:0; color:#315140; font-size:11px; font-weight:500; letter-spacing:.1em; text-transform:uppercase; max-width:400px; margin-bottom:20px; }
+    .hero-wordmark { font:normal clamp(115px,13vw,198px)/.94 var(--serif); letter-spacing:-.085em; margin-left:-8px; margin-bottom:27px; }
+    .hero-wordmark span { color:#587951; }
+    .intro-hero h1 { font-size:clamp(30px,3.1vw,46px); max-width:680px; font-weight:500; line-height:1.16; letter-spacing:-.045em; margin-bottom:30px; }
+    .intro-hero h1 em { font-family:var(--serif); font-weight:normal; letter-spacing:-.035em; }
+    .intro-cta-row { gap:18px; align-items:center; margin-bottom:20px; }
+    .btn-primary,.btn-secondary,.btn-white { min-height:48px; font-size:14px; font-weight:500; border-radius:4px; padding:14px 20px; }
+    .btn-primary { transition:background .25s,transform .25s; }
+    .btn-primary:hover { transform:translateY(-3px); background:#173f35; }
+    .intro-hero .btn-primary { background:#173f35; color:#fff; }
+    .intro-hero .btn-secondary { color:#173f35; border:0; border-bottom:1px solid #647f69; border-radius:0; padding:12px 0; }
+    .hero-footnote { font-size:12px; color:#405d49; letter-spacing:.02em; }
+    .hero-content > * { animation:hero-enter .9s cubic-bezier(.22,.8,.25,1) both; }
+    .hero-content > :nth-child(2) { animation-delay:.08s; }
+    .hero-content > :nth-child(3) { animation-delay:.16s; }
+    .hero-content > :nth-child(4) { animation-delay:.24s; }
+    .hero-content > :nth-child(5) { animation-delay:.32s; }
+    .scroll-cue { position:absolute; right:var(--gutter); bottom:28px; display:flex; align-items:center; gap:16px; color:#fff; text-decoration:none; font-size:11px; text-shadow:0 1px 5px #000; }
+    .scroll-line { width:52px; height:1px; background:currentColor; transform-origin:left; animation:line-breathe 2.8s ease-in-out infinite; }
+    .eyebrow { display:block; text-transform:uppercase; font-size:11px; letter-spacing:.15em; color:var(--green-brand); line-height:1.6; }
+    .intro-story { margin:0 var(--gutter); padding:76px 0 60px; display:grid; grid-template-columns:1fr 2fr; gap:50px; align-items:start; }
+    .intro-story .lead { font-size:clamp(20px,2.3vw,31px); letter-spacing:-.035em; line-height:1.5; max-width:830px; color:var(--text-main); }
+    .intro-stats-strip { margin:0 var(--gutter); padding:32px 0 40px; grid-template-columns:repeat(3,minmax(0,1fr)); gap:48px; border-top:1px solid var(--border-soft); border-bottom:1px solid var(--border-soft); }
+    .intro-stat-title { font-size:16px; font-weight:500; margin-bottom:10px; }
+    .intro-stat-desc { font-size:14px; line-height:1.7; max-width:330px; }
+    .section-heading { padding:85px var(--gutter) 0; display:flex; justify-content:space-between; align-items:start; gap:30px; }
+    .section-heading h2 { width:66.66%; font-size:clamp(35px,4vw,58px); font-weight:500; line-height:1.08; letter-spacing:-.05em; }
+    .section-heading h2 em,.movement-story h2 em { font-family:var(--serif); font-weight:normal; }
+    .features-grid { margin:48px var(--gutter) 85px; gap:0; grid-template-columns:repeat(3,minmax(0,1fr)); }
+    .feature-card { padding:28px 30px 0 0; background:none; border:0; border-top:1px solid var(--border-soft); border-radius:0; }
+    .feature-card + .feature-card { padding-left:30px; border-left:1px solid var(--border-soft); }
+    .feature-step { background:none; padding:0; margin-bottom:30px; width:auto; height:auto; border-radius:0; font-size:12px; font-weight:400; }
+    .feature-card h3 { font-size:19px; font-weight:500; letter-spacing:-.035em; margin-bottom:12px; }
+    .feature-card p { font-size:14px; line-height:1.7; max-width:350px; }
+    .movement-story { margin:0 var(--gutter) 80px; display:grid; grid-template-columns:1.15fr 1fr; gap:9%; align-items:center; }
+    .movement-story figure { overflow:hidden; aspect-ratio:1.1; background:var(--bg-card-alt); }
+    .movement-story img { width:100%; height:100%; object-fit:cover; transition:transform 1.2s cubic-bezier(.2,.8,.2,1); }
+    .movement-story figure:hover img { transform:scale(1.035); }
+    .movement-story h2 { font-size:clamp(38px,5.1vw,76px); font-weight:500; line-height:1.05; letter-spacing:-.055em; margin:24px 0 32px; }
+    .text-link { background:none; border:0; border-bottom:1px solid var(--green-brand); padding:8px 0; color:var(--green-brand); font-size:14px; cursor:pointer; }
+    .how-strip { padding:65px var(--gutter); border:0; border-radius:0; margin:0; gap:40px; flex-wrap:nowrap; }
+    .how-strip h3 { font-size:clamp(25px,3vw,42px); max-width:650px; font-weight:500; letter-spacing:-.04em; line-height:1.15; margin-bottom:18px; }
+    .how-strip p { font-size:14px; line-height:1.7; max-width:650px; }
+    .btn-white { white-space:normal; flex-shrink:0; }
+    .app-hero { margin:0; padding:48px var(--gutter) 40px; border-bottom:1px solid var(--border-soft); }
+    .app-hero h2 { max-width:none; font-size:clamp(32px,4vw,54px); letter-spacing:-.055em; font-weight:500; }
+    .app-hero p { max-width:720px; font-size:15px; line-height:1.65; }
+    .workspace { padding:36px var(--gutter) 60px; grid-template-columns:minmax(280px,330px) minmax(0,1fr); gap:48px; }
+    .workspace > *,.recipe-top > *, .chef-header > *, .workout-card-top > *, .exercise-left > div { min-width:0; }
+    .sidebar { gap:0; padding-right:32px; border-right:1px solid var(--border-soft); }
+    .card-panel { border:0; border-radius:0; padding:0 0 26px; margin:0 0 26px; background:none; border-bottom:1px solid var(--border-soft); }
+    .card-panel:last-child { border:0; margin-bottom:0; }
+    .card-panel h3 { font-size:15px; font-weight:500; margin-bottom:14px; gap:10px; }
+    .card-panel .sub-hint { font-size:13px; line-height:1.6; }
+    .goal-btn,.filter-pill,.chef-mode-pill { font-size:13px; min-height:38px; padding:8px 10px; border-radius:4px; }
+    .goal-grid { grid-template-columns:repeat(3,minmax(0,1fr)); gap:5px; }
+    .goal-btn { font-size:12px; padding:8px 4px; }
+    .pill-group { gap:6px; }
+    .training-settings { width:100%; }
+    .training-settings > summary { cursor:pointer; display:flex; align-items:center; justify-content:space-between; gap:15px; font-size:15px; font-weight:600; list-style:none; padding:0 0 24px; }
+    summary::-webkit-details-marker { display:none; }
+    .settings-toggle { font-size:24px; font-weight:400; transition:transform .25s; }
+    .training-settings[open] .settings-toggle { transform:rotate(45deg); }
+    .pantry-search { min-width:0; font-size:14px; padding:12px 10px; border-radius:4px; }
+    .btn-super-search { border-radius:4px; font-size:13px; }
+    .quick-chip { border:0; border-bottom:1px solid var(--border-soft); border-radius:0; font-size:12px; padding:6px 4px; }
+    .pantry-list { gap:0; }
+    .pantry-row { background:none; padding:14px 0; border-bottom:1px solid var(--border-soft); border-radius:0; flex-wrap:wrap; }
+    .pantry-name-col { flex-basis:120px; }
+    .pantry-item-name { white-space:normal; overflow:visible; font-size:13px; }
+    .pantry-item-sub { font-size:11px; }
+    .qty-btn { width:30px; height:30px; font-size:16px; }
+    .qty-val { font-size:12px; min-width:40px; }
+    .qty-controls { gap:4px; margin-left:auto; }
+    .impact-banner { background:none; color:var(--text-main); padding:0 0 28px; border-radius:0; border-bottom:1px solid var(--border-soft); margin-bottom:32px; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; }
+    .impact-num { font-family:var(--serif); font-size:36px; font-weight:400; letter-spacing:-.05em; color:var(--green-brand); }
+    .impact-label { font-size:12px; color:var(--text-muted); }
+    .chef-card { background:none; border:0; border-radius:0; box-shadow:none; padding:0 0 36px; border-bottom:1px solid var(--border-soft); margin-bottom:32px; }
+    .chef-kicker { border-radius:0; background:none; padding:0; font-size:11px; text-transform:uppercase; letter-spacing:.07em; margin-bottom:15px; color:var(--green-brand); }
+    .chef-card .recipe-title { font-size:clamp(24px,2.5vw,34px); font-weight:500; line-height:1.15; letter-spacing:-.045em; }
+    .recipe-sub { font-size:13px; line-height:1.6; margin-top:8px; }
+    .chef-header { margin-bottom:22px; gap:16px; }
+    .chef-controls { margin-bottom:22px; }
+    .ing-tag { font-size:12px; border-radius:3px; padding:5px 8px; }
+    .macros-row { gap:10px 20px; font-size:13px; padding:14px 0; border-top:1px solid var(--border-soft); border-bottom:1px solid var(--border-soft); margin:18px 0; }
+    .macros-row strong { font-weight:500; font-size:20px; letter-spacing:-.04em; }
+    .leftover-line,.tip-line { font-size:13px; line-height:1.65; }
+    .tip-line { border-left:1px solid var(--green-brand); }
+    .steps-box { background:var(--bg-card-alt); padding:24px; border-radius:0; margin:24px 0; }
+    .steps-box h5 { font-size:14px; font-weight:500; margin-bottom:14px; }
+    .steps-list { font-size:14px; line-height:1.7; gap:12px; }
+    .section-divider-title { font-size:13px; font-weight:500; text-transform:uppercase; letter-spacing:.06em; margin-bottom:24px; }
+    .recipes-stack { gap:0; }
+    .recipe-card { padding:28px 0; border:0; border-top:1px solid var(--border-soft); border-radius:0; background:none; }
+    .recipe-title { font-size:22px; font-weight:500; letter-spacing:-.035em; line-height:1.25; }
+    .coverage-pct { font-family:var(--serif); font-size:30px; font-weight:400; }
+    .coverage-lbl { font-size:11px; max-width:100px; }
+    .progress-track { height:2px; margin:20px 0; border-radius:0; }
+    .progress-fill { border-radius:0; }
+    .reviews-block { padding-top:16px; }
+    .rating-summary { flex-wrap:wrap; font-size:12px; font-weight:500; }
+    .btn-write-review { padding:8px 10px; border-radius:4px; font-size:12px; min-height:36px; }
+    .review-details > summary { font-size:12px; color:var(--text-muted); padding:8px 0; cursor:pointer; text-decoration:underline; text-underline-offset:4px; }
+    .review-details[open] { padding-bottom:12px; }
+    .review-body { font-size:13px; line-height:1.6; }
+    .review-head { flex-wrap:wrap; gap:6px; }
+    .workout-notice { background:none; padding:0 0 22px; font-size:14px; line-height:1.7; border-radius:0; border-bottom:1px solid var(--border-soft); margin-bottom:24px; }
+    .days-grid { grid-template-columns:repeat(auto-fit,minmax(100px,1fr)); gap:0; margin-bottom:32px; border-bottom:1px solid var(--border-soft); }
+    .day-tab { font-family:inherit; border:0; border-bottom:2px solid transparent; border-radius:0; background:none; padding:14px 8px; }
+    .day-tab.active { border-color:var(--green-brand); background:var(--bg-card-alt); }
+    .day-tab.active .day-tab-name,.day-tab.active .day-tab-focus { color:var(--green-brand); }
+    .day-tab-name { font-size:14px; font-weight:500; }
+    .day-tab-focus { font-size:12px; }
+    .workout-card { background:none; border:0; border-radius:0; padding:0; }
+    .workout-card h2 { font-size:28px; font-weight:500; letter-spacing:-.04em; }
+    .session-badge { border-radius:3px; font-size:12px; background:var(--bg-card-alt); }
+    .workout-meta { font-size:14px; line-height:1.6; margin:12px 0 24px; }
+    .session-progress { display:flex; align-items:center; gap:18px; font-size:12px; color:var(--text-muted); margin-bottom:18px; }
+    .session-progress-track { flex:1; height:3px; background:var(--track-bg); }
+    .session-progress-track > span { display:block; height:100%; width:0; background:var(--green-brand); transition:width .4s ease; }
+    .exercise-row { padding:22px 0; transition:background .25s; }
+    .exercise-row.done { background:var(--bg-card-alt); }
+    .ex-check { width:24px; height:24px; }
+    .exercise-name { font-size:15px; font-weight:500; }
+    .exercise-note { font-size:13px; line-height:1.5; }
+    .exercise-dose { font-size:15px; font-weight:500; }
+    .footer-note { margin:0 var(--gutter); padding:30px 0; font-size:11px; line-height:1.7; gap:12px 40px; }
+    .modal-card { border-radius:8px; max-height:calc(100svh - 32px); overflow-y:auto; }
+    .modal-sub,.auth-field input { font-size:14px; }
+    .auth-field input { min-height:46px; }
+    .toast { max-width:calc(100vw - 40px); border-radius:4px; }
+    .section-reveal.is-pending { opacity:0; transform:translateY(24px); }
+    .section-reveal { transition:opacity .8s ease, transform .8s cubic-bezier(.2,.7,.2,1); }
+    #viewDieta:not(.hidden),#viewEntreno:not(.hidden) { animation:view-enter .45s ease both; }
+    @keyframes hero-enter { from { opacity:0; transform:translateY(25px); } to { opacity:1; transform:none; } }
+    @keyframes view-enter { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
+    @keyframes photo-settle { from { transform:scale(1.08); } to { transform:scale(1.035); } }
+    @keyframes line-breathe { 0%,100% { transform:scaleX(.55); } 50% { transform:scaleX(1); } }
+    @media (min-width:1600px) { .workspace,.intro-story,.intro-stats-strip,.features-grid,.movement-story { max-width:1440px; margin-left:auto; margin-right:auto; } }
+    @media (max-width:1150px) { .cloud-pill { display:none; } .top-nav { gap:22px; } .topbar-right { gap:12px; } .workspace { gap:32px; grid-template-columns:minmax(260px,300px) minmax(0,1fr); } .sidebar { padding-right:24px; } }
+    @media (max-width:900px) {
+      body { padding:0; }
+      .topbar { gap:12px; min-height:84px; padding-top:14px; padding-bottom:14px; }
+      .top-nav { gap:18px; } .top-nav-btn { font-size:13px; }
+      .brand-wordmark { font-size:36px; } .brand-symbol { width:30px; height:36px; }
+      .btn-account { font-size:12px; padding:10px 12px; } .btn-theme { font-size:11px; }
+      .intro-hero { min-height:650px; padding:40px var(--gutter) 70px; }
+      .hero-shade { background:linear-gradient(90deg,#f4f2e9 0%,#f4f2e9ed 30%,#f4f2e98a 65%,#f4f2e91a); }
+      .intro-story { grid-template-columns:1fr 2fr; gap:24px; padding:50px 0; }
+      .intro-stats-strip { grid-template-columns:repeat(3,minmax(0,1fr)); gap:24px; }
+      .features-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+      .feature-card { padding-right:20px; } .feature-card + .feature-card { padding-left:20px; }
+      .workspace { grid-template-columns:minmax(0,1fr); gap:28px; }
+      .sidebar { border:0; padding:0; }
+      #viewDieta .sidebar { display:grid; grid-template-columns:1fr 2fr; gap:28px; border-bottom:1px solid var(--border-soft); padding-bottom:24px; }
+      .training-settings { border-bottom:1px solid var(--border-soft); }
+      .training-settings > summary { padding:0 0 20px; }
+      .settings-content { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:24px; }
+      .settings-content .card-panel { margin:0; padding-bottom:20px; }
+      .impact-banner { grid-template-columns:repeat(3,minmax(0,1fr)); }
+      .how-strip { padding-top:44px; padding-bottom:44px; }
+    }
+    @media (max-width:650px) {
+      :root { --gutter:20px; }
+      .topbar { display:grid; grid-template-columns:auto minmax(0,1fr); padding:12px var(--gutter) 0; gap:8px 12px; min-height:110px; }
+      .brand-wordmark { font-size:36px; } .brand-symbol { width:28px; height:34px; }
+      .topbar-right { justify-self:end; gap:12px; min-width:0; }
+      .btn-account { max-width:150px; min-height:38px; padding:8px 10px; font-size:11px; }
+      .btn-account.logged-in span:last-child { max-width:90px; overflow:hidden; text-overflow:ellipsis; }
+      .btn-theme { font-size:11px; }
+      .top-nav { grid-row:2; grid-column:1/-1; justify-content:space-between; gap:12px; width:100%; }
+      .top-nav-btn { min-height:43px; font-size:13px; padding:10px 3px 14px; }
+      .top-nav-btn::after { bottom:0; }
+      .intro-hero { min-height:calc(100svh - 110px); padding:40px var(--gutter) 74px; align-items:center; }
+      .hero-image { object-position:65% 50%; }
+      .hero-shade { background:linear-gradient(90deg,#f4f2e9f5 0%,#f4f2e9e6 45%,#f4f2e98f 100%); }
+      .hero-content { width:100%; }
+      .intro-badge { font-size:9px; line-height:1.7; max-width:260px; margin-bottom:25px; }
+      .hero-wordmark { font-size:clamp(108px,34vw,170px); margin-left:-5px; margin-bottom:28px; }
+      .intro-hero h1 { font-size:clamp(25px,6.9vw,38px); line-height:1.18; margin-bottom:28px; }
+      .intro-cta-row { align-items:flex-start; flex-direction:column; gap:8px; }
+      .intro-cta-row button { font-size:13px; min-height:46px; }
+      .hero-footnote { font-size:11px; }
+      .scroll-cue { color:#173f35; text-shadow:none; font-size:10px; bottom:24px; }
+      .intro-story { display:block; padding:44px 0 35px; }
+      .intro-story .eyebrow { margin-bottom:22px; }
+      .intro-story .lead { font-size:22px; }
+      .intro-stats-strip { grid-template-columns:minmax(0,1fr); gap:26px; padding:28px 0; }
+      .intro-stat-title { font-size:17px; margin-bottom:6px; }
+      .intro-stat-desc { max-width:none; font-size:14px; }
+      .section-heading { display:block; padding-top:50px; }
+      .section-heading h2 { width:100%; font-size:37px; margin-top:22px; }
+      .features-grid { display:block; margin-top:30px; margin-bottom:46px; }
+      .feature-card,.feature-card + .feature-card { border-left:0; padding:24px 0; }
+      .feature-step { margin-bottom:14px; }
+      .feature-card p { max-width:none; }
+      .movement-story { grid-template-columns:minmax(0,1fr); gap:30px; margin-bottom:48px; }
+      .movement-story figure { aspect-ratio:1.2; }
+      .movement-story h2 { font-size:48px; margin:18px 0 24px; }
+      .how-strip { flex-wrap:wrap; gap:24px; padding-top:40px; padding-bottom:40px; }
+      .how-strip h3 { font-size:30px; }
+      .how-strip p { font-size:14px; }
+      .app-hero { padding-top:32px; padding-bottom:26px; }
+      .app-hero h2 { font-size:34px; line-height:1.1; overflow-wrap:anywhere; }
+      .app-hero p { font-size:14px; }
+      .workspace { padding-top:26px; padding-bottom:35px; gap:24px; }
+      #viewDieta .sidebar { display:block; padding-bottom:0; }
+      .settings-content { display:block; }
+      .settings-content .card-panel { margin-bottom:24px; }
+      .training-settings > summary { font-size:14px; }
+      .goal-btn { font-size:13px; padding:10px 6px; }
+      .goal-btn,.filter-pill,.chef-mode-pill,.quick-chip { min-height:44px; }
+      .pantry-search,.auth-field input,.review-form input,.review-form textarea,.review-form select { font-size:16px; }
+      .pantry-name-col { flex-basis:100%; }
+      .qty-controls { margin-left:0; }
+      .qty-btn { width:44px; height:44px; }
+      .qty-val { min-width:58px; font-size:14px; }
+      .pantry-row { gap:10px; }
+      .pantry-item-name { font-size:15px; }
+      .pantry-item-sub { font-size:12px; }
+      .impact-banner { grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; padding-bottom:24px; }
+      .impact-num { font-size:30px; }
+      .impact-label { font-size:11px; }
+      .recipe-top { flex-wrap:wrap; }
+      .recipe-top > div:first-child { flex:1 1 190px; }
+      .recipe-title { font-size:23px; }
+      .chef-card .recipe-title { font-size:29px; }
+      .coverage-box { text-align:left; }
+      .coverage-lbl { max-width:none; }
+      .rating-left { flex-wrap:wrap; }
+      .stars-inline { font-size:12px; }
+      .steps-box { padding:20px; }
+      .review-details > summary { min-height:44px; padding:12px 0; }
+      .btn-write-review { min-height:44px; }
+      .workout-card h2 { font-size:25px; }
+      .workout-card-top { gap:14px; }
+      .days-grid { display:flex; overflow-x:auto; scrollbar-width:thin; }
+      .day-tab { min-width:105px; flex:1 0 105px; }
+      .session-progress { flex-wrap:wrap; gap:10px; }
+      .session-progress-track { min-width:70px; }
+      .exercise-row { display:grid; grid-template-columns:minmax(0,1fr); gap:10px; padding:20px 0; }
+      .exercise-dose { text-align:left; padding-left:40px; }
+      .exercise-left { gap:16px; }
+      .ex-check { width:24px; height:24px; outline-offset:6px; }
+      .exercise-left > div { flex:1; }
+      .footer-note { font-size:11px; }
+    }
+    @media (prefers-reduced-motion:reduce) {
+      html { scroll-behavior:auto; }
+      *,*::before,*::after { animation:none!important; transition:none!important; }
+      .section-reveal.is-pending { opacity:1; transform:none; }
+    }
+
   </style>
 </head>
 <body>
+  <a class="skip-link" href="#viewIntro">Saltar al contenido</a>
   <div class="container">
     <!-- TOPBAR -->
     <header class="topbar">
       <a href="#inicio" class="brand" onclick="switchView('intro'); return false;">
-        <span class="brand-leaf"></span>
-        <span>Raíz</span>
+        <svg class="brand-symbol" viewBox="0 0 48 56" fill="none" aria-hidden="true"><path d="M24 31V15M24 24C11 25 6 18 7 8c11 0 18 5 17 16ZM24 19C24 9 31 4 42 5c0 11-6 17-18 14Z" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path class="root-lines" d="M24 30v19m0-17-10 8-6 1m16-4 11 6 5 8M14 40l-2 11m12-7-6 8m17-9 8-3" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="brand-wordmark">raíz<span class="brand-period">.</span></span>
       </a>
 
       <nav class="top-nav" aria-label="Navegación principal">
@@ -1576,18 +1883,27 @@
     <!-- ==================== VIEW 0: PORTADA DE INTRODUCCIÓN ==================== -->
     <section id="viewIntro">
       <div class="intro-hero">
-        <div class="intro-badge">Nutrición sin desperdicio + Entrenamiento a medida</div>
-        <h1>Come lo que ya tienes. Entrena como te gusta.</h1>
+        <img class="hero-image" src="mesa.jpg" alt="Ensalada fresca de espinacas, aguacate, zanahoria y granada" width="1800" height="2700" fetchpriority="high" />
+        <div class="hero-shade"></div>
+        <div class="hero-content">
+          <div class="intro-badge">Nutrición sin desperdicio + Entrenamiento a medida</div>
+          <div class="hero-wordmark" aria-hidden="true">raíz<span>.</span></div>
+          <h1>Come lo que ya tienes.<br><em>Entrena como te gusta.</em></h1>
+          <div class="intro-cta-row">
+            <button class="btn-primary" onclick="switchView('dieta')">Empezar con mi despensa</button>
+            <button class="btn-secondary" onclick="switchView('entrenamiento')">Configurar mi entrenamiento</button>
+          </div>
+          <div class="hero-footnote">Lo cotidiano, bien aprovechado.</div>
+        </div>
+        <a href="#filosofia" class="scroll-cue" aria-label="Descubrir cómo funciona Raíz"><span>Descubre Raíz</span><span class="scroll-line"></span></a>
+      </div>
+      <div class="intro-story section-reveal" id="filosofia">
+        <span class="eyebrow">Bienestar desde la raíz</span>
         <p class="lead">
           Raíz convierte lo que ya hay en tu nevera en recetas equilibradas con macros reales y diseña un plan de entrenamiento adaptado a tus días, material, nivel y zonas a proteger. Sin dietas imposibles ni rutinas genéricas.
         </p>
-
-        <div class="intro-cta-row">
-          <button class="btn-primary" onclick="switchView('dieta')">Empezar con mi despensa</button>
-          <button class="btn-secondary" onclick="switchView('entrenamiento')">Configurar mi entrenamiento</button>
-        </div>
-
-        <div class="intro-stats-strip">
+      </div>
+      <div class="intro-stats-strip">
           <div>
             <div class="intro-stat-title">Catálogo + Supermercados</div>
             <div class="intro-stat-desc">Busca cualquier producto real (Mercadona, Carrefour, Lidl...) vía Open Food Facts o escribe el tuyo.</div>
@@ -1601,32 +1917,36 @@
             <div class="intro-stat-desc">Lee trucos de otros usuarios y comparte tus reseñas en la nube en cada receta.</div>
           </div>
         </div>
-      </div>
 
+      <div class="section-heading section-reveal"><span class="eyebrow">Así de sencillo</span><h2>Menos complicaciones.<br><em>Más vida.</em></h2></div>
       <div class="features-grid">
-        <article class="feature-card">
-          <div class="feature-step">1</div>
+        <article class="feature-card section-reveal">
+          <div class="feature-step" aria-hidden="true">1</div>
           <h3>Añade lo que tienes en casa</h3>
           <p>Selecciona ingredientes básicos o busca productos exactos de supermercado. Ajusta las cantidades y Raíz calcula el impacto de CO₂ evitado.</p>
         </article>
-        <article class="feature-card">
-          <div class="feature-step">2</div>
+        <article class="feature-card section-reveal">
+          <div class="feature-step" aria-hidden="true">2</div>
           <h3>Recetas hechas para ti</h3>
           <p>Nuestro motor combina tu despensa según tu objetivo (bajar, mantener o subir peso), genera una receta paso a paso y ordena el recetario por cobertura.</p>
         </article>
-        <article class="feature-card">
-          <div class="feature-step">3</div>
+        <article class="feature-card section-reveal">
+          <div class="feature-step" aria-hidden="true">3</div>
           <h3>Entrena sin excusas ni lesiones</h3>
           <p>Elige días por semana, lugar, material disponible, foco muscular y posibles molestias (rodillas, espalda, hombros) para adaptar cada ejercicio.</p>
         </article>
       </div>
 
-      <div class="how-strip">
+      <div class="movement-story section-reveal">
+        <figure><img src="movimiento.jpg" alt="Entrenamiento de fuerza con barra" width="1200" height="800" loading="lazy" decoding="async" /></figure>
+        <div><span class="eyebrow">A tu ritmo</span><h2>Tu cuerpo.<br>Tu forma de<br><em>moverte.</em></h2><button class="text-link" onclick="switchView('entrenamiento')">Explorar mi entrenamiento</button></div>
+      </div>
+      <div class="how-strip section-reveal">
         <div>
           <h3>¿Listo para sacarle partido a tu nevera hoy?</h3>
           <p>Puedes usar Raíz sin registro o crear una cuenta con usuario y contraseña para guardar tu despensa y tu rutina en la nube y abrirlos en cualquier dispositivo.</p>
         </div>
-        <button class="btn-white" onclick="switchView('dieta')">Abrir Raíz ahora &rarr;</button>
+        <button class="btn-white" onclick="switchView('dieta')">Abrir Raíz ahora</button>
       </div>
     </section>
 
@@ -1660,6 +1980,7 @@
             <div class="search-box-wrap" id="searchBoxWrap">
               <div class="search-input-row">
                 <input
+                  aria-label="Buscar ingredientes o productos"
                   type="text"
                   id="pantrySearchInput"
                   class="pantry-search"
@@ -1718,6 +2039,9 @@
       <main class="workspace">
         <!-- Left Sidebar -->
         <aside class="sidebar">
+          <details class="training-settings" id="trainingSettings" open>
+            <summary>Personalizar mi entrenamiento<span class="settings-toggle" aria-hidden="true">+</span></summary>
+            <div class="settings-content">
           <div class="card-panel">
             <h3>Dónde entrenas</h3>
             <div class="pill-group" data-filter="place">
@@ -1799,6 +2123,9 @@
               <button class="filter-pill warn" data-injury="munecas">Muñecas</button>
             </div>
           </div>
+        
+            </div>
+          </details>
         </aside>
 
         <!-- Right Content -->
@@ -1814,6 +2141,7 @@
               <div class="session-badges" id="sessionBadges"></div>
             </div>
             <p class="workout-meta" id="workoutMeta"></p>
+            <div class="session-progress" aria-live="polite"><span id="sessionProgressText"></span><div class="session-progress-track"><span id="sessionProgressFill"></span></div></div>
             <div class="exercise-list" id="exerciseList"></div>
           </div>
         </section>
@@ -2737,7 +3065,7 @@
             </div>
             <button class="btn-write-review" onclick="toggleReviewForm('${recipeId}')">Escribir reseña</button>
           </div>
-          <div>${itemsHtml || '<p class="review-body" style="margin-bottom:8px;">Sé el primero en valorar esta receta.</p>'}</div>
+          <details class="review-details"><summary>Leer opiniones (${count})</summary><div>${itemsHtml || '<p class="review-body" style="margin-bottom:8px;">Sé el primero en valorar esta receta.</p>'}</div></details>
           <form class="review-form" id="reviewForm-${recipeId}" onsubmit="handleReviewSubmit(event, '${recipeId}')">
             <input type="text" placeholder="Tu nombre (ej. Alex G.)" required id="author-${recipeId}" maxlength="40" value="${escapeHtml(getLoggedDisplayName())}" />
             <select id="stars-${recipeId}">
@@ -3217,7 +3545,9 @@
       const daysContainer = document.getElementById('daysContainer');
       daysContainer.innerHTML = '';
       split.forEach((d, idx) => {
-        const tab = document.createElement('div');
+        const tab = document.createElement('button');
+        tab.type = 'button';
+        tab.setAttribute('aria-pressed', String(idx === workoutState.dayIndex));
         tab.className = 'day-tab' + (idx === workoutState.dayIndex ? ' active' : '');
         tab.innerHTML = `
           <div class="day-tab-name">${d.day}</div>
@@ -3257,7 +3587,7 @@
         row.className = 'exercise-row' + (isDone ? ' done' : '');
         row.innerHTML = `
           <div class="exercise-left">
-            <input type="checkbox" class="ex-check" ${isDone ? 'checked' : ''} onchange="toggleExerciseDone('${key}')" />
+            <input type="checkbox" class="ex-check" aria-label="Completar ${escapeHtml(ex.name)}" ${isDone ? 'checked' : ''} onchange="toggleExerciseDone('${key}')" />
             <div>
               <div class="exercise-name">
                 ${escapeHtml(ex.name)}
@@ -3270,6 +3600,9 @@
         `;
         listEl.appendChild(row);
       });
+      const doneCount = exercises.filter((_, idx) => workoutState.completed.has(`${workoutState.dayIndex}-${idx}`)).length;
+      document.getElementById('sessionProgressText').textContent = `${doneCount} de ${exercises.length} ejercicios completados`;
+      document.getElementById('sessionProgressFill').style.width = `${exercises.length ? doneCount / exercises.length * 100 : 0}%`;
     }
 
     function toggleExerciseDone(key) {
@@ -3293,7 +3626,9 @@
 
       if (view === 'entrenamiento') renderWorkoutView();
       if (view === 'dieta') updateDietaAll();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      document.querySelector('.skip-link').href = '#' + (view === 'intro' ? 'viewIntro' : view === 'dieta' ? 'viewDieta' : 'viewEntreno');
+      document.querySelectorAll('.top-nav-btn').forEach(btn => btn.setAttribute('aria-current', btn.classList.contains('active') ? 'page' : 'false'));
+      window.scrollTo({ top: 0, behavior: 'instant' });
     }
 
     // Objetivo de dieta
@@ -3916,5 +4251,40 @@
       renderWorkoutView();
     })();
   </script>
+<script>
+/* Small, dependency-free motion; all information remains visible without it. */
+(() => {
+  const compact = window.matchMedia('(max-width: 900px)');
+  const settings = document.getElementById('trainingSettings');
+  settings.open = !compact.matches;
+  compact.addEventListener('change', e => { settings.open = !e.matches; });
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if ('IntersectionObserver' in window && !reduceMotion.matches) {
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.remove('is-pending');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.section-reveal').forEach(el => {
+      el.classList.add('is-pending');
+      observer.observe(el);
+    });
+  }
+  document.getElementById('pantrySearchInput').setAttribute('aria-label', 'Buscar ingredientes o productos');
+  document.querySelectorAll('#viewIntro,#viewDieta,#viewEntreno').forEach(el => el.setAttribute('tabindex', '-1'));
+  const syncSelected = () => {
+    document.querySelectorAll('.goal-btn,.filter-pill,.chef-mode-pill').forEach(btn => {
+      btn.setAttribute('aria-pressed', String(btn.classList.contains('active')));
+    });
+  };
+  syncSelected();
+  document.addEventListener('click', () => requestAnimationFrame(syncSelected));
+  document.getElementById('navIntro').setAttribute('aria-current','page');
+})();
+
+</script>
 </body>
 </html>
