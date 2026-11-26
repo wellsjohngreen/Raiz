@@ -1979,6 +1979,9 @@
     .fig-head { fill:var(--green-brand); }
     .fig-load { fill:var(--burgundy); }
     .fig-support { fill:var(--track-bg); }
+    .fig-bar { stroke:var(--text-muted); stroke-width:4; stroke-linecap:round; }
+    .ex-demo-static { font-size:11px; font-weight:600; letter-spacing:.04em; text-transform:uppercase; color:var(--text-muted); }
+    .is-front .fig-far { stroke:var(--green-brand); opacity:1; stroke-width:7; }
     .ex-demo-controls { display:flex; justify-content:space-between; align-items:center; gap:8px; margin-top:6px; font-size:12px; }
     .ex-demo-phase { font-weight:600; color:var(--green-brand); min-height:1.2em; }
     .ex-demo-pause {
@@ -4029,6 +4032,7 @@
         anchor: 'toeN', anchorX: 30,
         a: { torso: 103, armN: 0, foreN: 90, thighN: -77, shinN: -77, footN: 20 },
         b: { torso: 101, armN: 2, foreN: 90, thighN: -79, shinN: -79, footN: 20 },
+        static: true, timing: [{ hold: 2.5, move: 0 }, { hold: 2.5, move: 0 }],
         phases: ['Mantén', 'Respira'],
         cues: ['Codos bajo los hombros.', 'Cuerpo en línea recta de cabeza a talones.', 'Respira sin soltar el abdomen.']
       },
@@ -4145,7 +4149,7 @@
         cues: ['Piernas a 90° y zona lumbar apoyada.', 'Despega solo los hombros, sin tirar del cuello.', 'Baja despacio sin descansar del todo.']
       },
       {
-        id: 'carrera', match: /^(Intervalos de carrera|Caminata rápida|Rodillas arriba|Marcha rápida|Jumping jacks)/,
+        id: 'carrera', match: /^(Intervalos de carrera|Caminata rápida|Rodillas arriba|Marcha rápida)/,
         anchor: 'hip', anchorX: 110, groundOffset: 62,
         a: { torso: 174, armN: -38, foreN: 50, armF: 40, foreF: 130, thighN: 62, shinN: -10, thighF: -24, shinF: -62 },
         b: { torso: 174, armN: 40, foreN: 130, armF: -38, foreF: 50, thighN: -24, shinN: -62, thighF: 62, shinF: -10 },
@@ -4175,6 +4179,135 @@
         b: { torso: 75, armN: 2, foreN: 2, thighN: 52, shinN: -4, thighF: -33, shinF: -33, footN: 90, footF: 60 },
         phases: ['Zancada', 'Perro'],
         cues: ['Desde el perro boca abajo, cadera alta y espalda larga.', 'Lleva un pie entre las manos.', 'Baja la cadera para estirar el flexor de la pierna de atrás.']
+      },
+      {
+        id: 'plancha-lateral', match: /^Plancha lateral/,
+        anchor: 'toeN', anchorX: 30,
+        a: { torso: 112, armN: 0, foreN: 90, armF: 120, foreF: 130, thighN: -84, shinN: -84, footN: 20 },
+        b: { torso: 103, armN: 0, foreN: 90, armF: 178, foreF: 180, thighN: -77, shinN: -77, footN: 20 },
+        static: true, timing: [{ hold: 2.5, move: 0 }, { hold: 2.5, move: 0 }],
+        phases: ['Mantén', 'Respira'],
+        cues: ['Codo justo debajo del hombro.', 'Cadera elevada: cuerpo en línea recta de cabeza a pies.', 'No dejes que la cadera se hunda ni se adelante.']
+      },
+      {
+        id: 'pallof', match: /^Press Pallof/,
+        anchor: 'ankleN', anchorX: 110,
+        a: { torso: 180, armN: -40, foreN: 92, thighN: 4, shinN: 0, thighF: -4, shinF: 0 },
+        b: { torso: 180, armN: 88, foreN: 90, thighN: 4, shinN: 0, thighF: -4, shinF: 0 },
+        phases: ['Empuja', 'Vuelve'],
+        cues: ['Banda o polea anclada a un lado, a la altura del pecho.', 'Empuja al frente sin dejar que el tronco gire.', 'Abdomen firme y cadera mirando al frente.']
+      },
+      {
+        id: 'laterales', match: /^Elevaciones laterales/, front: true,
+        anchor: 'lowest', anchorX: 120, load: 'hand',
+        a: { torso: 180, armN: 12, foreN: 12, armF: -12, foreF: -12, thighN: 3, shinN: 0, thighF: -3, shinF: 0, footN: 90, footF: -90 },
+        b: { torso: 180, armN: 86, foreN: 90, armF: -86, foreF: -90, thighN: 3, shinN: 0, thighF: -3, shinF: 0, footN: 90, footF: -90 },
+        phases: ['Sube', 'Baja'],
+        cues: ['Peso ligero y codos apenas flexionados.', 'Sube los brazos hacia los lados hasta la altura de los hombros.', 'Baja despacio sin encoger los hombros.']
+      },
+      {
+        id: 'abduccion', match: /^Abducción de cadera/, front: true,
+        anchor: 'ankleN', anchorX: 132,
+        a: { torso: 180, armN: 40, foreN: -40, armF: -40, foreF: 40, thighN: 2, shinN: 0, thighF: -2, shinF: 0, footN: 90, footF: -90 },
+        b: { torso: 176, armN: 40, foreN: -40, armF: -40, foreF: 40, thighN: 4, shinN: 0, thighF: -36, shinF: -36, footN: 90, footF: -90 },
+        phases: ['Abre', 'Cierra'],
+        cues: ['Manos en la cadera y tronco quieto.', 'Separa la pierna hacia el lado sin inclinarte.', 'Baja controlando; luego cambia de pierna.']
+      },
+      {
+        id: 'jacks', match: /^Jumping jacks/, front: true,
+        anchor: 'lowest', anchorX: 120,
+        a: { torso: 180, armN: 10, foreN: 10, armF: -10, foreF: -10, thighN: 3, shinN: 0, thighF: -3, shinF: 0, footN: 90, footF: -90 },
+        b: { torso: 180, armN: 160, foreN: 168, armF: -160, foreF: -168, thighN: 22, shinN: 22, thighF: -22, shinF: -22, footN: 90, footF: -90 },
+        timing: [{ hold: 0.1, move: 0.45 }, { hold: 0.1, move: 0.45 }],
+        phases: ['Abre', 'Cierra'],
+        cues: ['Abre piernas y brazos a la vez.', 'Aterriza suave sobre la parte delantera del pie.', 'Si prefieres sin impacto, abre una pierna cada vez.']
+      },
+      {
+        id: 'aperturas', match: /^Aperturas/, front: true,
+        anchor: 'lowest', anchorX: 120,
+        a: { torso: 180, armN: 92, foreN: 100, armF: -92, foreF: -100, thighN: 6, shinN: 0, thighF: -6, shinF: 0, footN: 90, footF: -90 },
+        b: { torso: 180, armN: 10, foreN: -40, armF: -10, foreF: 40, thighN: 6, shinN: 0, thighF: -6, shinF: 0, footN: 90, footF: -90 },
+        phases: ['Cierra', 'Abre'],
+        cues: ['Codos ligeramente flexionados durante todo el arco.', 'Cierra los brazos frente al pecho como si abrazaras un árbol.', 'Abre despacio solo hasta notar estiramiento, sin dolor en el hombro.']
+      },
+      {
+        id: 'noventa', match: /^Movilidad de cadera 90\/90/, front: true,
+        anchor: 'lowest', anchorX: 120,
+        a: { torso: 180, armN: 20, foreN: 20, armF: -20, foreF: -20, thighN: 92, shinN: -86, thighF: -92, shinF: 86, footN: -90, footF: 90 },
+        b: { torso: 158, armN: 70, foreN: 70, armF: 30, foreF: 50, thighN: 92, shinN: -86, thighF: -92, shinF: 86, footN: -90, footF: 90 },
+        phases: ['Inclina', 'Vuelve'],
+        cues: ['Sentado con ambas rodillas dobladas a 90°, una delante y otra detrás.', 'Espalda larga e inclínate sobre la pierna de delante.', 'Respira y cambia de lado sin usar las manos si puedes.']
+      },
+      {
+        id: 'figura4', match: /^Apertura de cadera tumbado/,
+        anchor: 'hip', anchorX: 118, groundOffset: 8,
+        a: { torso: -90, armN: 100, foreN: 96, thighN: 150, shinN: 70, thighF: 110, shinF: -140 },
+        b: { torso: -90, armN: 150, foreN: 120, thighN: 172, shinN: 85, thighF: 130, shinF: -120 },
+        phases: ['Acerca', 'Suelta'],
+        cues: ['Tumbado boca arriba, cruza un tobillo sobre la rodilla contraria.', 'Acerca la pierna de apoyo al pecho con las manos.', 'Nota el estiramiento en el glúteo; respira sin forzar.']
+      },
+      {
+        id: 'gato-camello', match: /^Flujo gato-camello/,
+        anchor: 'kneeN', anchorX: 96, groundOffset: 2,
+        a: { torso: 108, bend: 34, headTilt: -55, armN: 0, foreN: 0, thighN: 0, shinN: -90, footN: -90 },
+        b: { torso: 108, bend: -30, headTilt: 40, armN: 0, foreN: 0, thighN: 0, shinN: -90, footN: -90 },
+        timing: [{ hold: 0.6, move: 1.6 }, { hold: 0.6, move: 1.6 }],
+        phases: ['Camello', 'Gato'],
+        cues: ['Manos bajo los hombros y rodillas bajo la cadera.', 'Redondea la espalda llevando la mirada al ombligo (gato).', 'Luego arquea suave y mira al frente (camello), siguiendo la respiración.']
+      },
+      {
+        id: 'burpee', match: /^Burpees/,
+        anchor: 'ankleN', anchorX: 150, mainKey: 2,
+        keys: [
+          { torso: 180, armN: 4, foreN: 4, thighN: 0, shinN: 0 },
+          { torso: 118, armN: 28, foreN: 4, thighN: 96, shinN: -34 },
+          { torso: 112, armN: 0, foreN: 0, thighN: -68, shinN: -68, footN: 20, at: 'wristN', atX: 187, atOffset: 2 },
+          { torso: 118, armN: 28, foreN: 4, thighN: 96, shinN: -34 }
+        ],
+        phases: ['Agáchate', 'Atrás', 'Recoge', 'Sube'],
+        cues: ['Agáchate y apoya las manos delante de los pies.', 'Lleva los pies atrás de uno en uno hasta la plancha.', 'Recoge los pies y ponte de pie sin saltar.']
+      },
+      {
+        id: 'escalon', match: /^Subidas rápidas a escalón/,
+        anchor: 'ankleN', anchorX: 140, groundOffset: 32, support: 'ankleN', supportGap: 0,
+        a: { torso: 162, armN: -20, foreN: 40, armF: 30, foreF: 100, thighN: 78, shinN: -12, thighF: -14, shinF: -16 },
+        b: { torso: 180, armN: 30, foreN: 100, armF: -20, foreF: 40, thighN: 0, shinN: 0, thighF: 82, shinF: -6 },
+        phases: ['Sube', 'Baja'],
+        cues: ['Apoya todo el pie en el escalón.', 'Empuja con la pierna de arriba hasta quedar recto.', 'Baja controlando y alterna la pierna.']
+      },
+      {
+        id: 'estiramiento', match: /^Estiramiento de cadena posterior/,
+        anchor: 'ankleN', anchorX: 108,
+        a: { torso: 180, armN: 172, foreN: 176, thighN: 2, shinN: 0 },
+        b: { torso: 24, armN: 6, foreN: 2, thighN: 6, shinN: -2 },
+        timing: [{ hold: 0.6, move: 1.8 }, { hold: 1.2, move: 1.6 }],
+        phases: ['Flexiona', 'Sube'],
+        cues: ['Rodillas suaves, sin bloquearlas.', 'Deja caer el tronco hacia las piernas de vértebra en vértebra.', 'Sube despacio y respira en cada posición.']
+      },
+      {
+        id: 'respiracion', match: /^Respiración diafragmática/,
+        anchor: 'ankleN', anchorX: 160,
+        a: { torso: -80, armN: 108, foreN: 64, thighN: 128, shinN: 8 },
+        b: { torso: -80, bend: -10, armN: 118, foreN: 56, thighN: 128, shinN: 8 },
+        timing: [{ hold: 0.4, move: 3 }, { hold: 0.4, move: 3.4 }],
+        phases: ['Inhala', 'Exhala'],
+        cues: ['Tumbado con las rodillas dobladas y una mano en el abdomen.', 'Inhala por la nariz notando cómo sube el abdomen.', 'Exhala lento por la boca, más largo que la inhalación.']
+      },
+      {
+        id: 'fondos', match: /^Fondos/,
+        anchor: 'wristN', anchorX: 92, groundOffset: 34, support: 'wristN', supportGap: 1,
+        a: { torso: 176, armN: -12, foreN: 2, thighN: 90, shinN: 0 },
+        b: { torso: 172, armN: -76, foreN: 6, thighN: 112, shinN: 25 },
+        phases: ['Baja', 'Empuja'],
+        cues: ['Manos en el borde del banco, dedos hacia delante.', 'Baja doblando los codos hacia atrás, hasta unos 90°.', 'Espalda cerca del banco y hombros lejos de las orejas.']
+      },
+      {
+        id: 'dominadas', match: /^Dominadas/, bar: true,
+        anchor: 'wristN', anchorX: 120, groundOffset: 228,
+        a: { torso: 180, armN: 176, foreN: 178, thighN: 4, shinN: -14 },
+        b: { torso: 176, armN: 24, foreN: 172, thighN: 10, shinN: -16 },
+        phases: ['Sube', 'Baja'],
+        cues: ['Agarre algo más ancho que los hombros.', 'Tira llevando el pecho hacia la barra y los codos hacia abajo.', 'Baja hasta estirar los brazos sin balancearte.']
       }
     ];
 
@@ -4187,21 +4320,31 @@
       return [Math.sin(r) * length, Math.cos(r) * length];
     }
 
-    function demoPoseJoints(p) {
+    // Postura → articulaciones con la cadera en el origen.
+    // bend curva la columna (+ = espalda redondeada hacia arriba en cuadrupedia),
+    // headTilt gira la cabeza; en vista frontal (front) hombros y caderas se separan.
+    function demoPoseJoints(p, front = false) {
       const add = (o, a, l) => { const d = demoDir(a, l); return [o[0] + d[0], o[1] + d[1]]; };
+      const bend = p.bend || 0;
       const hip = [0, 0];
-      const shoulder = add(hip, p.torso, FIG.torso);
-      const head = add(shoulder, p.torso, FIG.neck + FIG.head);
+      const mid = add(hip, p.torso + bend / 2, FIG.torso / 2);
+      const shoulder = add(mid, p.torso - bend / 2, FIG.torso / 2);
+      const head = add(shoulder, p.torso - bend / 2 + (p.headTilt || 0), FIG.neck + FIG.head);
+      const sw = front ? 11 : 0, hw = front ? 7 : 0;
+      const upper = p.torso - bend / 2;
+      const shoulderN = add(shoulder, upper - 90, sw), shoulderF = add(shoulder, upper + 90, sw);
+      const hipN = add(hip, p.torso + bend / 2 - 90, hw), hipF = add(hip, p.torso + bend / 2 + 90, hw);
       const armF = p.armF ?? p.armN, foreF = p.foreF ?? p.foreN;
       const thighF = p.thighF ?? p.thighN, shinF = p.shinF ?? p.shinN;
-      const elbowN = add(shoulder, p.armN, FIG.upperArm);
-      const elbowF = add(shoulder, armF, FIG.upperArm);
-      const kneeN = add(hip, p.thighN, FIG.thigh);
-      const kneeF = add(hip, thighF, FIG.thigh);
+      const elbowN = add(shoulderN, p.armN, FIG.upperArm);
+      const elbowF = add(shoulderF, armF, FIG.upperArm);
+      const kneeN = add(hipN, p.thighN, FIG.thigh);
+      const kneeF = add(hipF, thighF, FIG.thigh);
       const ankleN = add(kneeN, p.shinN, FIG.shin);
       const ankleF = add(kneeF, shinF, FIG.shin);
       return {
-        hip, shoulder, head, elbowN, elbowF, kneeN, kneeF, ankleN, ankleF,
+        hip, mid, shoulder, head, shoulderN, shoulderF, hipN, hipF,
+        elbowN, elbowF, kneeN, kneeF, ankleN, ankleF,
         wristN: add(elbowN, p.foreN, FIG.foreArm),
         wristF: add(elbowF, foreF, FIG.foreArm),
         toeN: add(ankleN, p.footN ?? 90, FIG.foot),
@@ -4215,39 +4358,73 @@
       return a + d * t;
     }
 
+    const POSE_NUMERIC = ['torso', 'bend', 'headTilt', 'armN', 'foreN', 'armF', 'foreF', 'thighN', 'shinN', 'thighF', 'shinF', 'footN', 'footF'];
     function lerpPose(a, b, t) {
       const out = {};
-      const keys = new Set([...Object.keys(a), ...Object.keys(b)]);
-      keys.forEach(k => {
+      POSE_NUMERIC.forEach(k => {
+        if (!(k in a) && !(k in b)) return;
         const fallback = k.endsWith('F') ? k.slice(0, -1) + 'N' : null;
-        const va = a[k] ?? (fallback ? a[fallback] : undefined) ?? (k.startsWith('foot') ? 90 : 0);
-        const vb = b[k] ?? (fallback ? b[fallback] : undefined) ?? (k.startsWith('foot') ? 90 : 0);
+        const base = k.startsWith('foot') ? 90 : 0;
+        const va = a[k] ?? (fallback ? a[fallback] : undefined) ?? base;
+        const vb = b[k] ?? (fallback ? b[fallback] : undefined) ?? base;
         out[k] = lerpAngle(va, vb, t);
       });
       return out;
     }
 
-    function placeDemoJoints(demo, pose) {
-      const j = demoPoseJoints(pose);
-      const anchor = j[demo.anchor];
-      const dx = demo.anchorX - anchor[0];
-      const dy = DEMO_GROUND - (demo.groundOffset || 0) - anchor[1];
+    function demoKeys(demo) { return demo.keys || [demo.a, demo.b]; }
+    // Postura que se muestra fija (pausa o «reducir movimiento»): 'a' = la primera, 'b' = la principal.
+    function demoStillPose(demo, which) {
+      const keys = demoKeys(demo);
+      return which === 'a' ? keys[0] : keys[demo.mainKey ?? keys.length - 1];
+    }
+
+    function anchorSpec(demo, key) {
+      return { at: key.at || demo.anchor, x: key.atX ?? demo.anchorX, off: key.atOffset ?? demo.groundOffset ?? 0 };
+    }
+
+    function anchorTranslation(joints, spec) {
+      if (spec.at === 'lowest') {
+        const lowest = Math.max(...Object.values(joints).map(p => p[1]));
+        return [spec.x - joints.hip[0], DEMO_GROUND - spec.off - lowest];
+      }
+      const a = joints[spec.at];
+      return [spec.x - a[0], DEMO_GROUND - spec.off - a[1]];
+    }
+
+    function translateJoints(j, [dx, dy]) {
       Object.keys(j).forEach(k => { j[k] = [j[k][0] + dx, j[k][1] + dy]; });
       return j;
     }
 
+    // Articulaciones colocadas en el lienzo entre la postura i y la siguiente (t = 0…1).
+    // Si ambas usan el mismo punto fijo se respeta en todo el recorrido; si no,
+    // se interpola la posición para que el cambio de apoyo sea suave.
+    function placeDemoBetween(demo, i, t) {
+      const keys = demoKeys(demo);
+      const from = keys[i], to = keys[(i + 1) % keys.length];
+      const pose = t <= 0 ? from : t >= 1 ? to : lerpPose(from, to, t);
+      const j = demoPoseJoints(pose, demo.front);
+      const sa = anchorSpec(demo, from), sb = anchorSpec(demo, to);
+      if (sa.at === sb.at && sa.x === sb.x && sa.off === sb.off) return translateJoints(j, anchorTranslation(j, sa));
+      const ta = anchorTranslation(demoPoseJoints(from, demo.front), sa);
+      const tb = anchorTranslation(demoPoseJoints(to, demo.front), sb);
+      return translateJoints(j, [ta[0] + (tb[0] - ta[0]) * t, ta[1] + (tb[1] - ta[1]) * t]);
+    }
+
+    function placeDemoJoints(demo, pose) {
+      const keys = demoKeys(demo);
+      const idx = Math.max(0, keys.indexOf(pose));
+      if (keys.includes(pose)) return placeDemoBetween(demo, idx, 0);
+      const j = demoPoseJoints(pose, demo.front);
+      return translateJoints(j, anchorTranslation(j, anchorSpec(demo, keys[0])));
+    }
+
     const DEMO_SEGMENTS = {
-      far: [['shoulder', 'elbowF'], ['elbowF', 'wristF'], ['hip', 'kneeF'], ['kneeF', 'ankleF'], ['ankleF', 'toeF']],
-      body: [['hip', 'shoulder']],
-      near: [['hip', 'kneeN'], ['kneeN', 'ankleN'], ['ankleN', 'toeN'], ['shoulder', 'elbowN'], ['elbowN', 'wristN']]
+      far: [['shoulderF', 'elbowF'], ['elbowF', 'wristF'], ['hipF', 'kneeF'], ['kneeF', 'ankleF'], ['ankleF', 'toeF']],
+      body: [['hip', 'mid'], ['mid', 'shoulder'], ['shoulderF', 'shoulderN'], ['hipF', 'hipN']],
+      near: [['hipN', 'kneeN'], ['kneeN', 'ankleN'], ['ankleN', 'toeN'], ['shoulderN', 'elbowN'], ['elbowN', 'wristN']]
     };
-    const DEMO_CYCLE = [
-      { until: 0.5, from: 'a', to: 'a', phase: 0 },
-      { until: 1.9, from: 'a', to: 'b', phase: 0 },
-      { until: 2.4, from: 'b', to: 'b', phase: 1 },
-      { until: 3.5, from: 'b', to: 'a', phase: 1 }
-    ];
-    const DEMO_CYCLE_SECONDS = 3.5;
     const reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     const openDemos = new Set();      // claves de ejercicio con el panel abierto
     const pausedDemos = new Set();    // claves en pausa (o mostrando postura fija)
@@ -4255,15 +4432,40 @@
 
     function easeInOut(t) { return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; }
 
+    // Tiempos por postura: pausa en la postura y luego movimiento hacia la siguiente.
+    function demoTimeline(demo) {
+      const keys = demoKeys(demo);
+      if (demo.timing) return demo.timing;
+      if (keys.length === 2) return [{ hold: 0.5, move: 1.4 }, { hold: 0.5, move: 1.1 }];
+      return keys.map(() => ({ hold: 0.35, move: 0.9 }));
+    }
+
+    function demoStateAt(demo, seconds) {
+      const timeline = demoTimeline(demo);
+      const total = timeline.reduce((acc, s) => acc + s.hold + s.move, 0);
+      let t = seconds % total;
+      for (let i = 0; i < timeline.length; i++) {
+        const { hold, move } = timeline[i];
+        if (t < hold) return { index: i, progress: 0 };
+        t -= hold;
+        if (t < move) return { index: i, progress: easeInOut(t / move) };
+        t -= move;
+      }
+      return { index: 0, progress: 0 };
+    }
+
     function demoViewBox(demo) {
       let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = DEMO_GROUND;
-      [0, 0.25, 0.5, 0.75, 1].forEach(t => {
-        Object.values(placeDemoJoints(demo, lerpPose(demo.a, demo.b, t))).forEach(([x, y]) => {
-          minX = Math.min(minX, x); maxX = Math.max(maxX, x); minY = Math.min(minY, y); maxY = Math.max(maxY, y);
+      demoKeys(demo).forEach((_, i) => {
+        [0, 0.25, 0.5, 0.75].forEach(t => {
+          Object.values(placeDemoBetween(demo, i, t)).forEach(([x, y]) => {
+            minX = Math.min(minX, x); maxX = Math.max(maxX, x); minY = Math.min(minY, y); maxY = Math.max(maxY, y);
+          });
         });
       });
       const pad = 16;
       minY -= FIG.head;
+      if (demo.bar) minY -= 6;
       const w = Math.max(maxX - minX + pad * 2, 150);
       const cx = (minX + maxX) / 2;
       return `${(cx - w / 2).toFixed(1)} ${(minY - pad).toFixed(1)} ${w.toFixed(1)} ${(maxY - minY + pad * 1.6).toFixed(1)}`;
@@ -4271,17 +4473,17 @@
 
     function demoSvgMarkup(demo, name) {
       const lines = group => DEMO_SEGMENTS[group].map((_, i) => `<line class="fig-${group}" data-seg="${group}-${i}" />`).join('');
-      return `<svg class="ex-demo-svg" viewBox="${demoViewBox(demo)}" role="img" aria-label="Animación de la técnica: ${escapeHtml(name)}" preserveAspectRatio="xMidYMax meet">
+      return `<svg class="ex-demo-svg${demo.front ? ' is-front' : ''}" viewBox="${demoViewBox(demo)}" role="img" aria-label="Animación de la técnica: ${escapeHtml(name)}" preserveAspectRatio="xMidYMax meet">
         <line class="fig-ground" x1="-400" y1="${DEMO_GROUND}" x2="800" y2="${DEMO_GROUND}" />
         ${demo.support ? '<rect class="fig-support" data-seg="support" rx="3" />' : ''}
+        ${demo.bar ? '<line class="fig-bar" data-seg="bar" />' : ''}
         ${lines('far')}${lines('body')}${lines('near')}
         <circle class="fig-head" data-seg="head" r="${FIG.head}" />
         ${demo.load ? '<rect class="fig-load" data-seg="load" width="16" height="8" rx="3" />' : ''}
       </svg>`;
     }
 
-    function drawDemoPose(svg, demo, pose) {
-      const j = placeDemoJoints(demo, pose);
+    function drawDemoJoints(svg, demo, j) {
       Object.keys(DEMO_SEGMENTS).forEach(group => {
         DEMO_SEGMENTS[group].forEach(([p, q], i) => {
           const el = svg.querySelector(`[data-seg="${group}-${i}"]`);
@@ -4293,6 +4495,13 @@
       head.setAttribute('cx', j.head[0].toFixed(1)); head.setAttribute('cy', j.head[1].toFixed(1));
       const load = svg.querySelector('[data-seg="load"]');
       if (load) { load.setAttribute('x', (j.wristN[0] - 8).toFixed(1)); load.setAttribute('y', (j.wristN[1] - 4).toFixed(1)); }
+      const bar = svg.querySelector('[data-seg="bar"]');
+      if (bar) {
+        // Barra fija: el ejercicio que la usa tiene las manos como punto fijo.
+        const y = (j.wristN[1] - 3).toFixed(1);
+        bar.setAttribute('x1', (j.wristN[0] - 40).toFixed(1)); bar.setAttribute('x2', (j.wristN[0] + 40).toFixed(1));
+        bar.setAttribute('y1', y); bar.setAttribute('y2', y);
+      }
       const support = svg.querySelector('[data-seg="support"]');
       if (support) {
         // Apoyo (banco/caja): bajo una articulación o abarcando dos (p. ej. hombro y cadera).
@@ -4305,17 +4514,8 @@
       }
     }
 
-    function demoStateAt(seconds) {
-      const t = seconds % DEMO_CYCLE_SECONDS;
-      let start = 0;
-      for (const step of DEMO_CYCLE) {
-        if (t <= step.until) {
-          const local = step.until === start ? 1 : (t - start) / (step.until - start);
-          return { step, progress: step.from === step.to ? 1 : easeInOut(local) };
-        }
-        start = step.until;
-      }
-      return { step: DEMO_CYCLE[0], progress: 1 };
+    function drawDemoPose(svg, demo, pose) {
+      drawDemoJoints(svg, demo, placeDemoJoints(demo, pose));
     }
 
     function renderDemoPanels(now) {
@@ -4325,16 +4525,21 @@
         const phaseEl = panel.querySelector('.ex-demo-phase');
         if (!demo || !svg) return;
         const key = panel.dataset.key;
+        if (demo.static) {
+          // Ejercicio isométrico: la figura no se mueve; solo alterna la indicación.
+          drawDemoPose(svg, demo, demoStillPose(demo, 'b'));
+          phaseEl.textContent = reduceMotionQuery.matches ? 'Mantén la posición' : demo.phases[demoStateAt(demo, now / 1000).index];
+          return;
+        }
         if (reduceMotionQuery.matches || pausedDemos.has(key)) {
           const showStart = panel.dataset.still === 'a';
-          drawDemoPose(svg, demo, showStart ? demo.a : demo.b);
+          drawDemoPose(svg, demo, demoStillPose(demo, showStart ? 'a' : 'b'));
           phaseEl.textContent = showStart ? 'Posición inicial' : 'Posición final';
           return;
         }
-        const { step, progress } = demoStateAt(now / 1000);
-        const pose = step.from === step.to ? demo[step.from] : lerpPose(demo[step.from], demo[step.to], progress);
-        drawDemoPose(svg, demo, pose);
-        phaseEl.textContent = demo.phases[step.phase];
+        const { index, progress } = demoStateAt(demo, now / 1000);
+        drawDemoJoints(svg, demo, placeDemoBetween(demo, index, progress));
+        phaseEl.textContent = demo.phases[index] ?? '';
       });
     }
 
@@ -4392,12 +4597,12 @@
           ${demoSvgMarkup(demo, ex.name)}
           <div class="ex-demo-controls">
             <span class="ex-demo-phase" aria-hidden="true"></span>
-            <button type="button" class="ex-demo-pause"></button>
+            ${demo.static ? '<span class="ex-demo-static">Isométrico</span>' : '<button type="button" class="ex-demo-pause"></button>'}
           </div>
         </div>
         <ul class="ex-demo-cues">${demo.cues.map(c => `<li>${escapeHtml(c)}</li>`).join('')}</ul>
       `;
-      panel.querySelector('.ex-demo-pause').addEventListener('click', () => toggleDemoPause(key, panel));
+      panel.querySelector('.ex-demo-pause')?.addEventListener('click', () => toggleDemoPause(key, panel));
       updateDemoPauseButton(key, panel);
       return panel;
     }
