@@ -3977,7 +3977,7 @@
 
     const EXERCISE_DEMOS = [
       {
-        id: 'sentadilla', match: /^Sentadilla goblet/,
+        id: 'sentadilla', match: /^Sentadilla (goblet|en prensa|al aire)/,
         anchor: 'ankleN', anchorX: 112, load: 'chest',
         a: { torso: 180, armN: 25, foreN: 165, thighN: 2, shinN: -2 },
         b: { torso: 140, armN: 55, foreN: 170, thighN: 88, shinN: -30 },
@@ -4009,7 +4009,7 @@
         cues: ['Pies apoyados cerca de los glúteos.', 'Eleva la cadera hasta alinear rodillas, cadera y hombros.', 'Aprieta glúteos arriba un segundo.']
       },
       {
-        id: 'flexion', match: /^Flexiones de brazos/,
+        id: 'flexion', match: /^Flexiones/,
         anchor: 'toeN', anchorX: 34,
         a: { torso: 112, armN: 0, foreN: 0, thighN: -68, shinN: -68, footN: 20 },
         b: { torso: 100, armN: -65, foreN: 45, thighN: -80, shinN: -80, footN: 20 },
@@ -4017,8 +4017,8 @@
         cues: ['Manos bajo los hombros y cuerpo en línea.', 'Codos a unos 45° del cuerpo al bajar.', 'Abdomen firme: la cadera no se hunde.']
       },
       {
-        id: 'remo', match: /^Remo unilateral/,
-        anchor: 'ankleN', anchorX: 96, load: 'hand', support: true,
+        id: 'remo', match: /^Remo (unilateral|apoyando pecho)/,
+        anchor: 'ankleN', anchorX: 96, load: 'hand', support: 'wristF',
         a: { torso: 112, armN: 2, foreN: 2, armF: 40, foreF: 30, thighN: 14, shinN: -8 },
         b: { torso: 112, armN: -62, foreN: 8, armF: 40, foreF: 30, thighN: 14, shinN: -8 },
         phases: ['Tira', 'Baja'],
@@ -4047,6 +4047,134 @@
         b: { torso: -90, armN: -100, foreN: -100, armF: 180, foreF: 180, thighN: 180, shinN: 90, thighF: 96, shinF: 94 },
         phases: ['Extiende', 'Vuelve'],
         cues: ['Zona lumbar pegada al suelo todo el tiempo.', 'Extiende brazo y pierna contrarios despacio.', 'Expulsa el aire al extender.']
+      },
+      {
+        id: 'bulgara', match: /^Sentadilla búlgara/,
+        anchor: 'ankleN', anchorX: 132, support: 'toeF', supportGap: 2,
+        a: { torso: 178, armN: 6, foreN: 8, thighN: 16, shinN: 4, thighF: -24, shinF: -60, footF: -100 },
+        b: { torso: 168, armN: 6, foreN: 8, thighN: 80, shinN: -8, thighF: -2, shinF: -112, footF: -100 },
+        phases: ['Baja', 'Sube'],
+        cues: ['Empeine del pie trasero apoyado en un banco o silla.', 'Baja en vertical con el peso en la pierna delantera.', 'Rodilla delantera alineada con el pie.']
+      },
+      {
+        id: 'talones', match: /^Elevación de talones/,
+        anchor: 'toeN', anchorX: 118,
+        a: { torso: 180, armN: 4, foreN: 4, thighN: 0, shinN: 0, footN: 90 },
+        b: { torso: 180, armN: 4, foreN: 4, thighN: 0, shinN: 0, footN: 25 },
+        phases: ['Sube', 'Baja'],
+        cues: ['Sube sobre la punta de los pies lo más alto que puedas.', 'Pausa un segundo arriba.', 'Baja despacio hasta apoyar el talón.']
+      },
+      {
+        id: 'curl-femoral', match: /^Curl femoral/,
+        anchor: 'hip', anchorX: 110, groundOffset: 7,
+        a: { torso: 90, armN: 100, foreN: -70, thighN: -90, shinN: -90, footN: -90 },
+        b: { torso: 90, armN: 100, foreN: -70, thighN: -92, shinN: 172, footN: 170 },
+        phases: ['Flexiona', 'Extiende'],
+        cues: ['Tumbado boca abajo, cadera pegada al suelo o al banco.', 'Lleva los talones hacia los glúteos.', 'Extiende despacio sin soltar la tensión.']
+      },
+      {
+        id: 'press-pecho', match: /^Press (de pecho|en suelo|cerrado)/,
+        anchor: 'hip', anchorX: 120, groundOffset: 46, load: 'hand', support: ['shoulder', 'hip'], supportGap: 5,
+        a: { torso: -90, armN: 12, foreN: 178, thighN: 92, shinN: 2 },
+        b: { torso: -90, armN: 178, foreN: 180, thighN: 92, shinN: 2 },
+        phases: ['Empuja', 'Baja'],
+        cues: ['Espalda apoyada en el banco y pies firmes en el suelo.', 'Empuja las mancuernas hacia arriba sin bloquear codos.', 'Baja controlando hasta la altura del pecho.']
+      },
+      {
+        id: 'empuje-banda', match: /^Empuje con banda/,
+        anchor: 'ankleN', anchorX: 110,
+        a: { torso: 176, armN: -40, foreN: 92, thighN: 6, shinN: 0, thighF: -10, shinF: -6 },
+        b: { torso: 176, armN: 88, foreN: 90, thighN: 6, shinN: 0, thighF: -10, shinF: -6 },
+        phases: ['Empuja', 'Vuelve'],
+        cues: ['Banda anclada a la espalda, a la altura del pecho.', 'Empuja al frente hasta estirar los brazos.', 'Vuelve despacio sin dejar que la banda tire de ti.']
+      },
+      {
+        id: 'triceps', match: /^Extensión de tríceps/,
+        anchor: 'ankleN', anchorX: 108,
+        a: { torso: 172, armN: 8, foreN: 150, thighN: 4, shinN: 0 },
+        b: { torso: 172, armN: 8, foreN: 6, thighN: 4, shinN: 0 },
+        phases: ['Extiende', 'Sube'],
+        cues: ['Codos pegados al cuerpo y quietos.', 'Extiende los antebrazos hacia abajo hasta estirar.', 'Sube controlando sin mover los hombros.']
+      },
+      {
+        id: 'curl', match: /^Curl (de bíceps|martillo)/,
+        anchor: 'ankleN', anchorX: 108, load: 'hand',
+        a: { torso: 180, armN: 2, foreN: 4, thighN: 0, shinN: 0 },
+        b: { torso: 180, armN: 8, foreN: 160, thighN: 0, shinN: 0 },
+        phases: ['Sube', 'Baja'],
+        cues: ['Codos pegados al tronco.', 'Sube sin balancear el cuerpo.', 'Baja despacio hasta estirar el brazo.']
+      },
+      {
+        id: 'face-pull', match: /^Face pull/,
+        anchor: 'ankleN', anchorX: 96,
+        a: { torso: 178, armN: 92, foreN: 92, thighN: 4, shinN: 0, thighF: -8, shinF: -4 },
+        b: { torso: 178, armN: 100, foreN: -150, thighN: 4, shinN: 0, thighF: -8, shinF: -4 },
+        phases: ['Tira', 'Vuelve'],
+        cues: ['Agarre a la altura de la cara.', 'Tira hacia la frente separando las manos.', 'Codos altos y escápulas juntas al final.']
+      },
+      {
+        id: 'remo-sentado', match: /^Remo con banda/,
+        anchor: 'hip', anchorX: 88, groundOffset: 6,
+        a: { torso: 168, armN: 90, foreN: 90, thighN: 90, shinN: 90, footN: 180 },
+        b: { torso: 178, armN: -30, foreN: 80, thighN: 90, shinN: 90, footN: 180 },
+        phases: ['Tira', 'Vuelve'],
+        cues: ['Sentado con las piernas estiradas y la espalda recta.', 'Lleva los codos atrás, pegados al cuerpo.', 'Junta las escápulas y vuelve despacio.']
+      },
+      {
+        id: 'jalon', match: /^Jalón al pecho/,
+        anchor: 'hip', anchorX: 100, groundOffset: 44, support: ['hip', 'kneeN'], supportGap: 5,
+        a: { torso: 172, armN: 170, foreN: 172, thighN: 90, shinN: 0 },
+        b: { torso: 166, armN: 18, foreN: 150, thighN: 90, shinN: 0 },
+        phases: ['Tira', 'Sube'],
+        cues: ['Pecho alto y ligera inclinación atrás.', 'Baja la barra hacia la parte alta del pecho.', 'Sube controlando hasta estirar los brazos.']
+      },
+      {
+        id: 'bird-dog', match: /^Bird-Dog/,
+        anchor: 'kneeN', anchorX: 96, groundOffset: 2,
+        a: { torso: 108, armN: 0, foreN: 0, armF: 0, foreF: 0, thighN: 0, shinN: -90, thighF: 0, shinF: -90, footN: -90, footF: -90 },
+        b: { torso: 108, armN: 96, foreN: 96, armF: 0, foreF: 0, thighN: 0, shinN: -90, thighF: -94, shinF: -94, footN: -90, footF: -90 },
+        phases: ['Extiende', 'Vuelve'],
+        cues: ['Manos bajo los hombros y rodillas bajo la cadera.', 'Estira brazo y pierna contrarios sin girar la cadera.', 'Mantén la espalda plana como una mesa.']
+      },
+      {
+        id: 'crunch', match: /^Crunch/,
+        anchor: 'hip', anchorX: 118, groundOffset: 8,
+        a: { torso: -90, armN: 100, foreN: 96, thighN: 180, shinN: 90 },
+        b: { torso: -118, armN: 128, foreN: 112, thighN: 180, shinN: 90 },
+        phases: ['Sube', 'Baja'],
+        cues: ['Piernas a 90° y zona lumbar apoyada.', 'Despega solo los hombros, sin tirar del cuello.', 'Baja despacio sin descansar del todo.']
+      },
+      {
+        id: 'carrera', match: /^(Intervalos de carrera|Caminata rápida|Rodillas arriba|Marcha rápida|Jumping jacks)/,
+        anchor: 'hip', anchorX: 110, groundOffset: 62,
+        a: { torso: 174, armN: -38, foreN: 50, armF: 40, foreF: 130, thighN: 62, shinN: -10, thighF: -24, shinF: -62 },
+        b: { torso: 174, armN: 40, foreN: 130, armF: -38, foreF: 50, thighN: -24, shinN: -62, thighF: 62, shinF: -10 },
+        phases: ['Ritmo', 'Ritmo'],
+        cues: ['Tronco erguido y mirada al frente.', 'Brazos a 90° acompañando a la pierna contraria.', 'Ritmo que te permita hablar a frases cortas.']
+      },
+      {
+        id: 'escaladores', match: /^Escaladores/,
+        anchor: 'wristN', anchorX: 160, groundOffset: 2,
+        a: { torso: 112, armN: 0, foreN: 0, thighN: 55, shinN: -80, thighF: -68, shinF: -68, footN: 20, footF: 20 },
+        b: { torso: 112, armN: 0, foreN: 0, thighN: -68, shinN: -68, thighF: 55, shinF: -80, footN: 20, footF: 20 },
+        phases: ['Rodilla', 'Cambia'],
+        cues: ['Manos bajo los hombros y cadera baja.', 'Lleva una rodilla al pecho y alterna.', 'Hazlo lento y controlado, sin botar la cadera.']
+      },
+      {
+        id: 'swing', match: /^Kettlebell/,
+        anchor: 'ankleN', anchorX: 104, load: 'hand',
+        a: { torso: 102, armN: -24, foreN: -24, thighN: 16, shinN: -8 },
+        b: { torso: 180, armN: 92, foreN: 92, thighN: 0, shinN: 0 },
+        phases: ['Impulsa', 'Bisagra'],
+        cues: ['El impulso sale de la cadera, no de los brazos.', 'Extiende cadera y aprieta glúteos arriba.', 'Espalda recta al bajar entre las piernas.']
+      },
+      {
+        id: 'perro-zancada', match: /^Perro boca abajo/,
+        anchor: 'wristN', anchorX: 170, groundOffset: 2,
+        a: { torso: 40, armN: 40, foreN: 40, thighN: -38, shinN: -38, thighF: -38, shinF: -38, footN: 30, footF: 30 },
+        b: { torso: 75, armN: 2, foreN: 2, thighN: 52, shinN: -4, thighF: -33, shinF: -33, footN: 90, footF: 60 },
+        phases: ['Zancada', 'Perro'],
+        cues: ['Desde el perro boca abajo, cadera alta y espalda larga.', 'Lleva un pie entre las manos.', 'Baja la cadera para estirar el flexor de la pierna de atrás.']
       }
     ];
 
@@ -4167,9 +4295,13 @@
       if (load) { load.setAttribute('x', (j.wristN[0] - 8).toFixed(1)); load.setAttribute('y', (j.wristN[1] - 4).toFixed(1)); }
       const support = svg.querySelector('[data-seg="support"]');
       if (support) {
-        const top = j.wristF[1] + 3;
-        support.setAttribute('x', (j.wristF[0] - 16).toFixed(1)); support.setAttribute('y', top.toFixed(1));
-        support.setAttribute('width', '32'); support.setAttribute('height', Math.max(0, DEMO_GROUND - top).toFixed(1));
+        // Apoyo (banco/caja): bajo una articulación o abarcando dos (p. ej. hombro y cadera).
+        const pts = [].concat(demo.support).map(name => j[name]);
+        const left = Math.min(...pts.map(p => p[0])) - (pts.length > 1 ? 8 : 16);
+        const right = Math.max(...pts.map(p => p[0])) + (pts.length > 1 ? 8 : 16);
+        const top = Math.max(...pts.map(p => p[1])) + (demo.supportGap ?? 3);
+        support.setAttribute('x', left.toFixed(1)); support.setAttribute('y', top.toFixed(1));
+        support.setAttribute('width', (right - left).toFixed(1)); support.setAttribute('height', Math.max(0, DEMO_GROUND - top).toFixed(1));
       }
     }
 
