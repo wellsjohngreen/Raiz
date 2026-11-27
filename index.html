@@ -1958,6 +1958,30 @@
     @keyframes timer-breathe { 0%,100% { transform:rotate(-90deg) scale(1); } 50% { transform:rotate(-90deg) scale(1.08); } }
     @keyframes timer-pop { 0% { transform:rotate(-90deg) scale(.7); } 60% { transform:rotate(-90deg) scale(1.2); } 100% { transform:rotate(-90deg) scale(1); } }
     @keyframes banner-in { 0% { opacity:0; transform:translateY(8px); } 100% { opacity:1; transform:none; } }
+    /* ===== Efectos de calma ===== */
+    /* Portada viva: la foto se acerca muy despacio tras asentarse; el titular aparece palabra a palabra. */
+    .hero-image { animation:photo-settle 1.8s cubic-bezier(.2,.7,.2,1) both, photo-drift 22s ease-in-out 1.8s infinite alternate; }
+    @keyframes photo-drift { from { transform:scale(1.035); } to { transform:scale(1.085) translate(-1.2%, -0.8%); } }
+    .hero-title .hw { display:inline-block; animation:word-in .9s cubic-bezier(.2,.8,.2,1) both; animation-delay:calc(.25s + var(--i) * .085s); }
+    @keyframes word-in { from { opacity:0; filter:blur(8px); transform:translateY(.22em); } to { opacity:1; filter:none; transform:none; } }
+    /* Transición entre secciones */
+    .view-enter { animation:view-in .6s cubic-bezier(.2,.8,.2,1) both; }
+    @keyframes view-in { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:none; } }
+    /* Respiración guiada durante el descanso */
+    .ex-breath { display:flex; align-items:center; gap:12px; margin-top:12px; animation:view-in .5s ease-out both; }
+    .ex-breath-orb {
+      width:30px; height:30px; border-radius:50%; flex-shrink:0;
+      background:radial-gradient(circle at 35% 30%, #ffffff 0%, #d4e4cc 34%, #7ea383 100%);
+      box-shadow:0 0 0 7px #7ea38326, 0 0 18px #7ea38340;
+      animation:breathe 8s ease-in-out infinite;
+    }
+    @keyframes breathe {
+      0%, 100% { transform:scale(.55); opacity:.55; }
+      50% { transform:scale(1.15); opacity:1; }
+    }
+    .ex-breath-text { font-family:var(--serif); font-size:15px; font-style:italic; color:var(--green-brand); }
+    body.dark-mode .ex-breath-orb { background:radial-gradient(circle at 35% 30%, #eef5ea 0%, #9fc49f 38%, #3f7550 100%); box-shadow:0 0 0 7px #9fc49f22, 0 0 20px #9fc49f33; }
+
     /* ===== Efectos de la dieta ===== */
     :root { --macro-carb:#b98a3c; }
     body.dark-mode { --macro-carb:#e2b867; }
@@ -2101,7 +2125,7 @@
         <div class="hero-content">
           <div class="intro-badge">Nutrición sin desperdicio + Entrenamiento a medida</div>
           <div class="hero-wordmark" aria-hidden="true">raíz<span>.</span></div>
-          <h1>Come lo que ya tienes.<br><em>Entrena como te gusta.</em></h1>
+          <h1 class="hero-title"><span class="hw" style="--i:0">Come</span> <span class="hw" style="--i:1">lo</span> <span class="hw" style="--i:2">que</span> <span class="hw" style="--i:3">ya</span> <span class="hw" style="--i:4">tienes.</span><br><em><span class="hw" style="--i:5">Entrena</span> <span class="hw" style="--i:6">como</span> <span class="hw" style="--i:7">te</span> <span class="hw" style="--i:8">gusta.</span></em></h1>
           <div class="intro-cta-row">
             <button class="btn-primary" onclick="switchView('dieta')">Empezar con mi despensa</button>
             <button class="btn-secondary" onclick="switchView('entrenamiento')">Configurar mi entrenamiento</button>
@@ -4153,7 +4177,34 @@
           if (!btn.classList.contains('finished')) text.textContent = btn.dataset.label;
         }
       });
+      updateBreathGuide(remaining);
       if (activeTimer && remaining <= 0) finishExerciseTimer();
+    }
+
+    // Guía de respiración (4 s inhalar · 4 s exhalar) en la fila con un descanso en marcha.
+    const BREATH_CYCLE = 8;
+    function updateBreathGuide(remaining) {
+      const activeKey = activeTimer && activeTimer.kind === 'rest' && remaining > 0 ? activeTimer.key : null;
+      document.querySelectorAll('.ex-timer-btn').forEach(btn => {
+        const row = btn.closest('.exercise-row');
+        const host = row?.querySelector('.exercise-left > div');
+        if (!host) return;
+        let guide = host.querySelector('.ex-breath');
+        if (btn.dataset.timerKey !== activeKey) {
+          guide?.remove();
+          return;
+        }
+        const elapsed = activeTimer.total - remaining;
+        if (!guide) {
+          guide = document.createElement('div');
+          guide.className = 'ex-breath';
+          guide.innerHTML = '<span class="ex-breath-orb" aria-hidden="true"></span><span class="ex-breath-text"></span>';
+          // Sincroniza la animación con el tiempo ya transcurrido del descanso.
+          guide.querySelector('.ex-breath-orb').style.animationDelay = `-${(elapsed % BREATH_CYCLE).toFixed(2)}s`;
+          host.appendChild(guide);
+        }
+        guide.querySelector('.ex-breath-text').textContent = (elapsed % BREATH_CYCLE) < BREATH_CYCLE / 2 ? 'Inhala por la nariz…' : 'Exhala despacio…';
+      });
     }
 
     function finishExerciseTimer() {
@@ -4830,6 +4881,7 @@
 
     /* ==================== NAVEGACIÓN Y EVENTOS ==================== */
     function switchView(view) {
+      const changed = view !== currentView;
       currentView = view;
       document.getElementById('viewIntro').classList.toggle('hidden', view !== 'intro');
       document.getElementById('viewDieta').classList.toggle('hidden', view !== 'dieta');
@@ -4844,6 +4896,14 @@
       document.querySelector('.skip-link').href = '#' + (view === 'intro' ? 'viewIntro' : view === 'dieta' ? 'viewDieta' : 'viewEntreno');
       document.querySelectorAll('.top-nav-btn').forEach(btn => btn.setAttribute('aria-current', btn.classList.contains('active') ? 'page' : 'false'));
       window.scrollTo({ top: 0, behavior: 'instant' });
+      if (changed) {
+        // Fundido suave de la sección que aparece (se desactiva con «reducir movimiento»).
+        const shown = document.getElementById(view === 'intro' ? 'viewIntro' : view === 'dieta' ? 'viewDieta' : 'viewEntreno');
+        shown.classList.remove('view-enter');
+        void shown.offsetWidth;
+        shown.classList.add('view-enter');
+        setTimeout(() => shown.classList.remove('view-enter'), 700);
+      }
     }
 
     // Objetivo de dieta
