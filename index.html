@@ -1491,6 +1491,54 @@
       text-align: right;
     }
 
+    /* QR Section */
+    .qr-section {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+      margin-top: 40px;
+      padding: 36px 30px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 18px;
+    }
+
+    .qr-section img {
+      width: 160px;
+      height: 160px;
+      border-radius: 12px;
+      border: 1px solid var(--border-soft);
+      background: #ffffff;
+      padding: 8px;
+    }
+
+    .qr-section .qr-text {
+      max-width: 360px;
+    }
+
+    .qr-section .qr-text h3 {
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 6px;
+      color: var(--text-main);
+    }
+
+    .qr-section .qr-text p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+
+    @media (max-width: 600px) {
+      .qr-section {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+        padding: 28px 20px;
+      }
+    }
+
     /* Footer */
     .footer-note {
       margin-top: 40px;
@@ -2605,6 +2653,14 @@
         </section>
       </main>
     </section>
+
+    <div class="qr-section section-reveal">
+      <img src="qr-raiz.png" alt="Código QR de Raíz" width="160" height="160" loading="lazy" />
+      <div class="qr-text">
+        <h3>Accede desde tu móvil</h3>
+        <p>Escanea este código QR con la cámara de tu teléfono para abrir Raíz directamente en tu dispositivo.</p>
+      </div>
+    </div>
 
     <footer class="footer-note">
       <span>Raíz · Nutrición práctica y entrenamiento personalizado. Datos nutricionales ampliables vía Open Food Facts.</span>
