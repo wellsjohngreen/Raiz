@@ -818,6 +818,9 @@
       border-bottom: none;
     }
 
+    .dropdown-item.dropdown-item-static { cursor: default; }
+    .dropdown-item.dropdown-item-static:hover { background: transparent; }
+
     .dropdown-item:hover {
       background: var(--bg-page);
     }
@@ -1955,6 +1958,52 @@
     @keyframes timer-breathe { 0%,100% { transform:rotate(-90deg) scale(1); } 50% { transform:rotate(-90deg) scale(1.08); } }
     @keyframes timer-pop { 0% { transform:rotate(-90deg) scale(.7); } 60% { transform:rotate(-90deg) scale(1.2); } 100% { transform:rotate(-90deg) scale(1); } }
     @keyframes banner-in { 0% { opacity:0; transform:translateY(8px); } 100% { opacity:1; transform:none; } }
+    /* ===== Efectos de la dieta ===== */
+    :root { --macro-carb:#b98a3c; }
+    body.dark-mode { --macro-carb:#e2b867; }
+    .macro-panel {
+      display:grid; grid-template-columns:132px minmax(0,1fr); gap:28px; align-items:center;
+      padding:18px 0; margin:18px 0; border-top:1px solid var(--border-soft); border-bottom:1px solid var(--border-soft);
+    }
+    .macro-donut { position:relative; width:132px; height:132px; }
+    .macro-donut svg { width:100%; height:100%; transform:rotate(-90deg); }
+    .macro-track { fill:none; stroke:var(--track-bg); stroke-width:9; }
+    .macro-seg { fill:none; stroke-width:9; stroke-linecap:butt; stroke-dasharray:0 264; transition:stroke-dasharray .9s cubic-bezier(.2,.8,.2,1), stroke-dashoffset .9s cubic-bezier(.2,.8,.2,1); }
+    .macro-panel.no-transition .macro-seg { transition:none; }
+    .macro-seg.macro-prot, .macro-dot.macro-prot { stroke:var(--green-brand); background:var(--green-brand); }
+    .macro-seg.macro-carb, .macro-dot.macro-carb { stroke:var(--macro-carb); background:var(--macro-carb); }
+    .macro-seg.macro-fat, .macro-dot.macro-fat { stroke:var(--burgundy); background:var(--burgundy); }
+    .macro-center { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+    .macro-kcal { font-family:var(--serif); font-size:32px; line-height:1; letter-spacing:-.05em; color:var(--text-main); font-variant-numeric:tabular-nums; }
+    .macro-kcal-label { font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--text-muted); margin-top:4px; }
+    .macro-legend { list-style:none; margin:0; padding:0; display:grid; gap:10px; }
+    .macro-legend-row { display:grid; grid-template-columns:10px minmax(0,1fr) auto 48px; gap:10px; align-items:baseline; font-size:13px; color:var(--text-muted); }
+    .macro-legend-row strong { font-weight:500; font-size:18px; letter-spacing:-.03em; color:var(--text-main); font-variant-numeric:tabular-nums; }
+    .macro-legend-pct { text-align:right; font-variant-numeric:tabular-nums; }
+    .macro-dot { width:10px; height:10px; border-radius:50%; align-self:center; }
+    .chef-card.chef-enter .chef-header, .chef-card.chef-enter .ing-tags, .chef-card.chef-enter .macro-panel, .chef-card.chef-enter .steps-box {
+      animation:chef-rise .55s cubic-bezier(.2,.8,.2,1) both;
+    }
+    .chef-card.chef-enter .ing-tags { animation-delay:.06s; }
+    .chef-card.chef-enter .macro-panel { animation-delay:.12s; }
+    .chef-card.chef-enter .steps-box { animation-delay:.18s; }
+    @keyframes chef-rise { from { opacity:0; transform:translateY(10px); filter:blur(3px); } to { opacity:1; transform:none; filter:none; } }
+    .progress-fill { transition:width .9s cubic-bezier(.2,.8,.2,1); }
+    .coverage-pct, .impact-num { font-variant-numeric:tabular-nums; }
+    .pantry-row.just-added { animation:pantry-in .9s cubic-bezier(.2,.8,.2,1); }
+    @keyframes pantry-in {
+      0% { opacity:0; transform:translateX(-10px); background:var(--green-tag-bg); }
+      30% { opacity:1; transform:none; background:var(--green-tag-bg); }
+      100% { background:transparent; }
+    }
+    @media (max-width:650px) {
+      .macro-panel { grid-template-columns:104px minmax(0,1fr); gap:18px; }
+      .macro-donut { width:104px; height:104px; }
+      .macro-kcal { font-size:26px; }
+      .macro-legend-row { grid-template-columns:10px minmax(0,1fr) auto 40px; gap:8px; }
+      .macro-legend-row strong { font-size:16px; }
+    }
+
     /* ===== Técnica animada ===== */
     .ex-demo-toggle {
       margin-top:8px; padding:4px 0; min-height:32px; font:inherit; font-size:12.5px; font-weight:600;
@@ -2757,6 +2806,7 @@
     let searchDebounceTimer = null;
     let lastApiResults = [];
     let isFetchingApi = false;
+    let lastApiStatus = null; // null | 'ok' | 'empty' | 'error' (última búsqueda en supermercados)
     let supermarketRequest = null;
 
     function inferCategoryFromProduct(name, nutriments) {
@@ -2790,6 +2840,7 @@
           qty: itemObj.defaultQty || (itemObj.unit === 'ud' ? 1 : 150)
         });
       }
+      lastAddedPantryId = (existing || userPantry[0]).id;
       savePantry();
       closeSearchDropdown();
       document.getElementById('pantrySearchInput').value = '';
@@ -2826,7 +2877,7 @@
       };
       const m = defaultsByCat[cat] || defaultsByCat.verdura;
       addIngredientToPantry({
-        id: 'custom_' + cleanName.toLowerCase().replace(/[^a-z0-9]+/g, '_'),
+        id: 'custom_' + (cleanName.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '') || Date.now()),
         name: cleanName.charAt(0).toUpperCase() + cleanName.slice(1),
         brand: 'Personalizado',
         cat,
@@ -2887,6 +2938,14 @@
             </button>
           `;
         });
+      } else if (lastApiStatus === 'empty' || lastApiStatus === 'error') {
+        html += `
+          <div class="dropdown-item dropdown-item-static" role="status">
+            <div class="dropdown-item-meta">${lastApiStatus === 'empty'
+              ? `No hemos encontrado productos para "${escapeHtml(query.trim())}". Prueba con otra palabra o añádelo como ingrediente libre.`
+              : 'No hemos podido consultar los supermercados ahora mismo. Puedes añadirlo como ingrediente libre.'}</div>
+          </div>
+        `;
       } else {
         html += `
           <button type="button" class="dropdown-item" onclick="triggerSupermarketSearch()">
@@ -2932,44 +2991,80 @@
       supermarketRequest = controller;
       isFetchingApi = true;
       lastApiResults = [];
+      lastApiStatus = null;
       renderSearchDropdown(q);
 
-      const timeoutId = setTimeout(() => controller.abort(), 6500);
+      const timeoutId = setTimeout(() => controller.abort(), 9000);
 
       try {
-        const apiUrl = `https://es.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(q)}&search_simple=1&action=process&json=1&page_size=6&fields=code,product_name,brands,nutriments`;
-        const res = await fetch(apiUrl, { signal: controller.signal });
-        if (!res.ok) throw new Error('OFF error');
+        // 1) Búsqueda de texto en el buscador de Open Food Facts (permite llamadas desde la web).
+        //    El antiguo cgi/search.pl dejó de responder (503) y bloqueaba la búsqueda.
+        const searchQuery = `${q} countries:"en:spain"`;
+        const searchUrl = `https://search.openfoodfacts.org/search?q=${encodeURIComponent(searchQuery)}&langs=es&page_size=20&fields=code,product_name,product_name_es,brands,nutriscore_data`;
+        const res = await fetch(searchUrl, { signal: controller.signal });
+        if (!res.ok) throw new Error('OFF search error');
         const data = await res.json();
-        const products = (data.products || [])
-          .filter(p => p.product_name && p.product_name.trim().length > 1)
-          .slice(0, 5)
-          .map(p => {
-            const n = p.nutriments || {};
-            const kcalFromKj = readNutritionValue(n['energy-kj_100g']);
-            const kcal = readNutritionValue(n['energy-kcal_100g']) ?? (kcalFromKj === null ? null : kcalFromKj / 4.184);
-            const prot = readNutritionValue(n.proteins_100g);
-            const carb = readNutritionValue(n.carbohydrates_100g);
-            const fat = readNutritionValue(n.fat_100g);
-            const brandClean = (p.brands || '').split(',')[0].trim();
-            const cat = inferCategoryFromProduct(p.product_name, n);
+        const hits = (data.hits || [])
+          .map(h => {
+            // Datos de respaldo del propio resultado (por si la ficha del producto no responde).
+            const comps = [...(h.nutriscore_data?.components?.negative || []), ...(h.nutriscore_data?.components?.positive || [])];
+            const energy = comps.find(c => c.id === 'energy' && c.unit === 'kJ');
+            const proteins = comps.find(c => c.id === 'proteins');
+            const brand = String((Array.isArray(h.brands) ? h.brands[0] : h.brands) || '').replace(/^[a-z]{2}:/, '').replace(/-/g, ' ').trim();
             return {
-              id: 'off_' + (p.code || Math.random().toString(36).slice(2, 8)),
-              name: p.product_name.trim().slice(0, 46),
-              brand: brandClean || 'Supermercado',
-              cat,
-              unit: 'g',
-              step: 50,
-              defaultQty: 150,
-              kcal,
-              prot,
-              carb,
-              fat
+              code: h.code,
+              name: String(h.product_name_es || h.product_name || '').trim(),
+              brand,
+              kcal: energy ? readNutritionValue(energy.value / 4.184) : null,
+              prot: proteins ? readNutritionValue(proteins.value) : null
             };
-          });
-        if (supermarketRequest === controller && input.value.trim() === q) lastApiResults = products;
+          })
+          .filter(h => h.code && h.name.length > 1)
+          // Primero los productos con datos nutricionales; luego el resto.
+          .map((h, i) => ({ h, i }))
+          .sort((a, b) => (b.h.kcal !== null) - (a.h.kcal !== null) || a.i - b.i)
+          .map(x => x.h)
+          .slice(0, 6);
+
+        // 2) Ficha de cada producto para obtener calorías y macros por 100 g.
+        const products = await Promise.all(hits.map(async hit => {
+          let p = {};
+          try {
+            const r = await fetch(`https://world.openfoodfacts.org/api/v2/product/${encodeURIComponent(hit.code)}?fields=product_name,product_name_es,brands,nutriments`, { signal: controller.signal });
+            if (r.ok) p = (await r.json()).product || {};
+          } catch (e) {
+            if (controller.signal.aborted) throw e;
+          }
+          const n = p.nutriments || {};
+          const kcalFromKj = readNutritionValue(n['energy-kj_100g']);
+          const kcal = readNutritionValue(n['energy-kcal_100g']) ?? (kcalFromKj === null ? hit.kcal : kcalFromKj / 4.184);
+          const name = String(p.product_name_es || p.product_name || hit.name).trim();
+          const brandClean = String(p.brands || '').split(',')[0].trim() || hit.brand;
+          return {
+            id: 'off_' + hit.code,
+            name: name.slice(0, 46),
+            brand: brandClean || 'Supermercado',
+            cat: inferCategoryFromProduct(name, n),
+            unit: 'g',
+            step: 50,
+            defaultQty: 150,
+            kcal,
+            prot: readNutritionValue(n.proteins_100g) ?? hit.prot,
+            carb: readNutritionValue(n.carbohydrates_100g),
+            fat: readNutritionValue(n.fat_100g)
+          };
+        }));
+        // Quita duplicados exactos (mismo nombre y marca) y deja 5 resultados.
+        const unique = products
+          .filter((p, i, arr) => arr.findIndex(o => o.name.toLowerCase() === p.name.toLowerCase() && o.brand.toLowerCase() === p.brand.toLowerCase()) === i)
+          .slice(0, 5);
+        if (supermarketRequest === controller && input.value.trim() === q) {
+          lastApiResults = unique;
+          lastApiStatus = unique.length ? 'ok' : 'empty';
+        }
       } catch {
         // El catálogo local y el alta manual siguen disponibles.
+        if (supermarketRequest === controller && input.value.trim() === q) lastApiStatus = 'error';
       } finally {
         clearTimeout(timeoutId);
         if (supermarketRequest === controller) {
@@ -3193,7 +3288,7 @@
 
       userPantry.forEach((item, index) => {
         const row = document.createElement('div');
-        row.className = 'pantry-row';
+        row.className = 'pantry-row' + (item.id === lastAddedPantryId ? ' just-added' : '');
         row.innerHTML = `
           <div class="pantry-name-col">
             <div class="pantry-item-name" title="${escapeHtml(item.name)}">${escapeHtml(item.name)}</div>
@@ -3208,6 +3303,7 @@
         `;
         container.appendChild(row);
       });
+      lastAddedPantryId = null;
     }
 
     function adjustPantryQty(index, delta) {
@@ -3325,8 +3421,10 @@
 
       const stepsHtml = recipe.steps.map(s => `<li>${escapeHtml(s)}</li>`).join('');
 
+      const isNewRecipe = recipe.title !== lastChefTitle;
+      lastChefTitle = recipe.title;
       container.innerHTML = `
-        <article class="chef-card">
+        <article class="chef-card${isNewRecipe ? ' chef-enter' : ''}">
           <div class="chef-header">
             <div>
               <div class="chef-kicker">Receta generada a la carta · 100 % con tu despensa</div>
@@ -3340,12 +3438,7 @@
 
           <div class="ing-tags">${tagsHtml}</div>
 
-          <div class="macros-row">
-            <span><strong>${formatNutrient(recipe.macros.kcal)}</strong> kcal</span>
-            <span><strong>${formatNutrient(recipe.macros.prot)} g</strong> proteína</span>
-            <span><strong>${formatNutrient(recipe.macros.carb)} g</strong> carbohidrato</span>
-            <span><strong>${formatNutrient(recipe.macros.fat)} g</strong> grasa</span>
-          </div>
+          ${macroPanelHtml(recipe.macros)}
 
           <p class="recipe-sub">Valores orientativos para las cantidades indicadas. «—» significa que falta información.</p>
           <p class="leftover-line">${escapeHtml(leftoverText)}</p>
@@ -3360,6 +3453,117 @@
           ${renderReviewsBlockHtml('custom_chef')}
         </article>
       `;
+      animateMacroPanel(container, recipe.macros);
+    }
+
+    /* ==================== EFECTOS VISUALES (solo presentación) ==================== */
+    let lastChefTitle = null;
+    let lastMacroShares = null;          // { prot, carb, fat } en fracción de calorías
+    const lastCoverage = {};             // recipeId → % de cobertura mostrado
+    let lastAddedPantryId = null;
+    const MACRO_RING = 2 * Math.PI * 42;
+    const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function formatDecimal(value, decimals) {
+      return value.toFixed(decimals).replace('.', ',');
+    }
+
+    // Anima un número desde el último valor mostrado hasta el nuevo.
+    function animateNumber(el, to, { decimals = 0, suffix = '', duration = 700 } = {}) {
+      if (!el) return;
+      const from = Number(el.dataset.value ?? 0);
+      el.dataset.value = String(to);
+      if (prefersReducedMotion() || from === to) {
+        el.textContent = formatDecimal(to, decimals) + suffix;
+        return;
+      }
+      const start = performance.now();
+      cancelAnimationFrame(Number(el.dataset.raf || 0));
+      clearTimeout(Number(el.dataset.done || 0));
+      const finalText = formatDecimal(to, decimals) + suffix;
+      const tick = now => {
+        const t = Math.min(1, (now - start) / duration);
+        const eased = 1 - Math.pow(1 - t, 3);
+        el.textContent = formatDecimal(from + (to - from) * eased, decimals) + suffix;
+        if (t < 1) el.dataset.raf = String(requestAnimationFrame(tick));
+      };
+      el.dataset.raf = String(requestAnimationFrame(tick));
+      // Salvaguarda: si la pestaña está oculta no hay fotogramas; el valor final se fija igualmente.
+      el.dataset.done = String(setTimeout(() => {
+        cancelAnimationFrame(Number(el.dataset.raf || 0));
+        el.textContent = finalText;
+      }, duration + 80));
+    }
+
+    function macroShares(m) {
+      if ([m.prot, m.carb, m.fat].some(v => v === null)) return null;
+      const kp = m.prot * 4, kc = m.carb * 4, kf = m.fat * 9;
+      const total = kp + kc + kf;
+      if (!total) return null;
+      return { prot: kp / total, carb: kc / total, fat: kf / total };
+    }
+
+    function macroPanelHtml(m) {
+      const shares = macroShares(m);
+      const pct = k => shares ? `${Math.round(shares[k] * 100)} %` : '—';
+      const row = (k, label, grams) => `
+        <li class="macro-legend-row">
+          <span class="macro-dot macro-${k}" aria-hidden="true"></span>
+          <span class="macro-legend-label">${label}</span>
+          <strong>${formatNutrient(grams)} g</strong>
+          <span class="macro-legend-pct">${pct(k)}</span>
+        </li>`;
+      return `
+        <div class="macro-panel" role="group" aria-label="Macronutrientes de la receta">
+          <div class="macro-donut">
+            <svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+              <circle class="macro-track" cx="50" cy="50" r="42" />
+              <circle class="macro-seg macro-prot" cx="50" cy="50" r="42" />
+              <circle class="macro-seg macro-carb" cx="50" cy="50" r="42" />
+              <circle class="macro-seg macro-fat" cx="50" cy="50" r="42" />
+            </svg>
+            <div class="macro-center">
+              <span class="macro-kcal" data-value="0">${formatNutrient(m.kcal)}</span>
+              <span class="macro-kcal-label">kcal</span>
+            </div>
+          </div>
+          <ul class="macro-legend">
+            ${row('prot', 'Proteína', m.prot)}
+            ${row('carb', 'Carbohidrato', m.carb)}
+            ${row('fat', 'Grasa', m.fat)}
+          </ul>
+        </div>`;
+    }
+
+    // Dibuja los arcos del gráfico; anima desde la receta anterior hasta la nueva.
+    function setMacroArcs(panel, shares) {
+      let offset = 0;
+      ['prot', 'carb', 'fat'].forEach(k => {
+        const seg = panel.querySelector(`.macro-seg.macro-${k}`);
+        const len = shares ? Math.max(0, shares[k] * MACRO_RING - (shares[k] > 0.02 ? 2 : 0)) : 0;
+        seg.style.strokeDasharray = `${len.toFixed(2)} ${MACRO_RING.toFixed(2)}`;
+        seg.style.strokeDashoffset = (-offset).toFixed(2);
+        offset += shares ? shares[k] * MACRO_RING : 0;
+      });
+    }
+
+    function animateMacroPanel(container, m) {
+      const panel = container.querySelector('.macro-panel');
+      if (!panel) return;
+      const shares = macroShares(m);
+      const start = lastMacroShares || { prot: 0, carb: 0, fat: 0 };
+      panel.classList.add('no-transition');
+      setMacroArcs(panel, prefersReducedMotion() ? shares : start);
+      panel.getBoundingClientRect(); // fuerza el estado inicial antes de animar
+      panel.classList.remove('no-transition');
+      setTimeout(() => setMacroArcs(panel, shares), 30);
+      lastMacroShares = shares;
+      const kcalEl = panel.querySelector('.macro-kcal');
+      if (m.kcal !== null) {
+        kcalEl.dataset.value = String(animateMacroPanel.lastKcal ?? 0);
+        animateNumber(kcalEl, Math.round(m.kcal), { duration: 800 });
+        animateMacroPanel.lastKcal = Math.round(m.kcal);
+      }
     }
 
     function setChefStyle(style) {
@@ -3418,13 +3622,13 @@
               <p class="recipe-sub">Porción original · valores orientativos</p>
             </div>
             <div class="coverage-box">
-              <div class="coverage-pct">${pct} %</div>
+              <div class="coverage-pct" data-value="${lastCoverage[recipe.id] ?? 0}">${lastCoverage[recipe.id] ?? 0} %</div>
               <div class="coverage-lbl">cubierto con tu despensa</div>
             </div>
           </div>
 
           <div class="progress-track">
-            <div class="progress-fill" style="width: ${pct}%"></div>
+            <div class="progress-fill" style="width: ${lastCoverage[recipe.id] ?? 0}%"></div>
           </div>
 
           <div class="ing-tags">${tagsHtml}</div>
@@ -3442,6 +3646,12 @@
           ${renderReviewsBlockHtml(recipe.id)}
         `;
         container.appendChild(card);
+        // Barra y porcentaje animados desde el valor anterior hasta el nuevo.
+        const fill = card.querySelector('.progress-fill');
+        if (prefersReducedMotion()) fill.style.width = `${pct}%`;
+        else setTimeout(() => { fill.style.width = `${pct}%`; }, 30);
+        animateNumber(card.querySelector('.coverage-pct'), pct, { suffix: ' %', duration: 900 });
+        lastCoverage[recipe.id] = pct;
       });
     }
 
@@ -3487,10 +3697,9 @@
 
     function updateImpactBanner() {
       const activeCount = userPantry.length;
-      const co2 = (activeCount * 0.4).toFixed(1);
-      document.getElementById('statIngredients').textContent = activeCount;
-      document.getElementById('statCo2').textContent = `${co2} kg`;
-      document.getElementById('statRecipes').textContent = COMMUNITY_RECIPES.length + (activeCount > 0 ? 1 : 0);
+      animateNumber(document.getElementById('statIngredients'), activeCount);
+      animateNumber(document.getElementById('statCo2'), activeCount * 0.4, { decimals: 1, suffix: ' kg' });
+      animateNumber(document.getElementById('statRecipes'), COMMUNITY_RECIPES.length + (activeCount > 0 ? 1 : 0));
     }
 
     function updateDietaAll() {
@@ -4656,6 +4865,7 @@
       supermarketRequest = null;
       isFetchingApi = false;
       lastApiResults = [];
+      lastApiStatus = null;
       renderSearchDropdown(e.target.value);
       clearTimeout(searchDebounceTimer);
       if (e.target.value.trim().length >= 3) {
