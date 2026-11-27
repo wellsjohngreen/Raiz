@@ -4071,11 +4071,29 @@
       { cat: 'grasa', label: 'Frutos secos y grasas' }
     ];
 
+    // Valida cada elemento que llega del navegador o de la nube antes de usarlo.
+    function sanitizeShoppingItems(list) {
+      if (!Array.isArray(list)) return [];
+      const aisles = SHOP_AISLES.map(a => a.cat);
+      return list
+        .filter(i => i && typeof i.id === 'string' && /^[a-z0-9_]+$/.test(i.id)
+          && ['g', 'ud', 'ml'].includes(i.unit)
+          && Number.isFinite(Number(i.amount)) && Number(i.amount) > 0)
+        .map(i => ({
+          id: i.id,
+          name: String(i.name || i.id).slice(0, 60),
+          amount: Math.round(Number(i.amount)),
+          unit: i.unit,
+          cat: aisles.includes(i.cat) ? i.cat : 'verdura',
+          checked: Boolean(i.checked),
+          sources: Array.isArray(i.sources) ? i.sources.filter(x => typeof x === 'string').slice(0, 20) : []
+        }));
+    }
+
     function loadShopping() {
       try {
         const raw = localStorage.getItem(SHOPPING_STORAGE_KEY);
-        const parsed = raw ? JSON.parse(raw) : [];
-        shoppingList = Array.isArray(parsed) ? parsed.filter(i => i && i.id && i.unit) : [];
+        shoppingList = sanitizeShoppingItems(raw ? JSON.parse(raw) : []);
       } catch (e) { shoppingList = []; }
     }
 
@@ -4220,15 +4238,18 @@
               return `
               <div class="shop-item${s.checked ? ' checked' : ''}${isNew ? ' just-added' : ''}">
                 <label class="shop-check">
-                  <input type="checkbox" ${s.checked ? 'checked' : ''} onchange="toggleShoppingItem('${key}')" aria-label="Comprado: ${escapeHtml(s.name)}" />
+                  <input type="checkbox" ${s.checked ? 'checked' : ''} data-key="${escapeHtml(key)}" aria-label="Comprado: ${escapeHtml(s.name)}" />
                   <span class="shop-name">${escapeHtml(s.name)}</span>
                 </label>
-                <span class="shop-qty">${s.amount} ${s.unit}</span>
-                <button type="button" class="qty-btn del" onclick="removeShoppingItem('${key}')" title="Quitar de la lista" aria-label="Quitar ${escapeHtml(s.name)} de la lista">×</button>
+                <span class="shop-qty">${escapeHtml(String(s.amount))} ${escapeHtml(s.unit)}</span>
+                <button type="button" class="qty-btn del" data-key="${escapeHtml(key)}" title="Quitar de la lista" aria-label="Quitar ${escapeHtml(s.name)} de la lista">×</button>
               </div>`;
             }).join('')}
           </div>`;
       }).join('') + (pending === 0 ? '<p class="shop-done">Todo comprado. Pásalo a la despensa para cocinar.</p>' : '');
+      // Eventos asignados por código (nunca handlers en línea construidos con datos).
+      listEl.querySelectorAll('input[data-key]').forEach(el => el.addEventListener('change', () => toggleShoppingItem(el.dataset.key)));
+      listEl.querySelectorAll('button[data-key]').forEach(el => el.addEventListener('click', () => removeShoppingItem(el.dataset.key)));
       lastAddedShopIds = [];
     }
 
@@ -5854,7 +5875,7 @@
         chefStyle = st.chefStyle;
       }
       if (includePantryAndTheme && Array.isArray(st.shoppingList)) {
-        shoppingList = st.shoppingList.filter(i => i && i.id && i.unit).map(i => ({ ...i, sources: Array.isArray(i.sources) ? i.sources : [] }));
+        shoppingList = sanitizeShoppingItems(st.shoppingList);
         try { localStorage.setItem(SHOPPING_STORAGE_KEY, JSON.stringify(shoppingList)); } catch (e) {}
       }
       if (includePantryAndTheme && Array.isArray(st.userPantry)) {
