@@ -1958,6 +1958,119 @@
     @keyframes timer-breathe { 0%,100% { transform:rotate(-90deg) scale(1); } 50% { transform:rotate(-90deg) scale(1.08); } }
     @keyframes timer-pop { 0% { transform:rotate(-90deg) scale(.7); } 60% { transform:rotate(-90deg) scale(1.2); } 100% { transform:rotate(-90deg) scale(1); } }
     @keyframes banner-in { 0% { opacity:0; transform:translateY(8px); } 100% { opacity:1; transform:none; } }
+    /* ===== Recetas de la comunidad ===== */
+    .recipe-filters { display:flex; flex-wrap:wrap; gap:8px; margin:-8px 0 8px; }
+    .recipe-filter {
+      font:inherit; font-size:12.5px; color:var(--text-muted); background:transparent; cursor:pointer;
+      border:1px solid var(--border-soft); border-radius:999px; padding:7px 12px; min-height:34px;
+      display:inline-flex; align-items:center; gap:7px; transition:background .25s, color .25s, border-color .25s;
+    }
+    .recipe-filter:hover { border-color:var(--green-brand); color:var(--text-main); }
+    .recipe-filter.active { background:var(--green-brand); border-color:var(--green-brand); color:var(--bg-card); }
+    .recipe-filter-count { font-size:11px; opacity:.7; font-variant-numeric:tabular-nums; }
+    .recipes-empty { font-size:14px; color:var(--text-muted); padding:28px 0; border-top:1px solid var(--border-soft); line-height:1.6; }
+    .recipe-card.enter { animation:recipe-in .6s cubic-bezier(.2,.8,.2,1) both; animation-delay:calc(var(--order, 0) * 60ms); }
+    @keyframes recipe-in { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:none; } }
+    .recipe-card .recipe-top { display:flex; justify-content:space-between; align-items:flex-start; gap:20px; }
+    .recipe-head { min-width:0; }
+    .recipe-meta { font-size:11.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--text-muted); margin-bottom:8px; }
+    .recipe-card .recipe-title { font-family:var(--serif); font-weight:400; font-size:26px; line-height:1.15; letter-spacing:-.03em; margin:0 0 10px; }
+    .recipe-tags { display:flex; flex-wrap:wrap; gap:6px; }
+    .recipe-tag { font-size:11px; padding:3px 9px; border-radius:999px; background:var(--bg-card-alt); color:var(--green-brand); border:1px solid var(--border-soft); }
+    .cover-ring { position:relative; width:76px; flex-shrink:0; text-align:center; }
+    .cover-ring svg { width:64px; height:64px; transform:rotate(-90deg); display:block; margin:0 auto; }
+    .cover-track { fill:none; stroke:var(--track-bg); stroke-width:5; }
+    .cover-fill { fill:none; stroke:var(--green-brand); stroke-width:5; stroke-linecap:round; transition:stroke-dashoffset .9s cubic-bezier(.2,.8,.2,1); }
+    .recipe-card.is-ready .cover-fill { stroke:var(--macro-carb); }
+    .cover-ring-text { position:absolute; top:0; left:0; right:0; height:64px; display:flex; align-items:center; justify-content:center; }
+    .cover-ring .coverage-pct { font-family:var(--serif); font-size:17px; letter-spacing:-.03em; color:var(--text-main); }
+    .cover-ring .coverage-lbl { font-size:10.5px; color:var(--text-muted); margin-top:4px; max-width:none; }
+    .recipe-actions { display:flex; align-items:center; gap:10px; margin:6px 0 14px; }
+    .btn-add-missing {
+      font:inherit; font-size:13px; font-weight:500; cursor:pointer; border-radius:999px; padding:9px 16px; min-height:38px;
+      background:var(--green-brand); color:var(--bg-card); border:1px solid var(--green-brand); transition:transform .2s, opacity .2s;
+    }
+    .btn-add-missing:hover { transform:translateY(-1px); }
+    .btn-add-missing.done { background:transparent; color:var(--green-brand); cursor:default; transform:none; }
+    .recipe-ready { font-size:13px; font-weight:500; color:var(--green-brand); display:inline-flex; align-items:center; gap:8px; }
+    .recipe-ready::before { content:''; width:8px; height:8px; border-radius:50%; background:var(--macro-carb); box-shadow:0 0 0 4px #b98a3c26; }
+    .recipe-steps { margin:4px 0 12px; }
+    .recipe-steps > summary { font-size:13px; color:var(--green-brand); cursor:pointer; padding:6px 0; text-decoration:underline; text-underline-offset:4px; }
+    .recipe-steps[open] > summary { margin-bottom:6px; }
+    .recipe-steps .steps-list { animation:view-in .45s ease-out both; }
+
+    /* ===== Lista de la compra ===== */
+    .shopping-panel h3 > span { display:inline-flex; align-items:center; gap:8px; }
+    .shop-count {
+      min-width:22px; height:22px; padding:0 7px; border-radius:999px; font-size:11.5px; font-weight:600;
+      display:inline-flex; align-items:center; justify-content:center; background:var(--track-bg); color:var(--text-muted);
+      font-variant-numeric:tabular-nums; transition:background .3s, color .3s;
+    }
+    .shop-count.has-items { background:var(--green-brand); color:var(--bg-card); }
+    .shop-count.bump { animation:count-bump .5s cubic-bezier(.3,1.6,.5,1); }
+    @keyframes count-bump { 0% { transform:scale(1); } 40% { transform:scale(1.35); } 100% { transform:scale(1); } }
+    .shop-empty, .shop-done { font-size:13px; line-height:1.6; color:var(--text-muted); margin:4px 0 0; }
+    .shop-done { color:var(--green-brand); font-weight:500; margin-top:10px; }
+    .shop-aisle + .shop-aisle { margin-top:14px; }
+    .shop-aisle-title { font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--text-muted); margin-bottom:4px; }
+    .shop-item { display:grid; grid-template-columns:minmax(0,1fr) auto 28px; align-items:center; gap:8px; padding:7px 0; border-bottom:1px solid var(--border-soft); }
+    .shop-item .qty-btn.del { width:28px; height:28px; min-width:28px; padding:0; }
+    .shop-item.just-added { animation:pantry-in .9s cubic-bezier(.2,.8,.2,1); }
+    .shop-check { display:flex; align-items:center; gap:10px; cursor:pointer; min-width:0; }
+    .shop-check input { width:18px; height:18px; accent-color:var(--green-active); flex-shrink:0; cursor:pointer; }
+    .shop-name { font-size:14px; line-height:1.3; text-decoration:line-through; text-decoration-color:transparent; text-decoration-thickness:1.5px; transition:color .3s, text-decoration-color .3s; overflow-wrap:anywhere; }
+    .shop-item.checked .shop-name { color:var(--text-muted); text-decoration-color:var(--text-muted); }
+    .shop-qty { font-size:13px; color:var(--text-muted); font-variant-numeric:tabular-nums; white-space:nowrap; }
+    .shop-actions { display:grid; gap:8px; margin-top:14px; }
+    .shop-actions.hidden { display:none; }
+    .btn-shop-primary, .btn-shop-ghost { font:inherit; font-size:13px; font-weight:500; padding:10px 14px; min-height:40px; border-radius:6px; cursor:pointer; }
+    .btn-shop-primary { background:var(--green-brand); color:var(--bg-card); border:1px solid var(--green-brand); }
+    .btn-shop-ghost { background:transparent; color:var(--green-brand); border:1px solid var(--border-soft); }
+    .btn-shop-ghost:hover { border-color:var(--green-brand); }
+    @media (max-width:650px) {
+      .recipe-card .recipe-title { font-size:22px; }
+      .cover-ring { width:64px; }
+      .cover-ring svg { width:54px; height:54px; }
+      .cover-ring-text { height:54px; }
+      .cover-ring .coverage-pct { font-size:15px; }
+    }
+
+    /* ===== Entrenamiento: miniaturas, anillos por día y celebración ===== */
+    .visually-hidden { position:absolute !important; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+    .day-tab { position:relative; }
+    .day-ring { display:block; width:24px; height:24px; margin:0 auto 6px; }
+    .day-ring svg { width:24px; height:24px; transform:rotate(-90deg); display:block; }
+    .day-ring-track { fill:none; stroke:var(--track-bg); stroke-width:2.6; }
+    .day-ring-fill { fill:none; stroke:var(--green-brand); stroke-width:2.6; stroke-linecap:round; transition:stroke-dashoffset .8s cubic-bezier(.2,.8,.2,1); }
+    .day-ring.full .day-ring-fill { stroke:var(--macro-carb); }
+    .day-ring.full svg { animation:check-pop .6s cubic-bezier(.3,1.6,.5,1); }
+    .ex-thumb {
+      width:64px; height:52px; flex-shrink:0; border-radius:8px; background:var(--bg-card-alt);
+      display:flex; align-items:flex-end; justify-content:center; padding:4px 4px 2px; overflow:hidden;
+    }
+    .ex-thumb .ex-demo-svg { width:100%; height:100%; }
+    .ex-thumb .fig-ground { stroke:var(--border-soft); }
+    .ex-thumb .fig-ground { stroke-width:3; }
+    .ex-thumb .fig-body { stroke-width:9; }
+    .ex-thumb .fig-near, .ex-thumb .is-front .fig-far { stroke-width:8; }
+    .ex-thumb .fig-far { stroke-width:7; }
+    .exercise-row.done .ex-thumb { opacity:.55; }
+    .leaf-fall { position:fixed; inset:0; pointer-events:none; z-index:300; overflow:hidden; }
+    .leaf {
+      position:absolute; top:-30px; width:12px; height:18px; border-radius:0 100% 0 100%; opacity:.9;
+      animation-name:leaf-drop; animation-timing-function:cubic-bezier(.35,.2,.45,1); animation-fill-mode:both;
+    }
+    @keyframes leaf-drop {
+      0% { translate:0 0; rotate:0deg; opacity:0; }
+      10% { opacity:.9; }
+      100% { translate:var(--drift) 105vh; rotate:var(--spin); opacity:.15; }
+    }
+    @media (max-width:650px) {
+      .ex-thumb { width:52px; height:44px; }
+      .day-ring { width:20px; height:20px; margin-bottom:4px; }
+      .day-ring svg { width:20px; height:20px; }
+    }
+
     /* ===== Efectos de calma ===== */
     /* Portada viva: la foto se acerca muy despacio tras asentarse; el titular aparece palabra a palabra. */
     .hero-image { animation:photo-settle 1.8s cubic-bezier(.2,.7,.2,1) both, photo-drift 22s ease-in-out 1.8s infinite alternate; }
@@ -2235,6 +2348,18 @@
             <div class="quick-cats-title">En tu nevera (<span id="pantryCountLabel">0</span>)</div>
             <div class="pantry-list" id="pantryContainer"></div>
           </div>
+
+          <div class="card-panel shopping-panel" id="shoppingPanel">
+            <h3>
+              <span>Lista de la compra <span class="shop-count" id="shopCount" aria-label="productos en la lista">0</span></span>
+              <button class="btn-clear-pantry" onclick="clearShopping()">Vaciar</button>
+            </h3>
+            <div id="shoppingList" aria-live="polite"></div>
+            <div class="shop-actions hidden" id="shoppingActions">
+              <button type="button" class="btn-shop-primary" onclick="moveBoughtToPantry()">Pasar lo comprado a la despensa</button>
+              <button type="button" class="btn-shop-ghost" onclick="shareShoppingList()">Compartir lista</button>
+            </div>
+          </div>
         </aside>
 
         <!-- Right Content -->
@@ -2258,8 +2383,9 @@
           <div id="customChefContainer"></div>
 
           <div class="section-divider-title">
-            <span>Recetas de la comunidad (ordenadas por tu despensa)</span>
+            <span>Recetas de la comunidad · ordenadas por lo que tienes</span>
           </div>
+          <div class="recipe-filters" id="recipeFilters" role="group" aria-label="Filtrar recetas"></div>
 
           <div class="recipes-stack" id="recipesContainer"></div>
         </section>
@@ -2600,6 +2726,14 @@
         ],
         baseMacros: { kcal: 357, prot: 28, carb: 24, fat: 16 },
         tip: 'Usa también los tallos de las espinacas: aportan fibra y textura.',
+        time: 25,
+        level: 'Media',
+        veggie: true,
+        steps: [
+          'Pela y corta la patata en láminas finas; pócha a fuego medio con un chorrito de aceite 10 min.',
+          'Añade el calabacín en dados y las espinacas hasta que se reduzcan.',
+          'Bate los huevos, mezcla con las verduras y cuaja 3–4 min por cada lado.'
+        ],
         seedReviews: [
           { author: 'Marta R.', rating: 5, text: 'Me sacó de un apuro con lo que quedaba en la nevera. Saciante y rápida.', created_at: '2026-10-12' },
           { author: 'Dani P.', rating: 4, text: 'Le añadí cebolla y quedó mejor. Perfecta para llevar al trabajo.', created_at: '2026-10-19' }
@@ -2616,6 +2750,14 @@
         ],
         baseMacros: { kcal: 408, prot: 22, carb: 46, fat: 12 },
         tip: 'Tuesta el pan duro con aceite y ajo para darle un toque crujiente y evitar tirarlo.',
+        time: 15,
+        level: 'Fácil',
+        veggie: true,
+        steps: [
+          'Sofríe el tomate rallado 3 min con un poco de aceite y pimentón.',
+          'Añade los garbanzos escurridos y las espinacas; saltea hasta que se ablanden.',
+          'Tuesta el pan duro con ajo y sírvelo como acompañamiento.'
+        ],
         seedReviews: [
           { author: 'Lucía F.', rating: 5, text: 'Las tostas de pan duro son un acierto, no tiro nada.', created_at: '2026-10-14' },
           { author: 'Andrés M.', rating: 4, text: 'Muy completa. Yo le puse comino y pimentón.', created_at: '2026-11-01' }
@@ -2632,6 +2774,14 @@
         ],
         baseMacros: { kcal: 349, prot: 32, carb: 30, fat: 11 },
         tip: 'Aprovecha el tomate maduro: es perfecto rallado sobre el pan tostado.',
+        time: 10,
+        level: 'Fácil',
+        veggie: false,
+        steps: [
+          'Tuesta las rebanadas de pan duro hasta que estén crujientes.',
+          'Ralla el tomate por encima y añade una pizca de sal.',
+          'Corona con el atún escurrido y el huevo cocido en láminas.'
+        ],
         seedReviews: [
           { author: 'Elena C.', rating: 4, text: 'Cena rápida y con buena proteína.', created_at: '2026-10-22' },
           { author: 'Hugo B.', rating: 5, text: 'El tomate rallado lo cambia todo.', created_at: '2026-11-05' }
@@ -2648,6 +2798,14 @@
         ],
         baseMacros: { kcal: 476, prot: 42, carb: 50, fat: 10 },
         tip: 'Reutiliza arroz de ayer: queda más suelto en la sartén y rinde mejor.',
+        time: 20,
+        level: 'Fácil',
+        veggie: false,
+        steps: [
+          'Corta el pollo en tiras y dóralo a fuego alto 5–6 min.',
+          'Saltea la zanahoria y el calabacín en bastones 4 min.',
+          'Sirve sobre el arroz y aliña con un hilo de soja o limón.'
+        ],
         seedReviews: [
           { author: 'Sofía G.', rating: 5, text: 'Ideal para subir masa sin complicarme. Repito cada semana.', created_at: '2026-10-28' },
           { author: 'Iván T.', rating: 4, text: 'Mucha proteína. Con arroz del día anterior sale genial.', created_at: '2026-11-09' }
@@ -2664,6 +2822,14 @@
         ],
         baseMacros: { kcal: 560, prot: 38, carb: 46, fat: 24 },
         tip: 'Cuece el brócoli al vapor solo 5 minutos para que quede al dente y conserve vitaminas.',
+        time: 25,
+        level: 'Fácil',
+        veggie: false,
+        steps: [
+          'Cuece el arroz y el brócoli al vapor 5 min, al dente.',
+          'Marca el salmón a la plancha 3–4 min por cada lado.',
+          'Sirve con el aguacate en láminas y unas gotas de limón.'
+        ],
         seedReviews: [
           { author: 'Paula V.', rating: 5, text: 'Brutal post-entreno. Con un poco de limón y sésamo queda de restaurante.', created_at: '2026-11-03' }
         ]
@@ -2679,8 +2845,153 @@
         ],
         baseMacros: { kcal: 465, prot: 19, carb: 62, fat: 15 },
         tip: 'Si el plátano está muy maduro, aplástalo con canela y no necesitarás endulzante.',
+        time: 5,
+        level: 'Fácil',
+        veggie: true,
+        steps: [
+          'Mezcla la avena con el yogur y deja reposar 2 min.',
+          'Añade el plátano en rodajas por encima.',
+          'Termina con la crema de cacahuete y una pizca de canela.'
+        ],
         seedReviews: [
           { author: 'Marcos D.', rating: 5, text: 'Con canela y un toque de queso batido sube mucho la proteína.', created_at: '2026-11-11' }
+        ]
+      },
+      {
+        id: 'pasta_atun',
+        title: 'Pasta con atún y tomate',
+        requirements: [
+          { id: 'pasta', name: 'Pasta', amount: 120, unit: 'g', leftoverName: 'pasta' },
+          { id: 'atun', name: 'Atún', amount: 1, unit: 'ud', leftoverName: 'atún' },
+          { id: 'tomate_triturado', name: 'Tomate triturado', amount: 150, unit: 'g', leftoverName: 'tomate triturado' },
+          { id: 'cebolla', name: 'Cebolla', amount: 1, unit: 'ud', leftoverName: 'cebolla' }
+        ],
+        baseMacros: { kcal: 560, prot: 32, carb: 78, fat: 12 },
+        tip: 'Guarda un poco del agua de cocción: liga la salsa y la deja más cremosa.',
+        time: 20,
+        level: 'Fácil',
+        veggie: false,
+        steps: [
+          'Cuece la pasta en agua con sal el tiempo del paquete.',
+          'Pocha la cebolla picada 5 min y añade el tomate triturado; cocina 8 min.',
+          'Incorpora el atún escurrido y la pasta; mezcla 1 min y sirve.'
+        ],
+        seedReviews: [
+          { author: 'Carla N.', rating: 5, text: 'Clásico que nunca falla. Con orégano queda de diez.', created_at: '2026-11-14' }
+        ]
+      },
+      {
+        id: 'tofu_brocoli',
+        title: 'Tofu crujiente con brócoli y arroz integral',
+        requirements: [
+          { id: 'tofu', name: 'Tofu firme', amount: 150, unit: 'g', leftoverName: 'tofu' },
+          { id: 'brocoli', name: 'Brócoli', amount: 150, unit: 'g', leftoverName: 'brócoli' },
+          { id: 'arroz_integral', name: 'Arroz integral', amount: 120, unit: 'g', leftoverName: 'arroz integral' },
+          { id: 'pimiento', name: 'Pimiento', amount: 1, unit: 'ud', leftoverName: 'pimiento' }
+        ],
+        baseMacros: { kcal: 480, prot: 24, carb: 55, fat: 16 },
+        tip: 'Seca bien el tofu con papel antes de dorarlo: así queda crujiente por fuera.',
+        time: 20,
+        level: 'Fácil',
+        veggie: true,
+        steps: [
+          'Corta el tofu en dados, sécalo y dóralo a fuego alto 6–7 min.',
+          'Saltea el brócoli y el pimiento en tiras 4 min, que queden al dente.',
+          'Sirve sobre el arroz integral con un toque de soja y sésamo.'
+        ],
+        seedReviews: [
+          { author: 'Nerea L.', rating: 5, text: 'Por fin un tofu que le gusta a toda la casa.', created_at: '2026-11-16' }
+        ]
+      },
+      {
+        id: 'lentejas',
+        title: 'Lentejas estofadas con verduras',
+        requirements: [
+          { id: 'lentejas', name: 'Lentejas cocidas', amount: 200, unit: 'g', leftoverName: 'lentejas' },
+          { id: 'zanahoria', name: 'Zanahoria', amount: 1, unit: 'ud', leftoverName: 'zanahoria' },
+          { id: 'cebolla', name: 'Cebolla', amount: 1, unit: 'ud', leftoverName: 'cebolla' },
+          { id: 'pimiento', name: 'Pimiento', amount: 1, unit: 'ud', leftoverName: 'pimiento' }
+        ],
+        baseMacros: { kcal: 360, prot: 20, carb: 52, fat: 4 },
+        tip: 'Un chorrito de vinagre al final realza el sabor y ayuda a absorber el hierro.',
+        time: 25,
+        level: 'Fácil',
+        veggie: true,
+        steps: [
+          'Pica la cebolla, la zanahoria y el pimiento y sofríe 8 min a fuego medio.',
+          'Añade pimentón, las lentejas y un vaso de agua o caldo.',
+          'Cuece 10 min a fuego suave hasta que espese y sirve.'
+        ],
+        seedReviews: [
+          { author: 'Tomás R.', rating: 4, text: 'Reconfortantes y baratísimas. Las congelo por raciones.', created_at: '2026-11-08' }
+        ]
+      },
+      {
+        id: 'quinoa_bowl',
+        title: 'Bowl de quinoa, garbanzos y aguacate',
+        requirements: [
+          { id: 'quinoa', name: 'Quinoa', amount: 120, unit: 'g', leftoverName: 'quinoa' },
+          { id: 'garbanzos', name: 'Garbanzos', amount: 150, unit: 'g', leftoverName: 'garbanzos' },
+          { id: 'aguacate', name: 'Aguacate', amount: 1, unit: 'ud', leftoverName: 'aguacate' },
+          { id: 'tomate', name: 'Tomate', amount: 1, unit: 'ud', leftoverName: 'tomate' }
+        ],
+        baseMacros: { kcal: 620, prot: 22, carb: 70, fat: 28 },
+        tip: 'Lava la quinoa antes de cocerla para quitarle el amargor.',
+        time: 15,
+        level: 'Fácil',
+        veggie: true,
+        steps: [
+          'Cuece la quinoa 12 min y déjala templar.',
+          'Corta el tomate y el aguacate en dados.',
+          'Monta el bowl con los garbanzos y aliña con limón, aceite y comino.'
+        ],
+        seedReviews: [
+          { author: 'Inés P.', rating: 5, text: 'Colorido, fresco y me sacia hasta la cena.', created_at: '2026-11-18' }
+        ]
+      },
+      {
+        id: 'salmon_boniato',
+        title: 'Salmón al horno con boniato y espárragos',
+        requirements: [
+          { id: 'salmon', name: 'Salmón fresco', amount: 150, unit: 'g', leftoverName: 'salmón' },
+          { id: 'boniato', name: 'Boniato', amount: 1, unit: 'ud', leftoverName: 'boniato' },
+          { id: 'esparragos', name: 'Espárragos verdes', amount: 150, unit: 'g', leftoverName: 'espárragos' }
+        ],
+        baseMacros: { kcal: 540, prot: 34, carb: 40, fat: 22 },
+        tip: 'Hornea el boniato primero: necesita el doble de tiempo que el salmón.',
+        time: 30,
+        level: 'Fácil',
+        veggie: false,
+        steps: [
+          'Hornea el boniato en dados a 200 °C durante 15 min.',
+          'Añade el salmón y los espárragos a la bandeja con aceite y pimienta.',
+          'Hornea 12 min más y sirve con unas gotas de limón.'
+        ],
+        seedReviews: [
+          { author: 'Álvaro M.', rating: 5, text: 'Una sola bandeja y cena lista. Perfecto entre semana.', created_at: '2026-11-20' }
+        ]
+      },
+      {
+        id: 'wrap_pavo',
+        title: 'Wraps de pavo con queso batido y lechuga',
+        requirements: [
+          { id: 'tortilla_trigo', name: 'Tortillas de trigo', amount: 2, unit: 'ud', leftoverName: 'tortillas' },
+          { id: 'pavo', name: 'Pechuga de pavo', amount: 150, unit: 'g', leftoverName: 'pavo' },
+          { id: 'lechuga', name: 'Lechuga', amount: 100, unit: 'g', leftoverName: 'lechuga' },
+          { id: 'queso_batido', name: 'Queso fresco batido', amount: 100, unit: 'g', leftoverName: 'queso batido' }
+        ],
+        baseMacros: { kcal: 510, prot: 52, carb: 52, fat: 9 },
+        tip: 'Calienta la tortilla 20 segundos en la sartén: se enrolla sin romperse.',
+        time: 10,
+        level: 'Fácil',
+        veggie: false,
+        steps: [
+          'Dora el pavo en tiras 4–5 min con pimentón.',
+          'Unta las tortillas con el queso batido y añade la lechuga.',
+          'Reparte el pavo, enrolla y corta por la mitad.'
+        ],
+        seedReviews: [
+          { author: 'Lola G.', rating: 4, text: 'Ideal para llevar. Muchísima proteína y poca grasa.', created_at: '2026-11-21' }
         ]
       }
     ];
@@ -3602,67 +3913,133 @@
       renderCustomChefCard();
     }
 
+    /* ==================== RECETAS DE LA COMUNIDAD ==================== */
+    let recipeFilter = 'all'; // all | ready | quick | protein | veggie
+    const RECIPE_FILTERS = [
+      { k: 'all', label: 'Todas' },
+      { k: 'ready', label: 'Lista para cocinar' },
+      { k: 'quick', label: 'Rápidas' },
+      { k: 'protein', label: 'Altas en proteína' },
+      { k: 'veggie', label: 'Vegetarianas' }
+    ];
+    const COVER_RING = 2 * Math.PI * 26;
+
+    // Qué tienes y qué falta de cada receta con la despensa actual.
+    function evaluateRecipe(recipe) {
+      let covered = 0;
+      const leftovers = [];
+      const missing = [];
+      const ingredients = recipe.requirements.map(req => {
+        const avail = userPantry
+          .filter(item => item.id === req.id && item.unit === req.unit)
+          .reduce((total, item) => total + (readNutritionValue(item.qty) ?? 0), 0);
+        if (avail >= req.amount) {
+          covered++;
+          const rem = avail - req.amount;
+          if (rem > 0) leftovers.push(`${rem} ${req.unit} de ${req.leftoverName}`);
+          return { req, ok: true };
+        }
+        missing.push({ req, amount: req.amount - avail });
+        return { req, ok: false, amount: req.amount - avail };
+      });
+      const pct = Math.round((covered / recipe.requirements.length) * 100);
+      return { recipe, pct, ingredients, leftovers, missing };
+    }
+
+    function recipeTags(recipe) {
+      const tags = [];
+      if (recipe.time <= 15) tags.push('Rápida');
+      if (recipe.baseMacros.prot >= 30) tags.push('Alta en proteína');
+      if (recipe.veggie) tags.push('Vegetariana');
+      return tags;
+    }
+
+    function recipeMatchesFilter(ev) {
+      const r = ev.recipe;
+      if (recipeFilter === 'ready') return ev.pct === 100;
+      if (recipeFilter === 'quick') return r.time <= 15;
+      if (recipeFilter === 'protein') return r.baseMacros.prot >= 30;
+      if (recipeFilter === 'veggie') return Boolean(r.veggie);
+      return true;
+    }
+
+    let recipesEnterNext = true; // entrada escalonada solo al abrir la sección o cambiar de filtro
+    function setRecipeFilter(k) {
+      recipeFilter = k;
+      recipesEnterNext = true;
+      renderCommunityRecipes();
+    }
+
+    function renderRecipeFilters(evaluated) {
+      const el = document.getElementById('recipeFilters');
+      if (!el) return;
+      el.innerHTML = RECIPE_FILTERS.map(f => {
+        const count = evaluated.filter(ev => { const prev = recipeFilter; recipeFilter = f.k; const ok = recipeMatchesFilter(ev); recipeFilter = prev; return ok; }).length;
+        return `<button type="button" class="recipe-filter${recipeFilter === f.k ? ' active' : ''}" aria-pressed="${recipeFilter === f.k}" onclick="setRecipeFilter('${f.k}')">${f.label}<span class="recipe-filter-count">${count}</span></button>`;
+      }).join('');
+    }
+
     function renderCommunityRecipes() {
       const container = document.getElementById('recipesContainer');
       container.innerHTML = '';
-      // Evaluar cobertura y ordenar de mayor a menor cobertura
-      const evaluated = COMMUNITY_RECIPES.map(recipe => {
-        let covered = 0;
-        const leftovers = [];
-        const tagsHtml = recipe.requirements.map(req => {
-          const avail = userPantry
-            .filter(item => item.id === req.id && item.unit === req.unit)
-            .reduce((total, item) => total + (readNutritionValue(item.qty) ?? 0), 0);
-          if (avail >= req.amount) {
-            covered++;
-            const rem = avail - req.amount;
-            if (rem > 0) leftovers.push(`${rem} ${req.unit} de ${req.leftoverName}`);
-            return `<span class="ing-tag ok">${escapeHtml(req.name)} · ${req.amount} ${req.unit}</span>`;
-          } else {
-            const missing = req.amount - avail;
-            return `<span class="ing-tag missing">${escapeHtml(req.name)} · falta ${missing} ${req.unit}</span>`;
-          }
-        }).join('');
+      const evaluated = COMMUNITY_RECIPES.map(evaluateRecipe).sort((a, b) => b.pct - a.pct || a.recipe.time - b.recipe.time);
+      renderRecipeFilters(evaluated);
+      const visible = evaluated.filter(recipeMatchesFilter);
 
-        const pct = Math.round((covered / recipe.requirements.length) * 100);
-        return { recipe, pct, tagsHtml, leftovers };
-      }).sort((a, b) => b.pct - a.pct);
+      if (!visible.length) {
+        container.innerHTML = `<p class="recipes-empty">${recipeFilter === 'ready'
+          ? 'Aún no tienes todo para ninguna receta. Pulsa «Añadir lo que falta» en la que más te apetezca y ve a la compra con tu lista.'
+          : 'No hay recetas con este filtro.'}</p>`;
+        return;
+      }
 
-      evaluated.forEach(({ recipe, pct, tagsHtml, leftovers }) => {
-        const kcal = Math.round(recipe.baseMacros.kcal);
-        const prot = Math.round(recipe.baseMacros.prot);
-        const carb = Math.round(recipe.baseMacros.carb);
-        const fat = Math.round(recipe.baseMacros.fat);
+      visible.forEach(({ recipe, pct, ingredients, leftovers, missing }, order) => {
+        const tagsHtml = ingredients.map(i => i.ok
+          ? `<span class="ing-tag ok">${escapeHtml(i.req.name)} · ${i.req.amount} ${i.req.unit}</span>`
+          : `<span class="ing-tag missing">${escapeHtml(i.req.name)} · falta ${i.amount} ${i.req.unit}</span>`).join('');
         const leftoverText = leftovers.length > 0
           ? `Te sobrará: ${leftovers.join(', ')}.`
           : `Aprovechas lo justo con tu despensa actual.`;
+        const inList = missing.length > 0 && missing.every(m => shoppingList.some(s => s.id === m.req.id && s.unit === m.req.unit && s.sources.includes(recipe.id)));
+        const actionHtml = missing.length === 0
+          ? `<span class="recipe-ready">Tienes todo lo necesario</span>`
+          : inList
+            ? `<button type="button" class="btn-add-missing done" disabled>En tu lista de la compra</button>`
+            : `<button type="button" class="btn-add-missing" onclick="addMissingToShopping('${recipe.id}')">Añadir lo que falta (${missing.length})</button>`;
+        const prevPct = lastCoverage[recipe.id] ?? 0;
+        const stepsHtml = (recipe.steps || []).map(st => `<li>${escapeHtml(st)}</li>`).join('');
 
         const card = document.createElement('article');
-        card.className = 'recipe-card';
+        card.className = 'recipe-card' + (pct === 100 ? ' is-ready' : '') + (recipesEnterNext ? ' enter' : '');
+        card.style.setProperty('--order', order);
         card.innerHTML = `
           <div class="recipe-top">
-            <div>
+            <div class="recipe-head">
+              <div class="recipe-meta">${recipe.time} min · ${escapeHtml(recipe.level || 'Fácil')} · ${Math.round(recipe.baseMacros.kcal)} kcal</div>
               <h4 class="recipe-title">${escapeHtml(recipe.title)}</h4>
-              <p class="recipe-sub">Porción original · valores orientativos</p>
+              <div class="recipe-tags">${recipeTags(recipe).map(t => `<span class="recipe-tag">${t}</span>`).join('')}</div>
             </div>
-            <div class="coverage-box">
-              <div class="coverage-pct" data-value="${lastCoverage[recipe.id] ?? 0}">${lastCoverage[recipe.id] ?? 0} %</div>
-              <div class="coverage-lbl">cubierto con tu despensa</div>
+            <div class="cover-ring" role="img" aria-label="${pct} % de los ingredientes en tu despensa">
+              <svg viewBox="0 0 60 60" aria-hidden="true" focusable="false">
+                <circle class="cover-track" cx="30" cy="30" r="26" />
+                <circle class="cover-fill" cx="30" cy="30" r="26" stroke-dasharray="${COVER_RING.toFixed(2)}" stroke-dashoffset="${(COVER_RING * (1 - prevPct / 100)).toFixed(2)}" />
+              </svg>
+              <div class="cover-ring-text"><span class="coverage-pct" data-value="${prevPct}">${prevPct} %</span></div>
+              <div class="coverage-lbl">en tu despensa</div>
             </div>
-          </div>
-
-          <div class="progress-track">
-            <div class="progress-fill" style="width: ${lastCoverage[recipe.id] ?? 0}%"></div>
           </div>
 
           <div class="ing-tags">${tagsHtml}</div>
 
           <div class="macros-row">
-            <span><strong>${kcal}</strong> kcal</span>
-            <span><strong>${prot} g</strong> proteína</span>
-            <span><strong>${carb} g</strong> carbohidrato</span>
-            <span><strong>${fat} g</strong> grasa</span>
+            <span><strong>${Math.round(recipe.baseMacros.prot)} g</strong> proteína</span>
+            <span><strong>${Math.round(recipe.baseMacros.carb)} g</strong> carbohidrato</span>
+            <span><strong>${Math.round(recipe.baseMacros.fat)} g</strong> grasa</span>
           </div>
+
+          <div class="recipe-actions">${actionHtml}</div>
+
+          ${stepsHtml ? `<details class="recipe-steps"><summary>Ver preparación paso a paso</summary><ol class="steps-list">${stepsHtml}</ol></details>` : ''}
 
           <p class="leftover-line">${escapeHtml(leftoverText)}</p>
           <div class="tip-line">${escapeHtml(recipe.tip)}</div>
@@ -3670,13 +4047,189 @@
           ${renderReviewsBlockHtml(recipe.id)}
         `;
         container.appendChild(card);
-        // Barra y porcentaje animados desde el valor anterior hasta el nuevo.
-        const fill = card.querySelector('.progress-fill');
-        if (prefersReducedMotion()) fill.style.width = `${pct}%`;
-        else setTimeout(() => { fill.style.width = `${pct}%`; }, 30);
+        // Anillo y porcentaje animados desde el valor anterior hasta el nuevo.
+        const ring = card.querySelector('.cover-fill');
+        const target = (COVER_RING * (1 - pct / 100)).toFixed(2);
+        if (prefersReducedMotion()) ring.setAttribute('stroke-dashoffset', target);
+        else setTimeout(() => ring.setAttribute('stroke-dashoffset', target), 30);
         animateNumber(card.querySelector('.coverage-pct'), pct, { suffix: ' %', duration: 900 });
         lastCoverage[recipe.id] = pct;
       });
+      recipesEnterNext = false;
+    }
+
+    /* ==================== LISTA DE LA COMPRA ==================== */
+    const SHOPPING_STORAGE_KEY = 'raiz_shopping_v1';
+    let shoppingList = [];     // { id, name, amount, unit, cat, checked, sources: [recipeId] }
+    let lastAddedShopIds = [];
+    const SHOP_AISLES = [
+      { cat: 'verdura', label: 'Verdura y hortalizas' },
+      { cat: 'fruta', label: 'Fruta' },
+      { cat: 'proteina', label: 'Carne, pescado y proteína' },
+      { cat: 'lacteo', label: 'Lácteos y huevos' },
+      { cat: 'carbo', label: 'Cereales, legumbres y tubérculos' },
+      { cat: 'grasa', label: 'Frutos secos y grasas' }
+    ];
+
+    function loadShopping() {
+      try {
+        const raw = localStorage.getItem(SHOPPING_STORAGE_KEY);
+        const parsed = raw ? JSON.parse(raw) : [];
+        shoppingList = Array.isArray(parsed) ? parsed.filter(i => i && i.id && i.unit) : [];
+      } catch (e) { shoppingList = []; }
+    }
+
+    function saveShopping() {
+      try { localStorage.setItem(SHOPPING_STORAGE_KEY, JSON.stringify(shoppingList)); } catch (e) {}
+      scheduleCloudSync();
+    }
+
+    function addMissingToShopping(recipeId) {
+      const recipe = COMMUNITY_RECIPES.find(r => r.id === recipeId);
+      if (!recipe) return;
+      const { missing } = evaluateRecipe(recipe);
+      lastAddedShopIds = [];
+      let added = 0;
+      missing.forEach(({ req, amount }) => {
+        const catalog = SUPERMARKET_CATALOG.find(c => c.id === req.id);
+        let item = shoppingList.find(s => s.id === req.id && s.unit === req.unit);
+        if (item && item.sources.includes(recipeId)) return;
+        if (item) {
+          item.amount += amount;
+          item.sources.push(recipeId);
+          item.checked = false;
+        } else {
+          item = { id: req.id, name: catalog?.name || req.name, amount, unit: req.unit, cat: catalog?.cat || 'verdura', checked: false, sources: [recipeId] };
+          shoppingList.push(item);
+        }
+        lastAddedShopIds.push(item.id + '|' + item.unit);
+        added++;
+      });
+      saveShopping();
+      renderShoppingList();
+      renderCommunityRecipes();
+      showToast(added ? `${added} ${added === 1 ? 'producto añadido' : 'productos añadidos'} a tu lista de la compra.` : 'Ya estaba todo en tu lista.');
+      if (added && window.matchMedia('(max-width: 900px)').matches) {
+        document.getElementById('shoppingPanel')?.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'start' });
+      }
+    }
+
+    function toggleShoppingItem(key) {
+      const item = shoppingList.find(s => s.id + '|' + s.unit === key);
+      if (!item) return;
+      item.checked = !item.checked;
+      saveShopping();
+      renderShoppingList();
+    }
+
+    function removeShoppingItem(key) {
+      shoppingList = shoppingList.filter(s => s.id + '|' + s.unit !== key);
+      saveShopping();
+      renderShoppingList();
+      renderCommunityRecipes();
+    }
+
+    function clearShopping() {
+      shoppingList = [];
+      saveShopping();
+      renderShoppingList();
+      renderCommunityRecipes();
+    }
+
+    // Lo marcado como comprado pasa a la despensa con su cantidad.
+    function moveBoughtToPantry() {
+      const bought = shoppingList.filter(s => s.checked);
+      if (!bought.length) {
+        showToast('Marca primero lo que ya has comprado.');
+        return;
+      }
+      bought.forEach(item => {
+        const existing = userPantry.find(p => p.id === item.id && p.unit === item.unit);
+        if (existing) existing.qty += item.amount;
+        else {
+          const catalog = SUPERMARKET_CATALOG.find(c => c.id === item.id);
+          userPantry.unshift({ ...(catalog || { id: item.id, name: item.name, cat: item.cat, unit: item.unit, step: item.unit === 'ud' ? 1 : 50 }), qty: item.amount });
+        }
+      });
+      lastAddedPantryId = bought[0].id;
+      shoppingList = shoppingList.filter(s => !s.checked);
+      saveShopping();
+      savePantry();
+      updateDietaAll();
+      showToast(`${bought.length} ${bought.length === 1 ? 'producto pasado' : 'productos pasados'} a tu despensa.`);
+    }
+
+    function shoppingListText() {
+      const lines = ['Lista de la compra · Raíz', ''];
+      SHOP_AISLES.forEach(({ cat, label }) => {
+        const items = shoppingList.filter(s => s.cat === cat);
+        if (!items.length) return;
+        lines.push(label);
+        items.forEach(s => lines.push(`${s.checked ? '[x]' : '[ ]'} ${s.name}: ${s.amount} ${s.unit}`));
+        lines.push('');
+      });
+      return lines.join('\n').trim();
+    }
+
+    async function shareShoppingList() {
+      if (!shoppingList.length) {
+        showToast('Tu lista está vacía.');
+        return;
+      }
+      const text = shoppingListText();
+      try {
+        if (navigator.share && window.matchMedia('(pointer: coarse)').matches) {
+          await navigator.share({ title: 'Lista de la compra', text });
+          return;
+        }
+        await navigator.clipboard.writeText(text);
+        showToast('Lista copiada: pégala en WhatsApp o en tus notas.');
+      } catch (e) {
+        if (e && e.name === 'AbortError') return;
+        showToast('No se pudo copiar automáticamente.');
+      }
+    }
+
+    function renderShoppingList() {
+      const listEl = document.getElementById('shoppingList');
+      const countEl = document.getElementById('shopCount');
+      if (!listEl) return;
+      const pending = shoppingList.filter(s => !s.checked).length;
+      if (countEl) {
+        countEl.textContent = shoppingList.length;
+        countEl.classList.toggle('has-items', shoppingList.length > 0);
+        if (lastAddedShopIds.length && !prefersReducedMotion()) {
+          countEl.classList.remove('bump'); void countEl.offsetWidth; countEl.classList.add('bump');
+        }
+      }
+      document.getElementById('shoppingActions')?.classList.toggle('hidden', shoppingList.length === 0);
+      if (!shoppingList.length) {
+        listEl.innerHTML = `<p class="shop-empty">Vacía por ahora. Pulsa «Añadir lo que falta» en una receta y aparecerá aquí, ordenada por pasillos.</p>`;
+        lastAddedShopIds = [];
+        return;
+      }
+      listEl.innerHTML = SHOP_AISLES.map(({ cat, label }) => {
+        const items = shoppingList.filter(s => s.cat === cat);
+        if (!items.length) return '';
+        return `
+          <div class="shop-aisle">
+            <div class="shop-aisle-title">${label}</div>
+            ${items.map(s => {
+              const key = s.id + '|' + s.unit;
+              const isNew = lastAddedShopIds.includes(key);
+              return `
+              <div class="shop-item${s.checked ? ' checked' : ''}${isNew ? ' just-added' : ''}">
+                <label class="shop-check">
+                  <input type="checkbox" ${s.checked ? 'checked' : ''} onchange="toggleShoppingItem('${key}')" aria-label="Comprado: ${escapeHtml(s.name)}" />
+                  <span class="shop-name">${escapeHtml(s.name)}</span>
+                </label>
+                <span class="shop-qty">${s.amount} ${s.unit}</span>
+                <button type="button" class="qty-btn del" onclick="removeShoppingItem('${key}')" title="Quitar de la lista" aria-label="Quitar ${escapeHtml(s.name)} de la lista">×</button>
+              </div>`;
+            }).join('')}
+          </div>`;
+      }).join('') + (pending === 0 ? '<p class="shop-done">Todo comprado. Pásalo a la despensa para cocinar.</p>' : '');
+      lastAddedShopIds = [];
     }
 
     function toggleReviewForm(recipeId) {
@@ -3727,6 +4280,7 @@
     }
 
     function updateDietaAll() {
+      renderShoppingList();
       renderQuickAddChips();
       renderPantry();
       updateImpactBanner();
@@ -3997,9 +4551,18 @@
         tab.type = 'button';
         tab.setAttribute('aria-pressed', String(idx === workoutState.dayIndex));
         tab.className = 'day-tab' + (idx === workoutState.dayIndex ? ' active' : '');
+        // Progreso de ese día: ejercicios marcados sobre el total del día.
+        const dayExercises = pickExercisesForDay(d);
+        const dayDone = dayExercises.filter(ex => workoutState.completed.has(`${d.day}|${ex.name}`)).length;
+        const dayPct = dayExercises.length ? dayDone / dayExercises.length : 0;
+        const ringLen = 2 * Math.PI * 9;
         tab.innerHTML = `
+          <span class="day-ring${dayPct === 1 ? ' full' : ''}" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><circle class="day-ring-track" cx="12" cy="12" r="9" /><circle class="day-ring-fill" cx="12" cy="12" r="9" stroke-dasharray="${ringLen.toFixed(2)}" stroke-dashoffset="${(ringLen * (1 - dayPct)).toFixed(2)}" /></svg>
+          </span>
           <div class="day-tab-name">${d.day}</div>
           <div class="day-tab-focus">${d.focus}</div>
+          <span class="visually-hidden">${dayDone} de ${dayExercises.length} ejercicios completados</span>
         `;
         tab.onclick = () => {
           workoutState.dayIndex = idx;
@@ -4042,6 +4605,7 @@
         row.innerHTML = `
           <div class="exercise-left">
             <input type="checkbox" class="ex-check" aria-label="Completar ${escapeHtml(ex.name)}" ${isDone ? 'checked' : ''} />
+            ${demo ? `<div class="ex-thumb" aria-hidden="true">${demoSvgMarkup(demo, ex.name)}</div>` : ''}
             <div>
               <div class="exercise-name">
                 ${escapeHtml(ex.name)}
@@ -4056,6 +4620,24 @@
             ${timer ? `<button type="button" class="ex-timer-btn" aria-label="${escapeHtml(timer.label)} de ${escapeHtml(ex.name)}">${timerRingSvg()}<span class="ex-timer-text">${escapeHtml(timer.label)}</span></button>` : ''}
           </div>
         `;
+        const thumbSvg = row.querySelector('.ex-thumb svg');
+        if (thumbSvg) {
+          // Miniatura fija con la postura principal del ejercicio.
+          thumbSvg.removeAttribute('role');
+          thumbSvg.removeAttribute('aria-label');
+          const pose = demoStillPose(demo, 'b');
+          drawDemoPose(thumbSvg, demo, pose);
+          // Encuadre ajustado a la postura (con el suelo) para que la figura llene la miniatura.
+          const pts = Object.values(placeDemoJoints(demo, pose));
+          const minX = Math.min(...pts.map(p => p[0])) - FIG.head - 4;
+          const maxX = Math.max(...pts.map(p => p[0])) + FIG.head + 4;
+          const minY = Math.min(...pts.map(p => p[1])) - FIG.head - 4;
+          const maxY = DEMO_GROUND + 3;
+          let w = maxX - minX, h = maxY - minY;
+          const ratio = 64 / 52;
+          if (w / h < ratio) { const nw = h * ratio; thumbSvg.setAttribute('viewBox', `${(minX - (nw - w) / 2).toFixed(1)} ${minY.toFixed(1)} ${nw.toFixed(1)} ${h.toFixed(1)}`); }
+          else { const nh = w / ratio; thumbSvg.setAttribute('viewBox', `${minX.toFixed(1)} ${(maxY - nh).toFixed(1)} ${w.toFixed(1)} ${nh.toFixed(1)}`); }
+        }
         const check = row.querySelector('.ex-check');
         check.addEventListener('change', () => toggleExerciseDone(key));
         if (key === lastToggledExercise) checkToFocus = check;
@@ -4084,6 +4666,7 @@
       const doneBanner = document.getElementById('sessionDoneBanner');
       doneBanner.classList.toggle('hidden', !allDone);
       doneBanner.classList.toggle('celebrate', allDone && lastToggledExercise !== null);
+      if (allDone && lastToggledExercise !== null) celebrateWithLeaves();
 
       // Mantener el foco en la casilla pulsada (la lista se vuelve a dibujar).
       if (checkToFocus) checkToFocus.focus({ preventScroll: true });
@@ -4095,6 +4678,30 @@
     let lastToggledDemo = null;
 
     let lastToggledExercise = null;
+
+    // Celebración tranquila: unas hojas caen despacio al completar la sesión.
+    function celebrateWithLeaves() {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      document.querySelector('.leaf-fall')?.remove();
+      const layer = document.createElement('div');
+      layer.className = 'leaf-fall';
+      layer.setAttribute('aria-hidden', 'true');
+      const tones = ['#7ea383', '#a9c49b', '#587951', '#c9b27a', '#93b48a'];
+      for (let i = 0; i < 18; i++) {
+        const leaf = document.createElement('span');
+        leaf.className = 'leaf';
+        leaf.style.left = `${4 + Math.random() * 92}%`;
+        leaf.style.background = tones[i % tones.length];
+        leaf.style.setProperty('--drift', `${(Math.random() * 120 - 60).toFixed(0)}px`);
+        leaf.style.setProperty('--spin', `${(Math.random() * 540 - 270).toFixed(0)}deg`);
+        leaf.style.animationDelay = `${(Math.random() * 0.9).toFixed(2)}s`;
+        leaf.style.animationDuration = `${(2.6 + Math.random() * 1.6).toFixed(2)}s`;
+        leaf.style.transform = `scale(${(0.7 + Math.random() * 0.6).toFixed(2)})`;
+        layer.appendChild(leaf);
+      }
+      document.body.appendChild(layer);
+      setTimeout(() => layer.remove(), 5000);
+    }
 
     function toggleExerciseDone(key) {
       if (workoutState.completed.has(key)) workoutState.completed.delete(key);
@@ -4892,7 +5499,7 @@
       document.getElementById('navEntreno').classList.toggle('active', view === 'entrenamiento');
 
       if (view === 'entrenamiento') renderWorkoutView();
-      if (view === 'dieta') updateDietaAll();
+      if (view === 'dieta') { if (changed) recipesEnterNext = true; updateDietaAll(); }
       document.querySelector('.skip-link').href = '#' + (view === 'intro' ? 'viewIntro' : view === 'dieta' ? 'viewDieta' : 'viewEntreno');
       document.querySelectorAll('.top-nav-btn').forEach(btn => btn.setAttribute('aria-current', btn.classList.contains('active') ? 'page' : 'false'));
       window.scrollTo({ top: 0, behavior: 'instant' });
@@ -5176,6 +5783,7 @@
         currentGoal,
         chefStyle,
         userPantry,
+        shoppingList,
         theme: document.body.classList.contains('dark-mode') ? 'dark' : 'light',
         workoutState: {
           place: workoutState.place,
@@ -5244,6 +5852,10 @@
       }
       if (st.chefStyle) {
         chefStyle = st.chefStyle;
+      }
+      if (includePantryAndTheme && Array.isArray(st.shoppingList)) {
+        shoppingList = st.shoppingList.filter(i => i && i.id && i.unit).map(i => ({ ...i, sources: Array.isArray(i.sources) ? i.sources : [] }));
+        try { localStorage.setItem(SHOPPING_STORAGE_KEY, JSON.stringify(shoppingList)); } catch (e) {}
       }
       if (includePantryAndTheme && Array.isArray(st.userPantry)) {
         userPantry = st.userPantry;
@@ -5525,6 +6137,7 @@
       try {
         localStorage.removeItem('raiz_pantry_v2');
         localStorage.removeItem(PREFS_STORAGE_KEY);
+        localStorage.removeItem(SHOPPING_STORAGE_KEY);
       } catch (e) {}
       currentGoal = 'bajar';
       chefStyle = 'auto';
@@ -5542,6 +6155,7 @@
         completed: new Set()
       });
       lastCloudSaveLabel = 'Sin guardar aún';
+      shoppingList = [];
       loadPantry();
       syncAllFilterButtonsUI();
       updateDietaAll();
@@ -5581,6 +6195,7 @@
     // Inicialización
     (async function init() {
       loadPantry();
+      loadShopping();
       loadLocalPrefs();
       updateAccountUI();
       await loadCloudReviews();
